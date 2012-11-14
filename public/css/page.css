@@ -1,0 +1,29 @@
+body .container .header {
+  margin-top: 20px;
+  height: 105px;
+}
+body .container .main h1 {
+  font-weight: normal;
+  font-size: 19px;
+}
+body .container .main h1 span.separator {
+  margin: 0 10px;
+  color: #aaaaaa;
+}
+body .container .main .btn-group {
+  margin-bottom: 20px;
+}
+body .container .main form {
+  padding-top: 10px;
+}
+body .container .main form .form-actions {
+  background-color: transparent;
+}
+body .container .side .inner {
+  color: #aaaaaa;
+  font-size: 14px;
+  border-left: 1px dashed #aaaaaa;
+  margin-top: 10px;
+  padding: 20px 0 20px 20px;
+  min-height: 200px;
+}
