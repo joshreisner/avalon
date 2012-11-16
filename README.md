@@ -8,3 +8,5 @@ So far, the only configuration you have to do besides the usual bundle install/p
 
 * run the migration
 * set your auth model setting to Avalon\User
+* add the following line to your application/bundles.php
+    'avalon' => array('handles' => 'login', 'auto' => true),
