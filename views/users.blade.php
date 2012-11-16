@@ -18,20 +18,20 @@
 
 @section('main')
 
-	@if (count($objects) > 0)
+	@if (count($users) > 0)
 		<table class="table">
 			<thead>
 				<tr>
-					<th>Foo</th>
+					<th>Name</th>
 					<th>Foo</th>
 					<th>Foo</th>
 					<th>Foo</th>
 				</tr>
 			</thead>
 			<tbody>
-		@foreach ($objects as $object)
+		@foreach ($users as $user)
 			   	<tr>
-			   		<td>This is an object</td>
+			   		<td>{{ $user->lastname }}, {{ $user->firstname }}</td>
 			   		<td>Ok</td>
 			   		<td>Ok!</td>
 			   		<td>duDe</td>
@@ -40,14 +40,13 @@
 			</tbody>
 		</table>
 	@else
-		<div class="alert">No objects have been entered yet.</div>
+		<div class="alert">No users have been entered yet, which means I'm not sure how you're reading this message.</div>
 	@endif
 
 @endsection
 
 @section('side')
 	<div class="inner">
-		<p>This is the main directory of website ‘objects.’ Those that are linked you have permission to edit.</p>
-		<p>You're logged in as {{ $user->firstname }}.<br>Click {{ HTML::link_to_route('logout', 'here') }} to log out.</p>
+		These users have access to the CMS.
 	</div>
 @endsection

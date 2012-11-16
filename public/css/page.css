@@ -7,7 +7,7 @@ body .container .main h1 {
   font-size: 19px;
 }
 body .container .main h1 span.separator {
-  margin: 0 10px;
+  margin: 0 4px 0 7px;
   color: #aaaaaa;
 }
 body .container .main .btn-group {

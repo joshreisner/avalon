@@ -16,6 +16,7 @@
 			<div class="row">
 				<div class="span9 main">
 					@yield('breadcrumbs')
+					@yield('buttons')
 					@yield('main')
 				</div>
 				<div class="span3 side">
