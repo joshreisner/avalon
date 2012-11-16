@@ -4,7 +4,7 @@ class Avalon_Login_Controller extends Controller {
 	public $restful = true;
 
 	public function get_form() {
-        if (0 == Avalon\User::count()) {
+        if (0 == Avalon_User::count()) {
             //this is the very first user
             return View::make('avalon::install');
         } else {
@@ -14,7 +14,7 @@ class Avalon_Login_Controller extends Controller {
 	}
 	
 	public function post_form() {
-        if (0 == Avalon\User::count()) {
+        if (0 == Avalon_User::count()) {
             //this is the very first user
             $user = new Avalon\User;
             $user->email      = Input::get('email');
@@ -31,13 +31,13 @@ class Avalon_Login_Controller extends Controller {
 
         } else {
             //check login credentials
-            if ($user = Avalon\User::where('email', '=', Input::get('email'))->first()) {
-	            die('hi');
+            if ($user = Avalon_User::where('email', '=', Input::get('email'))->first()) {
+	            //die('hi, your pword is ' . $user->password);
                 if (Hash::check(Input::get('password'), $user->password)) {
                     Auth::login($user->id);
                 }
             }
-            die('no');
+            //die('no');
             return Redirect::to_route('objects');
         }
 	}

@@ -10,6 +10,8 @@ Route::group(array('before' => 'auth'), function() {
 });
 
 Route::filter('auth', function() {
-	echo 'ih';
-	if (Auth::guest()) return Redirect::to('(:bundle)');
+	if (Auth::guest()) {
+		die('not logged in');
+		return Redirect::to('login');
+	}
 });
