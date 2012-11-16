@@ -4,11 +4,12 @@ class Avalon_Login_Controller extends Controller {
 	public $restful = true;
 
 	public function get_form() {
-        if (0 == \Avalon\User::count()) {
+		Asset::container('avalon')->add('avalon_login_css', 'css/login.css');
+		if (0 == \Avalon\User::count()) {
             //this is the very first user
             return View::make('avalon::install');
         } else {
-        	//if (Auth::check()) return Redirect::to_route('objects');
+        	if (Auth::check()) return Redirect::to_route('objects');
             return View::make('avalon::login');
         }
 	}
@@ -32,14 +33,17 @@ class Avalon_Login_Controller extends Controller {
         } else {
             //check login credentials
             if ($user = \Avalon\User::where('email', '=', Input::get('email'))->first()) {
-	            //die('hi, your pword is ' . $user->password);
                 if (Hash::check(Input::get('password'), $user->password)) {
                     Auth::login($user->id);
                 }
             }
-            //die('no');
+
             return Redirect::to_route('objects');
         }
 	}
 	
+	public function get_logout() {
+		Auth::logout();
+		return Redirect::to_route('login');
+	}
 }

@@ -1,6 +1,7 @@
 <?php
 
 Route::any('(:bundle)', array('as'=>'login', 'uses'=>'avalon::login@form'));
+Route::any('(:bundle)/logout', array('as'=>'logout', 'uses'=>'avalon::login@logout'));
 
 Route::group(array('before' => 'auth'), function() {
 	Route::get('(:bundle)/objects',		array('as'=>'objects', 'uses'=>'avalon::objects@list'));
@@ -10,9 +11,7 @@ Route::group(array('before' => 'auth'), function() {
 });
 
 Route::filter('auth', function() {
-	die('attempting auth');
 	if (Auth::guest()) {
-		die('hooray! not logged in');
 		return Redirect::to('login');
 	}
 });
