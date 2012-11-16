@@ -10,8 +10,9 @@ Route::group(array('before' => 'auth'), function() {
 });
 
 Route::filter('auth', function() {
+	die('attempting auth');
 	if (Auth::guest()) {
-		die('not logged in');
+		die('hooray! not logged in');
 		return Redirect::to('login');
 	}
 });

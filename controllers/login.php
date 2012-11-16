@@ -4,19 +4,19 @@ class Avalon_Login_Controller extends Controller {
 	public $restful = true;
 
 	public function get_form() {
-        if (0 == Avalon_User::count()) {
+        if (0 == \Avalon\User::count()) {
             //this is the very first user
             return View::make('avalon::install');
         } else {
-        	if (Auth::check()) return Redirect::to_route('objects');
+        	//if (Auth::check()) return Redirect::to_route('objects');
             return View::make('avalon::login');
         }
 	}
 	
 	public function post_form() {
-        if (0 == Avalon_User::count()) {
+        if (0 == \Avalon\User::count()) {
             //this is the very first user
-            $user = new Avalon\User;
+            $user = new \Avalon\Avalon_User;
             $user->email      = Input::get('email');
             $user->password   = Hash::make(Input::get('password'));
             $user->firstname  = Input::get('firstname');
@@ -31,7 +31,7 @@ class Avalon_Login_Controller extends Controller {
 
         } else {
             //check login credentials
-            if ($user = Avalon_User::where('email', '=', Input::get('email'))->first()) {
+            if ($user = \Avalon\User::where('email', '=', Input::get('email'))->first()) {
 	            //die('hi, your pword is ' . $user->password);
                 if (Hash::check(Input::get('password'), $user->password)) {
                     Auth::login($user->id);

@@ -5,11 +5,9 @@ Autoloader::namespaces(array(
 ));
 
 Auth::extend('auth', function() {
-    return new Avalon_User();
+
 });
 
-
-//Autoloader::map(array('Avalon'=>path('bundle') . 'avalon/models/user.php'));
 
 Asset::container('avalon')->bundle('avalon');
 Asset::container('avalon')->add('bootstrap_css', 'bootstrap/css/bootstrap.min.css');
