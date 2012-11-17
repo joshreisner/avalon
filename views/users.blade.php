@@ -10,9 +10,7 @@
 
 @section('buttons')
 	<div class="btn-group">
-		<a class="btn" href="{{ URL::to_route('settings') }}"><i class="icon-cogs"></i> Site Settings</a>
-		<a class="btn" href="{{ URL::to_route('users') }}"><i class="icon-group"></i> Users</a>
-		<a class="btn" href="{{ URL::to_route('objects_new') }}"><i class="icon-pencil"></i> Add New Object</a>
+		<a class="btn" href="{{ URL::to_route('users_add') }}"><i class="icon-pencil"></i> Add New User</a>
 	</div>
 @endsection
 
@@ -23,18 +21,16 @@
 			<thead>
 				<tr>
 					<th>Name</th>
-					<th>Foo</th>
-					<th>Foo</th>
-					<th>Foo</th>
+					<th>Role</th>
+					<th>Last Login</th>
 				</tr>
 			</thead>
 			<tbody>
 		@foreach ($users as $user)
 			   	<tr>
-			   		<td>{{ $user->lastname }}, {{ $user->firstname }}</td>
-			   		<td>Ok</td>
-			   		<td>Ok!</td>
-			   		<td>duDe</td>
+			   		<td><a href="/login/users/{{ $user->id }}">{{ $user->lastname }}, {{ $user->firstname }}</a></td>
+			   		<td>{{ $user->role }}</td>
+			   		<td>{{ $user->last_login }}</td>
 			   	</tr>
 		@endforeach
 			</tbody>
