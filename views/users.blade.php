@@ -4,7 +4,9 @@
 	<h1>
 		<a href="/"><i class="icon-home"></i></a>
 		<span class="separator"><i class="icon-chevron-right"></i></span>
-		Objects
+		<a href="/login/objects">Objects</a>
+		<span class="separator"><i class="icon-chevron-right"></i></span>
+		Users		
 	</h1>
 @endsection
 

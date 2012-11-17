@@ -12,7 +12,7 @@
 	<div class="btn-group">
 		<a class="btn" href="{{ URL::to_route('settings') }}"><i class="icon-cogs"></i> Site Settings</a>
 		<a class="btn" href="{{ URL::to_route('users') }}"><i class="icon-group"></i> Users</a>
-		<a class="btn" href="{{ URL::to_route('objects_new') }}"><i class="icon-pencil"></i> Add New Object</a>
+		<a class="btn" href="{{ URL::to_route('objects_add') }}"><i class="icon-pencil"></i> Add New Object</a>
 	</div>
 @endsection
 
