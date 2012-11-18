@@ -6,6 +6,7 @@ class Avalon_Create_Tables {
 	{
 		Schema::create('avalon', function($table)
 		{
+			$table->increments('id');
 			$table->string('link_color', 7);
 			$table->blob('banner_image');
 			$table->integer('created_by')/*->references('id')->on('avalon_users')*/;
@@ -85,8 +86,10 @@ class Avalon_Create_Tables {
 
 		Schema::create('avalon_users_to_objects', function($table)
 		{
+			$table->increments('id');
 			$table->integer('user_id')/*->references('id')->on('avalon_users')*/;
 			$table->integer('object_id')/*->references('id')->on('avalon_objects')*/;
+		    $table->timestamps();
 		});
 	}
 

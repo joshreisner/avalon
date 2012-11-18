@@ -7,7 +7,22 @@
 		{{ Asset::container('avalon')->scripts() }}
 	</head>
 	<body>
-		<a href="https://github.com/joshreisner/avalon"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png" alt="Fork me on GitHub"></a>		
-		@yield('content')
+		<div class="container">
+			<div class="row header">
+				<div class="span12">
+					<img src="/bundles/avalon/img/logo.jpg" alt="Your Logo Here" width="920" height="105">
+				</div>
+			</div>
+			<div class="row">
+				<div class="span9 main">
+					@yield('breadcrumbs')
+					@yield('buttons')
+					@yield('main')
+				</div>
+				<div class="span3 side">
+					@yield('side')
+				</div>
+			</div>
+		</div>
 	</body>
 </html>

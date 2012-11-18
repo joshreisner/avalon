@@ -43,6 +43,12 @@ body div.modal div.modal-header {
 body div.modal div.modal-body {
   padding-top: 35px;
 }
+body div.modal div.modal-body .control-group.error input {
+  background-color: #FFADB9;
+}
+body div.modal div.modal-body .control-group.error .help-inline {
+  display: none;
+}
 body div.modal div.modal-footer {
   -webkit-border-bottom-left-radius: 20px;
   -webkit-border-bottom-right-radius: 20px;

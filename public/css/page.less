@@ -1,7 +1,10 @@
 @gray : #AAAAAA;
 
 body {
-
+	a { cursor: pointer; }
+	span.user { color: @gray; margin-right: 10px; }
+	.hidden { display: none; }
+	
 	.container {
 		.header {
 			margin-top: 20px; height: 105px;
@@ -12,13 +15,30 @@ body {
 				font-weight: normal; font-size: 19px; 
 				span.separator { margin: 0 4px 0 7px; color: @gray;}
 			}
-			.btn-group {
+			
+			nav {
 				margin-bottom: 20px;
 			}
+			
 			form {
 				padding-top: 10px;
+				label.checkbox.inline {
+					cursor: pointer; width: 120px; margin: 0 10px 0 0;
+				}
+				.control-group.error {
+					input { background-color: #FFADB9; }
+				}
 				.form-actions {
-					background-color: transparent; 
+					/* background-color: transparent;  */
+				}
+			}
+			
+			table {
+				th { color: @gray; font-weight: normal; }
+				th, td {
+					&.date { text-align: right; }
+					&.delete { width: 10px; }
+					&.group { font-weight: bold; text-transform: uppercase; font-size: 12px; padding-top: 20px; }
 				}
 			}
 		}

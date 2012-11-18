@@ -1,3 +1,13 @@
+body a {
+  cursor: pointer;
+}
+body span.user {
+  color: #aaaaaa;
+  margin-right: 10px;
+}
+body .hidden {
+  display: none;
+}
 body .container .header {
   margin-top: 20px;
   height: 105px;
@@ -10,14 +20,42 @@ body .container .main h1 span.separator {
   margin: 0 4px 0 7px;
   color: #aaaaaa;
 }
-body .container .main .btn-group {
+body .container .main nav {
   margin-bottom: 20px;
 }
 body .container .main form {
   padding-top: 10px;
 }
+body .container .main form label.checkbox.inline {
+  cursor: pointer;
+  width: 120px;
+  margin: 0 10px 0 0;
+}
+body .container .main form .control-group.error input {
+  background-color: #FFADB9;
+}
 body .container .main form .form-actions {
-  background-color: transparent;
+  /* background-color: transparent;  */
+
+}
+body .container .main table th {
+  color: #aaaaaa;
+  font-weight: normal;
+}
+body .container .main table th.date,
+body .container .main table td.date {
+  text-align: right;
+}
+body .container .main table th.delete,
+body .container .main table td.delete {
+  width: 10px;
+}
+body .container .main table th.group,
+body .container .main table td.group {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 12px;
+  padding-top: 20px;
 }
 body .container .side .inner {
   color: #aaaaaa;
