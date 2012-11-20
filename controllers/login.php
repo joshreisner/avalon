@@ -4,6 +4,7 @@ class Avalon_Login_Controller extends Controller {
 	public $restful = true;
 
 	public function get_form() {
+		if (!Auth::guest()) return Redirect::to_route('objects');
 		Asset::container('avalon')->add('avalon_login_css', 'css/login.css');
 		return View::make('avalon::login')->with('count', \Avalon\User::count());
 	}
@@ -21,7 +22,7 @@ class Avalon_Login_Controller extends Controller {
 			$user->last_login = date('Y-m-d H:i:s');
             $user->save();
 
-            Auth::login($user->id);
+            Auth::login($user->id, true);
             return Redirect::to_route('objects');
 
         } else {
