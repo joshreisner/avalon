@@ -1,7 +1,7 @@
 <?php
 
-Route::any('(:bundle)', array('as'=>'login', 'uses'=>'avalon::login@form'));
-Route::any('(:bundle)/logout', array('as'=>'logout', 'uses'=>'avalon::login@logout'));
+Route::any('(:bundle)', 								array('as'=>'login', 'uses'=>'avalon::login@form'));
+Route::any('(:bundle)/logout',							array('as'=>'logout', 'uses'=>'avalon::login@logout'));
 
 Route::group(array('before' => 'auth'), function() {
 	Route::any('(:bundle)/instances/(:num)/fields',		array('as'=>'fields',			'uses'=>'avalon::fields@list'));

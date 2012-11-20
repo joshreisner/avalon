@@ -10,20 +10,20 @@ class Avalon_Login_Controller extends Controller {
 	}
 	
 	public function post_form() {
-        if (0 == \Avalon\User::count()) {
-            //this is the very first user
-            $user = new \Avalon\User;
-            $user->email      = Input::get('email');
-            $user->password   = Hash::make(Input::get('password'));
-            $user->firstname  = Input::get('firstname');
-            $user->lastname   = Input::get('lastname');
-            $user->role       = 1;
-            $user->active     = 1;
+		if (\Avalon\User::count() == 0) {
+			//this is the very first user
+			$user = new \Avalon\User;
+			$user->email      = Input::get('email');
+			$user->password   = Hash::make(Input::get('password'));
+			$user->firstname  = Input::get('firstname');
+			$user->lastname   = Input::get('lastname');
+			$user->role       = 1;
+			$user->active     = 1;
 			$user->last_login = date('Y-m-d H:i:s');
-            $user->save();
-
-            Auth::login($user->id, true);
-            return Redirect::to_route('objects');
+			$user->save();
+			
+			Auth::login($user->id, true);
+			return Redirect::to_route('objects');
 
         } else {
             //check login credentials
