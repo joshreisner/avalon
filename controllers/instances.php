@@ -5,7 +5,10 @@ class Avalon_Instances_Controller extends Controller {
 	
 	public function get_list($id) {
 		$object = \Avalon\Object::find($id);
-		return View::make('avalon::instances.list')->with('object', $object);
+		return View::make('avalon::instances.list', array(
+			'object'=>$object,
+			'title'=>$object->title
+		));
 	}
 	
 }

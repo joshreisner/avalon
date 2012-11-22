@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
-		<title>Login</title>
+		<title>{{ $title }}</title>
 		<meta charset="UTF-8">
 		{{ Asset::container('avalon')->styles() }}
 		{{ Asset::container('avalon')->scripts() }}

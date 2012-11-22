@@ -3,26 +3,38 @@ class Avalon_Objects_Controller extends Controller {
 	
 	public $restful = true;
 	
-	public function get_add() {
-
-		//create a JSON array to tell Boostrap what values to suggest for the List Grouping field
-		$list_groupings = array();
-		$objects = \Avalon\Object::where('active', '=', 1)->where('list_grouping', '<>', '')->group_by('list_grouping')->get(array('list_grouping'));
-		foreach ($objects as $o) $list_groupings[] = $o->list_grouping;
-		$list_groupings = htmlentities(json_encode($list_groupings));
-		
-		return View::make('avalon::objects.add')->with('list_groupings', $list_groupings);
+	public function get_add() {		
+		return View::make('avalon::objects.add', array(
+			'list_groupings'=>$this->list_groupings(),
+			'title'=>'Add Object'
+		));
 	}
 	
 	public function get_edit($id) {
 		$object = \Avalon\Object::find($id);
-		return View::make('avalon::objects.edit')->with('object', $object);
+		return View::make('avalon::objects.edit', array(
+			'object'=>$object,
+			'list_groupings'=>$this->list_groupings(),
+			'title'=>'Object Settings'
+		));
 	}
 	
 	public function get_list() {
 		$user = Auth::user();
 		$objects = \Avalon\Object::where('active','=',1)->order_by('list_grouping')->order_by('title')->get(array('id', 'title', 'list_grouping'));
-		return View::make('avalon::objects.list')->with('user', $user)->with('objects', $objects);
+		return View::make('avalon::objects.list', array(
+			'user'=>$user,
+			'objects'=>$objects,
+			'title'=>'Objects'
+		));
+	}
+
+	private function list_groupings() {
+		//create a JSON array to tell Boostrap what values to suggest for the List Grouping field
+		$list_groupings = array();
+		$objects = \Avalon\Object::where('active', '=', 1)->where('list_grouping', '<>', '')->group_by('list_grouping')->get(array('list_grouping'));
+		foreach ($objects as $o) $list_groupings[] = $o->list_grouping;
+		return htmlentities(json_encode($list_groupings));
 	}
 
 	public function post_add() {

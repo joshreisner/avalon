@@ -6,7 +6,7 @@
 		<span class="separator"><i class="icon-chevron-right"></i></span>
 		<a href="{{ URL::to_route('objects') }}">Objects</a>
 		<span class="separator"><i class="icon-chevron-right"></i></span>
-		Site Settings
+		{{ $title }}
 	</h1>
 @endsection
 

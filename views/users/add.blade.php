@@ -8,7 +8,7 @@
 		<span class="separator"><i class="icon-chevron-right"></i></span>
 		<a href="{{ URL::to_route('users') }}">Users</a>
 		<span class="separator"><i class="icon-chevron-right"></i></span>
-		Add User
+		{{ $title }}
 	</h1>
 @endsection
 

@@ -1,12 +1,13 @@
 <?php
 
-Autoloader::namespaces(array(
-    'Avalon' => Bundle::path('avalon') . 'models',
+Autoloader::map(array(
+    'Avalon\\Field'		=> Bundle::path('avalon') . 'models/field.php',
+    'Avalon\\Object'	=> Bundle::path('avalon') . 'models/object.php',
+    'Avalon\\Settings'	=> Bundle::path('avalon') . 'models/settings.php',
+    'Avalon\\User'		=> Bundle::path('avalon') . 'models/user.php',
+
+    'Avalon\\Date'		=> Bundle::path('avalon') . 'libraries/date.php',
 ));
-
-Auth::extend('auth', function() {
-
-});
 
 //assets
 Asset::container('avalon')->bundle('avalon');

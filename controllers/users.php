@@ -7,7 +7,11 @@ class Avalon_Users_Controller extends Controller {
 
 	public function get_add() {
 		$objects = \Avalon\Object::where('active', '=', 1)->order_by('title')->get(array('id', 'title'));
-		return View::make('Avalon::users.add')->with('roles', $this->roles)->with('objects', $objects);
+		return View::make('Avalon::users.add', array(
+			'roles'=>$this->roles,
+			'objects'=>$objects,
+			'title'=>'Add User'
+		));
 	}
 	
 	public function get_edit($id) {
@@ -18,11 +22,13 @@ class Avalon_Users_Controller extends Controller {
 		
 		$objects = \Avalon\Object::where('active', '=', 1)->order_by('title')->get(array('id', 'title'));
 
-		return View::make('Avalon::users.edit')
-			->with('user', $user)
-			->with('roles', $this->roles)
-			->with('objects', $objects)
-			->with('permissions', $permissions);
+		return View::make('Avalon::users.edit', array(
+			'user'=>$user,
+			'roles'=>$this->roles,
+			'objects'=>$objects,
+			'permissions'=>$permissions,
+			'title'=>'Edit User'
+		));
 	}
 
 	public function get_list() {
@@ -37,7 +43,11 @@ class Avalon_Users_Controller extends Controller {
 			if (!empty($u->last_login)) $u->last_login = date('M d, Y', strtotime($u->last_login));
 		}
 		
-		return View::make('Avalon::users.list')->with('user', $user)->with('users', $users)->with('role', 1);
+		return View::make('Avalon::users.list', array(
+			'user'=>$user,
+			'users'=>$users,
+			'title'=>'Users'
+		));
 	}
 	
 	public function delete_edit($id) {

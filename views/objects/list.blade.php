@@ -4,7 +4,7 @@
 	<h1>
 		<a href="/"><i class="icon-home"></i></a>
 		<span class="separator"><i class="icon-chevron-right"></i></span>
-		Objects
+		{{ $title }}
 	</h1>
 @endsection
 

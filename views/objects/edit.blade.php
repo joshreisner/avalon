@@ -8,7 +8,7 @@
 		<span class="separator"><i class="icon-chevron-right"></i></span>
 		<a href="{{ URL::to_route('instances', $object->id) }}">{{ $object->title }}</a>
 		<span class="separator"><i class="icon-chevron-right"></i></span>
-		Settings
+		{{ $title }}
 	</h1>
 @endsection
 
@@ -24,7 +24,7 @@
 		<div class="control-group">
 			<label class="control-label" for="list_grouping">List Grouping</label>
 			<div class="controls">
-				<input type="text" name="list_grouping" value="{{ $object->list_grouping }}">
+				<input type="text" name="list_grouping" value="{{ $object->list_grouping }}" data-provide="typeahead" data-source="{{ $list_groupings }}">
 			</div>
 		</div>
 

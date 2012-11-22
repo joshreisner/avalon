@@ -1,10 +1,6 @@
 body a {
   cursor: pointer;
 }
-body span.user {
-  color: #aaaaaa;
-  margin-right: 10px;
-}
 body .hidden {
   display: none;
 }
@@ -56,6 +52,13 @@ body .container .main table td.group {
   text-transform: uppercase;
   font-size: 12px;
   padding-top: 20px;
+}
+body .container .main table span.user {
+  color: #aaaaaa;
+  margin-right: 10px;
+}
+body .container .main table span.date {
+  white-space: nowrap;
 }
 body .container .side .inner {
   color: #aaaaaa;

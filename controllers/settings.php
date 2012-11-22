@@ -13,7 +13,11 @@ class Avalon_Settings_Controller extends Controller {
 		} else {
 			$settings = \Avalon\Settings::find(1);
 		}
-		return View::make('avalon::settings.edit')->with('settings', $settings)->with('languages', $this->languages);
+		return View::make('avalon::settings.edit', array(
+			'settings'=>$settings,
+			'languages'=>$this->languages,
+			'title'=>'Site Settings'
+		));
 	}
 	
 	public function put_form() {

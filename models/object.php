@@ -9,7 +9,7 @@ class Object extends Eloquent {
      public static $timestamps	= true;
 
      public function fields() {
-          return $this->has_many('\Avalon\Field');
+          return $this->has_many('Avalon\\Field');
      }
      
 }

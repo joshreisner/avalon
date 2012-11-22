@@ -8,7 +8,7 @@
 		<span class="separator"><i class="icon-chevron-right"></i></span>
 		<a href="{{ URL::to_route('instances', $object->id) }}">{{ $object->title }}</a>
 		<span class="separator"><i class="icon-chevron-right"></i></span>
-		Fields		
+		{{ $title }}		
 	</h1>
 @endsection
 
@@ -19,9 +19,30 @@
 @endsection
 
 @section('main')
-	<div class="alert">
-		No fields have been added yet.
-	</div>
+	@if (count($fields) > 0)
+		<table class="table table-condensed">
+			<thead>
+				<tr>
+					<th>Object</th>
+					<th>Type</th>
+					<th>Table &amp; Column</th>
+					<th class="span2 date">Last Update</th>
+				</tr>
+			</thead>
+			<tbody>
+		@foreach ($fields as $field)
+			   	<tr>
+			   		<td><a href="{{ URL::to_route('instances', $field->id) }}">{{ $field->title }}</a></td>
+			   		<td>{{ $field->type }}</td>
+			   		<td>{{ $field->field_name }}.{{ $object->table_name }}</td>
+			   		<td class="date"><span class="user">Josh</span>{{ $field->updated_at }}</td>
+			   	</tr>
+		@endforeach
+			</tbody>
+		</table>
+	@else
+		<div class="alert">No fields have been added yet.</div>
+	@endif
 @endsection
 
 @section('side')

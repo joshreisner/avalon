@@ -6,7 +6,7 @@
 		<span class="separator"><i class="icon-chevron-right"></i></span>
 		<a href="{{ URL::to_route('objects') }}">Objects</a>
 		<span class="separator"><i class="icon-chevron-right"></i></span>
-		Add Object
+		{{ $title }}
 	</h1>
 @endsection
 
@@ -22,7 +22,7 @@
 		<div class="control-group">
 			<label class="control-label" for="list_grouping">List Grouping</label>
 			<div class="controls">
-				<input type="text" name="list_grouping" class="typeahead" data-provide="typeahead" data-source="{{ $list_groupings }}">
+				<input type="text" name="list_grouping" data-provide="typeahead" data-source="{{ $list_groupings }}">
 			</div>
 		</div>
 

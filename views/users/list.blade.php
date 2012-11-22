@@ -6,15 +6,19 @@
 		<span class="separator"><i class="icon-chevron-right"></i></span>
 		<a href="{{ URL::to_route('objects') }}">Objects</a>
 		<span class="separator"><i class="icon-chevron-right"></i></span>
-		Users		
+		{{ $title }}		
 	</h1>
 @endsection
 
+@if ($user->role < 3)
+
 @section('buttons')
 	<nav class="btn-group">
-		<a class="btn" href="{{ URL::to_route('users_add') }}"><i class="icon-pencil"></i> Add New User</a>
+		<a class="btn" href="{{ URL::to_route('users_add') }}"><i class="icon-pencil"></i> Add User</a>
 	</nav>
 @endsection
+
+@endif
 
 @section('main')
 
@@ -25,7 +29,7 @@
 					<th class="string">Name</th>
 					<th class="string">Role</th>
 					<th class="date">Last Login</th>
-					@if ($role < 3)
+					@if ($user->role < 3)
 					<th class="delete"></th>
 					@endif
 				</tr>
@@ -36,7 +40,7 @@
 			   		<td class="string"><a href="{{ $u->link }}">{{ $u->lastname }}, {{ $u->firstname }}</a></td>
 			   		<td class="string">{{ $u->role }}</td>
 			   		<td class="date">{{ $u->last_login }}</td>
-					@if ($role < 3)
+					@if ($user->role < 3)
 					<td class="delete">@if ($u->id != $user->id)<a href="{{ $u->link }}">&times;</a>@endif</td>
 					@endif
 			   	</tr>
