@@ -1,4 +1,6 @@
 $(function($) {
+
+	//generic form validator
 	$('form').validate({
 		errorElement:"span",
 		errorClass:"help-inline",
@@ -18,12 +20,14 @@ $(function($) {
 		}
 	});
 	
-	//make delete links use the DELETE HTTP verb
+
+	//make all delete links use the DELETE HTTP verb
 	$("td.delete a").append(function(){
         return "<form action='" + $(this).attr('href') + "' method='POST' class='hidden'><input type='hidden' name='_method' value='delete'></form>"
     }).removeAttr('href').attr('onclick','$(this).find("form").submit();');
     	
-	//make button groups live
+
+	//make all button groups live
 	$("div.btn-group[data-toggle-name]").each(function(){
 		var group   = $(this);
 		var form    = group.parents('form').eq(0);
@@ -38,6 +42,9 @@ $(function($) {
 		});
 	});
 
+
+	
+	//page specific, set users control group to show or hide the objects checkboxes
 	$("div.control-group.role button").click(function(){
 		if ($(this).attr('value') == 3) {
 			$("div.control-group.permissions").removeClass("hidden");

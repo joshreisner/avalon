@@ -4,7 +4,7 @@
 	<h1>
 		<a href="/"><i class="icon-home"></i></a>
 		<span class="separator"><i class="icon-chevron-right"></i></span>
-		<a href="/login/objects">Objects</a>
+		<a href="{{ URL::to_route('objects') }}">Objects</a>
 		<span class="separator"><i class="icon-chevron-right"></i></span>
 		Users		
 	</h1>
@@ -33,11 +33,11 @@
 			<tbody>
 		@foreach ($users as $u)
 			   	<tr>
-			   		<td class="string"><a href="/login/users/{{ $u->id }}">{{ $u->lastname }}, {{ $u->firstname }}</a></td>
+			   		<td class="string"><a href="{{ $u->link }}">{{ $u->lastname }}, {{ $u->firstname }}</a></td>
 			   		<td class="string">{{ $u->role }}</td>
 			   		<td class="date">{{ $u->last_login }}</td>
 					@if ($role < 3)
-					<td class="delete">@if ($u->id != $user->id)<a href="/login/users/{{ $u->id }}">&times;</a>@endif</td>
+					<td class="delete">@if ($u->id != $user->id)<a href="{{ $u->link }}">&times;</a>@endif</td>
 					@endif
 			   	</tr>
 		@endforeach

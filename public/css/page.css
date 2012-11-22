@@ -65,3 +65,7 @@ body .container .side .inner {
   padding: 20px 0 20px 20px;
   min-height: 200px;
 }
+/* random bootrap override */
+ul.typeahead.dropdown-menu li.active a {
+  color: #ffffff;
+}

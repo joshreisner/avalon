@@ -4,7 +4,14 @@ class Avalon_Objects_Controller extends Controller {
 	public $restful = true;
 	
 	public function get_add() {
-		return View::make('avalon::objects.add');
+
+		//create a JSON array to tell Boostrap what values to suggest for the List Grouping field
+		$list_groupings = array();
+		$objects = \Avalon\Object::where('active', '=', 1)->where('list_grouping', '<>', '')->group_by('list_grouping')->get(array('list_grouping'));
+		foreach ($objects as $o) $list_groupings[] = $o->list_grouping;
+		$list_groupings = htmlentities(json_encode($list_groupings));
+		
+		return View::make('avalon::objects.add')->with('list_groupings', $list_groupings);
 	}
 	
 	public function get_edit($id) {

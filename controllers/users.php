@@ -33,6 +33,7 @@ class Avalon_Users_Controller extends Controller {
 		//set roles to their verbal description
 		foreach ($users as $u) {
 			$u->role = $this->roles[$u->role];
+			$u->link = URL::to_route('users_edit', $u->id);
 			if (!empty($u->last_login)) $u->last_login = date('M d, Y', strtotime($u->last_login));
 		}
 		

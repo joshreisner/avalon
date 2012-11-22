@@ -2,6 +2,7 @@ $(function($) {
 	$('form').validate({
 		errorElement:"",
 		errorClass:"help-inline",
+		onsubmit:true,
 		highlight: function(element, errorClass, validClass) {
 			if (element.type === 'radio') {
 				//this.findByName(element.name).parent("div").parent("div").addClass("error").removeClass(validClass);

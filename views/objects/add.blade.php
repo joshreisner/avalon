@@ -22,13 +22,13 @@
 		<div class="control-group">
 			<label class="control-label" for="list_grouping">List Grouping</label>
 			<div class="controls">
-				<input type="text" name="list_grouping">
+				<input type="text" name="list_grouping" class="typeahead" data-provide="typeahead" data-source="{{ $list_groupings }}">
 			</div>
 		</div>
 
 		<div class="form-actions">
 			<button type="submit" class="btn btn-primary">Save changes</button>
-			<a class="btn" href="/login/users">Cancel</a>
+			<a class="btn" href="{{ URL::to_route('objects') }}">Cancel</a>
 		</div>		
 	</form>
 @endsection
