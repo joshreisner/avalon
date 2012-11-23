@@ -15,14 +15,28 @@
 		<div class="control-group">
 			<label class="control-label" for="title">Title</label>
 			<div class="controls">
-				<input type="text" name="title" class="required" autofocus>
+				<input type="text" name="title" class="span5 required" autofocus>
 			</div>
 		</div>
 
 		<div class="control-group">
 			<label class="control-label" for="list_grouping">List Grouping</label>
 			<div class="controls">
-				<input type="text" name="list_grouping" data-provide="typeahead" data-source="{{ $list_groupings }}">
+				<input type="text" name="list_grouping" class="span5" data-provide="typeahead" data-source="{{ $list_groupings }}">
+			</div>
+		</div>
+
+		<div class="control-group">
+			<label class="control-label" for="list_help">List Help</label>
+			<div class="controls">
+				<textarea name="list_help" class="span6" rows="10"></textarea>
+			</div>
+		</div>
+
+		<div class="control-group">
+			<label class="control-label" for="form_help">Form Help</label>
+			<div class="controls">
+				<textarea name="form_help" class="span6" rows="10"></textarea>
 			</div>
 		</div>
 

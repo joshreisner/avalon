@@ -40,7 +40,7 @@ class Avalon_Users_Controller extends Controller {
 		foreach ($users as $u) {
 			$u->role = $this->roles[$u->role];
 			$u->link = URL::to_route('users_edit', $u->id);
-			if (!empty($u->last_login)) $u->last_login = date('M d, Y', strtotime($u->last_login));
+			if (!empty($u->last_login)) $u->last_login = \Avalon\Date::format($u->last_login);
 		}
 		
 		return View::make('Avalon::users.list', array(

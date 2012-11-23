@@ -27,7 +27,8 @@ body .container .main form label.checkbox.inline {
   width: 120px;
   margin: 0 10px 0 0;
 }
-body .container .main form .control-group.error input {
+body .container .main form .control-group.error input,
+body .container .main form .control-group.error textarea {
   background-color: #FFADB9;
 }
 body .container .main form .form-actions {
@@ -37,6 +38,12 @@ body .container .main form .form-actions {
 body .container .main table th {
   color: #aaaaaa;
   font-weight: normal;
+}
+body .container .main table th.reorder,
+body .container .main table td.reorder {
+  width: 10px;
+  color: #aaaaaa;
+  cursor: row-resize;
 }
 body .container .main table th.date,
 body .container .main table td.date {
@@ -52,6 +59,17 @@ body .container .main table td.group {
   text-transform: uppercase;
   font-size: 12px;
   padding-top: 20px;
+}
+body .container .main table tr.dragging {
+  -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  background-color: #f6f6f6;
+}
+body .container .main table tr.dragging td {
+  border-color: #aaaaaa;
+  border-bottom: 1px solid #aaaaaa;
 }
 body .container .main table span.user {
   color: #aaaaaa;

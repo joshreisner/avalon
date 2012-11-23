@@ -20,9 +20,10 @@
 
 @section('main')
 	@if (count($fields) > 0)
-		<table class="table table-condensed">
+		<table class="table table-condensed sortable">
 			<thead>
 				<tr>
+					<th class="reorder"></th>
 					<th>Object</th>
 					<th>Type</th>
 					<th>Table &amp; Column</th>
@@ -31,10 +32,11 @@
 			</thead>
 			<tbody>
 		@foreach ($fields as $field)
-			   	<tr>
-			   		<td><a href="{{ URL::to_route('instances', $field->id) }}">{{ $field->title }}</a></td>
+			   	<tr data-id="{{ $field->id }}">
+			   		<td class="reorder"><i class="icon-reorder"></i></td>
+			   		<td><a href="{{ URL::to_route('fields_edit', array($object->id, $field->id)) }}">{{ $field->title }}</a></td>
 			   		<td>{{ $field->type }}</td>
-			   		<td>{{ $field->field_name }}.{{ $object->table_name }}</td>
+			   		<td>{{ $object->table_name }}.{{ $field->field_name }}</td>
 			   		<td class="date"><span class="user">Josh</span>{{ $field->updated_at }}</td>
 			   	</tr>
 		@endforeach

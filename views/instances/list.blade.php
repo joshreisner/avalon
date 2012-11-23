@@ -14,12 +14,18 @@
 	<nav class="btn-group">
 		<a class="btn" href="{{ URL::to_route('objects_edit', $object->id) }}"><i class="icon-cog"></i> Object Settings</a>
 		<a class="btn" href="{{ URL::to_route('fields', $object->id) }}"><i class="icon-cog"></i> Fields</a>
-		<!--<a class="btn" href="{{ URL::to_route('instances_add', $object->id) }}"><i class="icon-pencil"></i> Add New</a>-->
+		<a class="btn" href="{{ URL::to_route('instances_add', $object->id) }}"><i class="icon-pencil"></i> Add New</a>
 	</nav>
 @endsection
 
 @section('main')
 	<div class="alert">
 		No {{ strtolower($object->title) }} have been added yet.
+	</div>
+@endsection
+
+@section('side')
+	<div class="inner">
+		{{ nl2br($object->list_help) }}
 	</div>
 @endsection

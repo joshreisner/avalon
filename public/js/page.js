@@ -4,6 +4,8 @@ $(function($) {
 	$('form').validate({
 		errorElement:"span",
 		errorClass:"help-inline",
+		onfocusout:false,
+		onkeyup:false,
 		highlight: function(element, errorClass, validClass) {
 			if (element.type === 'radio') {
 				//this.findByName(element.name).parent("div").parent("div").addClass("error").removeClass(validClass);
@@ -41,6 +43,21 @@ $(function($) {
 			if (button.val() == hidden.val()) button.addClass('active');
 		});
 	});
+
+
+	//make sortable tables
+	$("table.sortable").tableDnD({
+	    onDragClass: "dragging",
+	    dragHandle: "reorder",
+	    onDrop: function(table, droppedRow, dragObjs) {
+	    	var ids = new Array();
+	        $(table).find("tr[data-id]").each(function(){
+	        	ids[ids.length] = $(this).attr("data-id");
+	        });
+	        alert(ids.join(","));
+	    }
+	});
+
 
 
 	

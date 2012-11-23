@@ -1,5 +1,14 @@
 @gray  : #AAAAAA;
 @white : #FFFFFF;
+@black : #000000;
+@light : #F6F6F6;
+
+.shadowed(@x-axis: 0, @y-axis: 1px, @blur: 4px, @color: #000, @alpha: 0.5) {
+	@hsla: hsla(hue(@color), saturation(@color), lightness(@color), @alpha);
+	-webkit-box-shadow: @x-axis @y-axis @blur @hsla;
+	   -moz-box-shadow: @x-axis @y-axis @blur @hsla;
+	        box-shadow: @x-axis @y-axis @blur @hsla;
+}
 
 body {
 	a { cursor: pointer; }
@@ -26,7 +35,7 @@ body {
 					cursor: pointer; width: 120px; margin: 0 10px 0 0;
 				}
 				.control-group.error {
-					input { background-color: #FFADB9; }
+					input, textarea { background-color: #FFADB9; }
 				}
 				.form-actions {
 					/* background-color: transparent;  */
@@ -36,9 +45,14 @@ body {
 			table {
 				th { color: @gray; font-weight: normal; }
 				th, td {
+					&.reorder { width: 10px; color: @gray; cursor: row-resize; }
 					&.date { text-align: right; }
 					&.delete { width: 10px; }
 					&.group { font-weight: bold; text-transform: uppercase; font-size: 12px; padding-top: 20px; }
+				}
+				tr.dragging {
+					.shadowed(); z-index: 1; background-color: @light;
+					td { border-color: @gray; border-bottom: 1px solid @gray; }
 				}
 			
 				span.user { color: @gray; margin-right: 10px; }
