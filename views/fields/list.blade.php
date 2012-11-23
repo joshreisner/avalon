@@ -20,7 +20,7 @@
 
 @section('main')
 	@if (count($fields) > 0)
-		<table class="table table-condensed sortable">
+		<table class="table table-condensed" data-reorder="{{ URL::to_route('fields_reorder', $object->id) }}">
 			<thead>
 				<tr>
 					<th class="reorder"></th>
@@ -32,7 +32,7 @@
 			</thead>
 			<tbody>
 		@foreach ($fields as $field)
-			   	<tr data-id="{{ $field->id }}">
+			   	<tr data-id="{{ $field->id }}" data-precedence="{{ $field->precedence }}">
 			   		<td class="reorder"><i class="icon-reorder"></i></td>
 			   		<td><a href="{{ URL::to_route('fields_edit', array($object->id, $field->id)) }}">{{ $field->title }}</a></td>
 			   		<td>{{ $field->type }}</td>

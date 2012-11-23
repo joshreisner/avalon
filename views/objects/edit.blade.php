@@ -31,14 +31,14 @@
 		<div class="control-group">
 			<label class="control-label" for="list_help">List Help</label>
 			<div class="controls">
-				<textarea name="list_help" class="span6" rows="10">{{ $object->list_help }}</textarea>
+				<textarea name="list_help" class="span5">{{ $object->list_help }}</textarea>
 			</div>
 		</div>
 
 		<div class="control-group">
 			<label class="control-label" for="form_help">Form Help</label>
 			<div class="controls">
-				<textarea name="form_help" class="span6" rows="10">{{ $object->form_help }}</textarea>
+				<textarea name="form_help" class="span5">{{ $object->form_help }}</textarea>
 			</div>
 		</div>
 

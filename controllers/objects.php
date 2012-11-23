@@ -39,12 +39,10 @@ class Avalon_Objects_Controller extends Controller {
 
 	public function post_add() {
 		$object = new \Avalon\Object;
-		$object->title = Input::get('title');
-		$object->list_grouping = Input::get('list_grouping');
-		$object->list_help = Input::get('list_help');
-		$object->form_help = Input::get('form_help');
-		$object->table_name = Str::slug($object->title, '_');
-		$object->active = 1;
+		$object->title 			= Input::get('title');
+		$object->list_grouping 	= Input::get('list_grouping');
+		$object->table_name 	= Str::slug($object->title, '_');
+		$object->active 		= 1;
 		$object->save();
 		
 		return Redirect::to_route('objects');
@@ -52,10 +50,10 @@ class Avalon_Objects_Controller extends Controller {
 	
 	public function put_edit($id) {
 		$object = \Avalon\Object::find($id);
-		$object->title = Input::get('title');
-		$object->list_grouping = Input::get('list_grouping');
-		$object->list_help = Input::get('list_help');
-		$object->form_help = Input::get('form_help');
+		$object->title 			= Input::get('title');
+		$object->list_grouping 	= Input::get('list_grouping');
+		$object->list_help 		= Input::get('list_help');
+		$object->form_help 		= Input::get('form_help');
 		$object->save();
 		return Redirect::to_route('instances', $object->id);
 	}

@@ -17,21 +17,21 @@
 		<div class="control-group">
 			<label class="control-label" for="firstname">First Name</label>
 			<div class="controls">
-				<input type="text" name="firstname" class="required" autofocus>
+				<input type="text" name="firstname" class="required span5" autofocus>
 			</div>
 		</div>
 
 		<div class="control-group">
 			<label class="control-label" for="lastname">Last Name</label>
 			<div class="controls">
-				<input type="text" name="lastname" class="required">
+				<input type="text" name="lastname" class="required span5">
 			</div>
 		</div>
 
 		<div class="control-group">
 			<label class="control-label" for="email">Email</label>
 			<div class="controls">
-				<input type="text" name="email" class="required email">
+				<input type="text" name="email" class="required span5 email">
 			</div>
 		</div>
 		

@@ -19,7 +19,7 @@
 		<div class="control-group">
 			<label class="control-label" for="title">Title</label>
 			<div class="controls">
-				<input type="text" name="title" id="title" class="required" autofocus>
+				<input type="text" name="title" id="title" class="span5 required" autofocus>
 			</div>
 		</div>
 
@@ -51,6 +51,13 @@
 				<label class="checkbox inline">
 					<input type="checkbox" name="required" id="required">
 				</label>
+			</div>
+		</div>
+
+		<div class="control-group type">
+			<label class="control-label" for="additional">Additonal Instructions</label>
+			<div class="controls">
+				<textarea name="additional" class="span5" id="additional"></textarea>
 			</div>
 		</div>
 

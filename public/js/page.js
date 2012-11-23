@@ -5,7 +5,7 @@ $(function($) {
 		errorElement:"span",
 		errorClass:"help-inline",
 		onfocusout:false,
-		onkeyup:false,
+		onkeyup:true,
 		highlight: function(element, errorClass, validClass) {
 			if (element.type === 'radio') {
 				//this.findByName(element.name).parent("div").parent("div").addClass("error").removeClass(validClass);
@@ -45,16 +45,29 @@ $(function($) {
 	});
 
 
-	//make sortable tables
-	$("table.sortable").tableDnD({
+	//make tables reorderable, requires some data- attributes
+	$("table[data-reorder]").tableDnD({
 	    onDragClass: "dragging",
 	    dragHandle: "reorder",
 	    onDrop: function(table, droppedRow, dragObjs) {
-	    	var ids = new Array();
+
+	    	var ids			= new Array();
+	    	var precedences = new Array();
+	        
 	        $(table).find("tr[data-id]").each(function(){
-	        	ids[ids.length] = $(this).attr("data-id");
+	        	ids[ids.length]	= $(this).attr("data-id");
+	        	precedences[precedences.length] = $(this).attr("data-precedence");
 	        });
-	        alert(ids.join(","));
+
+	        $.ajax({
+	        	url: $(table).attr("data-reorder"),
+	        	type: "POST",
+	        	data: { ids: ids.join(","), precedences: precedences.join(",") },
+	        	success: function(data) {
+	        		//alert(data);
+	        	}
+	        });
+
 	    }
 	});
 

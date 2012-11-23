@@ -22,9 +22,12 @@
 				@if ($field->type == 'text')
 				<input type="text" name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span5@if($field->required) required@endif">
 				@elseif ($field->type == 'textarea-plain')
-				<textarea name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span6@if ($field->required) required@endif" rows="10"></textarea>
+				<textarea name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span5@if ($field->required) required@endif"></textarea>
 				@else
 				<div class="alert error">field type of {{ $field->type }} not handled!</div>
+				@endif
+				@if (!empty($field->additional))
+				<span class="help-inline">{{ $field->additional }}</span>
 				@endif
 			</div>
 		</div>

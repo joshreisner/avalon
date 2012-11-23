@@ -7,6 +7,7 @@ Route::group(array('before' => 'auth'), function() {
 	Route::any('(:bundle)/instances/(:num)/fields',			array('as'=>'fields',			'uses'=>'avalon::fields@list'));
 	Route::any('(:bundle)/instances/(:num)/fields/add',		array('as'=>'fields_add',		'uses'=>'avalon::fields@add'));
 	Route::any('(:bundle)/instances/(:num)/fields/(:num)',	array('as'=>'fields_edit',		'uses'=>'avalon::fields@edit'));
+	Route::any('(:bundle)/instances/(:num)/fields/reorder',	array('as'=>'fields_reorder',	'uses'=>'avalon::fields@reorder'));
 	Route::any('(:bundle)/instances/(:num)',				array('as'=>'instances',		'uses'=>'avalon::instances@list'));
 	Route::any('(:bundle)/instances/(:num)/add',			array('as'=>'instances_add',	'uses'=>'avalon::instances@add'));
 	Route::any('(:bundle)/instances/(:num)/edit',			array('as'=>'instances_edit',	'uses'=>'avalon::fields@list'));

@@ -26,20 +26,6 @@
 			</div>
 		</div>
 
-		<div class="control-group">
-			<label class="control-label" for="list_help">List Help</label>
-			<div class="controls">
-				<textarea name="list_help" class="span6" rows="10"></textarea>
-			</div>
-		</div>
-
-		<div class="control-group">
-			<label class="control-label" for="form_help">Form Help</label>
-			<div class="controls">
-				<textarea name="form_help" class="span6" rows="10"></textarea>
-			</div>
-		</div>
-
 		<div class="form-actions">
 			<button type="submit" class="btn btn-primary">Save changes</button>
 			<a class="btn" href="{{ URL::to_route('objects') }}">Cancel</a>

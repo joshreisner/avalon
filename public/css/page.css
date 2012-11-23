@@ -35,6 +35,9 @@ body .container .main form .form-actions {
   /* background-color: transparent;  */
 
 }
+body .container .main form textarea {
+  height: 100px;
+}
 body .container .main table th {
   color: #aaaaaa;
   font-weight: normal;
