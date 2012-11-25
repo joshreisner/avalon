@@ -5,25 +5,31 @@ class Avalon_Fields_Controller extends Controller {
 
 	//declare acceptable field types.  need to reconsider how this is bound to the rest of the app
 	private $field_types = array(
-				'Checkbox',
-				'Checkboxes',
-				'Color',
-				'Date',
-				'Date & Time',
-				'Email',
-				'Dropdown',
-				'File',
-				'File Size',
-				'File Type',
-				'Image',
-				'Integer',
-				'Latitude',
-				'Text',
-				'Textarea (Rich)',
-				'Textarea (Plain)',
-				'Typeahead',
-				'URL',
-				'URL (Local)'
+				'checkbox'=>'Checkbox',
+				'checkboxes'=>'Checkboxes',
+				'color'=>'Color',
+				'date'=>'Date',
+				'date-time'=>'Date & Time',
+				'email'=>'Email',
+				'dropdown'=>'Dropdown',
+				'file'=>'File',
+				'file-size'=>'File Size',
+				'file-type'=>'File Type',
+				'image'=>'Image',
+				'integer'=>'Integer',
+				'latitude'=>'Latitude',
+				'text'=>'Text',
+				'textarea-rich'=>'Textarea (Rich)',
+				'textarea-plain'=>'Textarea (Plain)',
+				'typeahead'=>'Typeahead',
+				'url'=>'URL',
+				'url-local'=>'URL (Local)'
+			);
+
+	private $field_visibilities = array(
+				'list'=>'Show in List',
+				'normal'=>'Normal',
+				'hidden'=>'Hidden'
 			);
 
 	public function get_add($object_id) {
@@ -33,6 +39,7 @@ class Avalon_Fields_Controller extends Controller {
 		return View::make('avalon::fields.add', array(
 			'object'=>$object,
 			'field_types'=>$this->field_types,
+			'field_visibilities'=>$this->field_visibilities,
 			'title'=>'Add Field'
 		));
 	}
@@ -46,6 +53,7 @@ class Avalon_Fields_Controller extends Controller {
 			'object'=>$object,
 			'field'=>$field,
 			'field_types'=>$this->field_types,
+			'field_visibilities'=>$this->field_visibilities,
 			'title'=>$field->title
 		));
 	}

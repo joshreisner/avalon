@@ -11,7 +11,14 @@ class Avalon_Instances_Controller extends Controller {
 	}
 
 	public function get_edit($object_id, $instance_id) {
-		return View::make('avalon::instances.edit');
+		$object = \Avalon\Object::find($object_id);
+		$instance = DB::table($object->table_name)->find($instance_id);
+
+		return View::make('avalon::instances.edit', array(
+			'object'=>$object,
+			'instance'=>$instance,
+			'title'=>'Edit'
+		));
 	}
 
 	public function get_list($object_id) {
@@ -36,6 +43,39 @@ class Avalon_Instances_Controller extends Controller {
 	}
 
 	public function post_add($object_id) {
+		$object = \Avalon\Object::find($object_id);
+
+		//set meta values
+		$values = array(
+			'active'	 => 1,
+			'precedence' => DB::table($object->table_name)->max('precedence') + 1,
+			'created_by' => Auth::user()->id,
+			'updated_by' => Auth::user()->id,
+			'created_at' => DB::raw('NOW()'),
+			'updated_at' => DB::raw('NOW()'),
+		);
+
+		//insert field values
+		foreach ($object->fields as $field) {
+			$value = Input::get($field->field_name);
+			
+			//per-type processing
+			if ($object->type == 'url-local') {
+				$value = Str::slug($value);
+			}
+
+			$values[$field->field_name] = $value;
+		}
+
+		$id = DB::table($object->table_name)->insert_get_id($values);
+
+		//flash inserted row somehow?
+		return Redirect::to_route('instances', $object_id);
+	}
+
+	public function put_edit($object_id, $instance_id) {
+		return 'not implemented yet';
+
 		$object = \Avalon\Object::find($object_id);
 
 		//set meta values

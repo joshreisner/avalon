@@ -26,22 +26,14 @@
 		<div class="control-group type">
 			<label class="control-label" for="title">Type</label>
 			<div class="controls">
-				<select name="type" id="type">
-					@foreach ($field_types as $f)
-					<option value="{{ Str::slug($f) }}"@if ($f == 'Text') selected@endif>{{ $f }}</option>
-					@endforeach
-				</select>
+				{{ Form::select('type', $field_types, 'text'); }}
 			</div>
 		</div>
 
 		<div class="control-group type">
 			<label class="control-label" for="visibility">Visibility</label>
 			<div class="controls">
-				<select name="visibility" id="visibility">
-					<option value="list">Show in List</option>
-					<option value="normal" selected>Normal</option>
-					<option value="hidden">Hidden</option>
-				</select>
+				{{ Form::select('visibility', $field_visibilities, 'normal') }}
 			</div>
 		</div>
 

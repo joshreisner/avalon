@@ -26,22 +26,14 @@
 		<div class="control-group type">
 			<label class="control-label" for="title">Type</label>
 			<div class="controls">
-				<select name="type" id="type">
-					@foreach ($field_types as $f)
-					<option value="{{ Str::slug($f) }}"@if ($field->type == Str::slug($f)) selected@endif>{{ $f }}</option>
-					@endforeach
-				</select>
+				{{ Form::select('type', $field_types, $field->type, array('disabled'=>true)) }}
 			</div>
 		</div>
 
 		<div class="control-group type">
 			<label class="control-label" for="visibility">Visibility</label>
 			<div class="controls">
-				<select name="visibility" id="visibility">
-					<option value="list"@if ($field->visibility == 'list') selected@endif>Show in List</option>
-					<option value="normal"@if ($field->visibility == 'normal') selected@endif>Normal</option>
-					<option value="hidden"@if ($field->visibility == 'hidden') selected@endif>Hidden</option>
-				</select>
+				{{ Form::select('visibility', $field_visibilities, $field->visibility) }}
 			</div>
 		</div>
 
@@ -64,6 +56,12 @@
 		<div class="form-actions">
 			<button type="submit" class="btn btn-primary">Save changes</button>
 			<a class="btn" href="{{ URL::to_route('fields', $object->id) }}">Cancel</a>
-		</div>		
+		</div>
 	</form>
+@endsection
+
+@section('side')
+	<div class="inner">
+		<p>Renaming the field will unfortunately not rename the associated database column.</p>
+	</div>
 @endsection

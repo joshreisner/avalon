@@ -43,8 +43,7 @@
 			   		<td class="reorder"><i class="icon-reorder"></i></td>
 			   		@endif
 			   		@foreach ($columns as $column)
-			   		<?php $column_name = $column->field_name?>
-			   		<td><a href="{{ URL::to_route('instances_edit', array($object->id, $instance->id)) }}">{{ $instance->$column_name }}</a></td>
+			   		<td><a href="{{ URL::to_route('instances_edit', array($object->id, $instance->id)) }}">{{ $instance->{$column->field_name} }}</a></td>
 			   		@endforeach
 			   		<td class="date"><span class="user">Josh</span>{{ $instance->updated_at }}</td>
 			   	</tr>
