@@ -19,7 +19,7 @@
 @endsection
 
 @section('main')
-	@if (count($fields) > 0)
+	@if (count($fields))
 		<table class="table table-condensed" data-reorder="{{ URL::to_route('fields_reorder', $object->id) }}">
 			<thead>
 				<tr>

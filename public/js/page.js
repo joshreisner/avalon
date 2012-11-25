@@ -21,6 +21,8 @@ $(function($) {
 			}
 		}
 	});
+
+	$('form input[type=text]').first().focus();
 	
 
 	//make all delete links use the DELETE HTTP verb

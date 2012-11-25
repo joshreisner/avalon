@@ -38,6 +38,10 @@ body .container .main form .form-actions {
 body .container .main form textarea {
   height: 100px;
 }
+body .container .main form.objects_edit select[name=direction],
+body .container .main form.objects_add select[name=direction] {
+  width: auto;
+}
 body .container .main table th {
   color: #aaaaaa;
   font-weight: normal;
@@ -50,6 +54,10 @@ body .container .main table td.reorder {
 }
 body .container .main table th.date,
 body .container .main table td.date {
+  text-align: right;
+}
+body .container .main table th.integer,
+body .container .main table td.integer {
   text-align: right;
 }
 body .container .main table th.delete,

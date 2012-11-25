@@ -10,8 +10,10 @@
 
 @section('buttons')
 	<nav class="btn-group">
+		@if ($user->role < 3)
 		<a class="btn" href="{{ URL::to_route('settings') }}"><i class="icon-cogs"></i> Site Settings</a>
 		<a class="btn" href="{{ URL::to_route('users') }}"><i class="icon-group"></i> Users</a>
+		@endif
 		<a class="btn" href="{{ URL::to_route('objects_add') }}"><i class="icon-pencil"></i> Add Object</a>
 	</nav>
 @endsection
@@ -23,8 +25,8 @@
 			<thead>
 				<tr>
 					<th>Object</th>
-					<th># Active</th>
-					<th class="span2 date">Last Update</th>
+					<th class="integer"># Active</th>
+					<th class="date">Last Update</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -37,8 +39,8 @@
 			@endif
 			   	<tr>
 			   		<td><a href="{{ URL::to_route('instances', $object->id) }}">{{ $object->title }}</a></td>
-			   		<td>234</td>
-			   		<td class="date"><span class="user">Josh</span>Jan 14, 2012</td>
+			   		<td class="integer">{{ $object->count }}</td>
+			   		<td class="date">@if (!empty($object->updated_by))<span class="user">{{ $object->updated_by }}</span>@endif{{ $object->updated_at }}</td>
 			   	</tr>
 		@endforeach
 			</tbody>

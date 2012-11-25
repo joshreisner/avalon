@@ -41,6 +41,10 @@ body {
 					/* background-color: transparent;  */
 				}
 				textarea { height: 100px; }
+
+				&.objects_edit, &.objects_add {
+					select[name=direction] { width: auto; }
+				}
 			}
 			
 			table {
@@ -48,6 +52,7 @@ body {
 				th, td {
 					&.reorder { width: 10px; color: @gray; cursor: row-resize; }
 					&.date { text-align: right; }
+					&.integer { text-align: right; }
 					&.delete { width: 10px; }
 					&.group { font-weight: bold; text-transform: uppercase; font-size: 12px; padding-top: 20px; }
 				}

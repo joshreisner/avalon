@@ -20,7 +20,7 @@
 			<label class="control-label" for="{{ $field->field_name }}">{{ $field->title }}</label>
 			<div class="controls">
 				@if ($field->type == 'text')
-				<input type="text" name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span5@if($field->required) required@endif">
+				<input type="text" name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span5@if ($field->required) required@endif">
 				@elseif ($field->type == 'textarea-plain')
 				<textarea name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span5@if ($field->required) required@endif"></textarea>
 				@else

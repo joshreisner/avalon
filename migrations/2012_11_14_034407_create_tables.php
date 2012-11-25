@@ -10,7 +10,7 @@ class Avalon_Create_Tables {
 			$table->string('link_color', 7);
 			$table->blob('banner_image');
 			$table->integer('created_by')/*->references('id')->on('avalon_users')*/;
-			$table->integer('updated_by')/*->references('id')->on('avalon_users')*/->nullable();
+			$table->integer('updated_by')/*->references('id')->on('avalon_users')*/;
 		    $table->timestamps();
 		});
 
@@ -30,7 +30,7 @@ class Avalon_Create_Tables {
 			$table->integer('height')->nullable();
 			$table->text('additional')->nullable();
 			$table->integer('created_by')/*->references('id')->on('avalon_users')*/;
-			$table->integer('updated_by')/*->references('id')->on('avalon_users')*/->nullable();
+			$table->integer('updated_by')/*->references('id')->on('avalon_users')*/;
 			$table->boolean('active');
 			$table->integer('precedence');
 		    $table->timestamps();
@@ -51,14 +51,13 @@ class Avalon_Create_Tables {
 			$table->string('table_name')->unique();
 			$table->string('order_by')->default('created_at');
 			$table->string('direction')->default('DESC');
-			$table->integer('group_by_field')/*->references('id')->on('avalon_fields')*/;
+			$table->integer('group_by_field')->nullable();/*->references('id')->on('avalon_fields')*/;
 			$table->text('list_help')->nullable();
 			$table->text('form_help')->nullable();
 			$table->boolean('show_published');
-			$table->string('web_page');
-			$table->string('list_grouping');
+			$table->string('list_grouping')->nullable();
 			$table->integer('created_by')/*->references('id')->on('avalon_users')*/;
-			$table->integer('updated_by')/*->references('id')->on('avalon_users')*/->nullable();
+			$table->integer('updated_by')/*->references('id')->on('avalon_users')*/;
 			$table->boolean('active');
 		    $table->timestamps();
 		});
@@ -79,7 +78,7 @@ class Avalon_Create_Tables {
 			$table->integer('role');
 			$table->timestamp('last_login')->nullable();
 			$table->integer('created_by')/*->references('id')->on('avalon_users')*/;
-			$table->integer('updated_by')/*->references('id')->on('avalon_users')*/->nullable();
+			$table->integer('updated_by')/*->references('id')->on('avalon_users')*/;
 			$table->boolean('active');
 		    $table->timestamps();
 		});

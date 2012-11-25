@@ -13,7 +13,7 @@
 @endsection
 
 @section('main')
-	{{ Form::open(URL::to_route('objects_edit', $object->id), 'PUT', array('class'=>'form-horizontal')) }}
+	{{ Form::open(URL::to_route('objects_edit', $object->id), 'PUT', array('class'=>'form-horizontal objects_edit')) }}
 		<div class="control-group">
 			<label class="control-label" for="title">Title</label>
 			<div class="controls">
@@ -25,6 +25,37 @@
 			<label class="control-label" for="list_grouping">List Grouping</label>
 			<div class="controls">
 				<input type="text" name="list_grouping" class="span5" value="{{ $object->list_grouping }}" data-provide="typeahead" data-source="{{ $list_groupings }}">
+			</div>
+		</div>
+
+		<div class="control-group">
+			<label class="control-label" for="table_name">Table Name</label>
+			<div class="controls">
+				<input type="text" name="table_name" class="span5 required" value="{{ $object->table_name }}">
+			</div>
+		</div>
+
+		<div class="control-group">
+			<label class="control-label" for="order_by">Order By</label>
+			<div class="controls">
+				{{ Form::select('order_by', array('created_at'=>'Date Created', 'updated_at'=>'Date Updated', 'precedence'=>'Precedence'), $object->order_by) }}
+				{{ Form::select('direction', array('ASC'=>'Ascending', 'DESC'=>'Descending'), $object->direction) }}
+			</div>
+		</div>
+
+		<div class="control-group">
+			<label class="control-label" for="order_by">Group By</label>
+			<div class="controls">
+				{{ Form::select('group_by_field', array()) }}
+			</div>
+		</div>
+
+		<div class="control-group type">
+			<label class="control-label" for="show_published">Show Published</label>
+			<div class="controls">
+				<label class="checkbox inline">
+					{{ Form::checkbox('show_published', 'on', $object->show_published) }}
+				</label>
 			</div>
 		</div>
 

@@ -11,7 +11,7 @@
 @endsection
 
 @section('main')
-	{{ Form::open(URL::to_route('objects_add'), 'POST', array('class'=>'form-horizontal')) }}
+	{{ Form::open(URL::to_route('objects_add'), 'POST', array('class'=>'form-horizontal objects_add')) }}
 		<div class="control-group">
 			<label class="control-label" for="title">Title</label>
 			<div class="controls">
@@ -23,6 +23,14 @@
 			<label class="control-label" for="list_grouping">List Grouping</label>
 			<div class="controls">
 				<input type="text" name="list_grouping" class="span5" data-provide="typeahead" data-source="{{ $list_groupings }}">
+			</div>
+		</div>
+
+		<div class="control-group">
+			<label class="control-label" for="order_by">Order By</label>
+			<div class="controls">
+				{{ Form::select('order_by', array('created_at'=>'Date Created', 'updated_at'=>'Date Updated', 'precedence'=>'Precedence'), 'created_at') }}
+				{{ Form::select('direction', array('ASC'=>'Ascending', 'DESC'=>'Descending'), 'ASC') }}
 			</div>
 		</div>
 
