@@ -81,26 +81,25 @@ class Avalon_Users_Controller extends Controller {
 
 		//generate random password
 		$password = Str::random(12);
-		$email = strtolower(Input::get('email'));
 
 		//create database record
 		$user = new \Avalon\User;
 		$user->firstname = Input::get('firstname');
-		$user->lastname = Input::get('lastname');
-		$user->email = $email;
-		$user->password = Hash::make($password);
-		$user->role = Input::get('role');
-		$user->active = 1;
+		$user->lastname  = Input::get('lastname');
+		$user->email 	 = strtolower(Input::get('email'));
+		$user->password  = Hash::make($password);
+		$user->role 	 = Input::get('role');
+		$user->active 	 = 1;
 		$user->save();
 
-		//send out email
+		//send out email -- todo: smtp config?
 		Bundle::start('swiftmailer');
 		$mailer = IoC::resolve('mailer');
 		$message = Swift_Message::newInstance('[Avalon] Your CMS username and password')
 		    ->setFrom(array('example@example.com'=>'Avalon'))
-		    ->setTo(array('josh@joshreisner.com'=>'Josh Reisner'))
+		    ->setTo(array($user->email=>$user->firstname . ' ' . $user->lastname))
 		    //->addPart('My Plain Text Message','text/plain')
-		    ->setBody('Your login is ' . $email . ' and your password is ' . $password,'text/html');
+		    ->setBody('Your login is ' . $user->email . ' and your password is ' . $password, 'text/html');
 		$mailer->send($message);
 
 		return Redirect::to_route('users');
