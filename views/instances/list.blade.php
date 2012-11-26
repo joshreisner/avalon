@@ -27,25 +27,27 @@
 		<table class="table table-condensed" data-reorder="{{ URL::to_route('instances_reorder', $object->id) }}">
 			<thead>
 				<tr>
-					@if ($object->orderby == 'precedence')
+					@if ($object->order_by == 'precedence')
 					<th class="reorder"></th>
 					@endif
 					@foreach ($columns as $column)
 					<th class="{{ $column->type }} {{ $column->field_name }}">{{ $column->title }}</th>
 					@endforeach
 					<th class="span2 date">Last Update</th>
+					<th class="delete"></th>
 				</tr>
 			</thead>
 			<tbody>
 		@foreach ($instances as $instance)
 			   	<tr data-id="{{ $instance->id }}" data-precedence="{{ $instance->precedence }}">
-			   		@if ($object->orderby == 'precedence')
+			   		@if ($object->order_by == 'precedence')
 			   		<td class="reorder"><i class="icon-reorder"></i></td>
 			   		@endif
 			   		@foreach ($columns as $column)
 			   		<td><a href="{{ URL::to_route('instances_edit', array($object->id, $instance->id)) }}">{{ $instance->{$column->field_name} }}</a></td>
 			   		@endforeach
 			   		<td class="date"><span class="user">Josh</span>{{ $instance->updated_at }}</td>
+			   		<td class="delete">&times;</td>
 			   	</tr>
 		@endforeach
 			</tbody>

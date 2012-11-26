@@ -13,7 +13,7 @@
 @endsection
 
 @section('main')
-	{{ Form::open(URL::to_route('instances_edit', $object->id, $instance->id), 'PUT', array('class'=>'form-horizontal')) }}
+	{{ Form::open(URL::to_route('instances_edit', array($object->id, $instance->id)), 'PUT', array('class'=>'form-horizontal')) }}
 
 	@foreach ($object->fields as $field)
 		<div class="control-group {{ $field->field_name }}">

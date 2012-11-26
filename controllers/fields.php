@@ -32,6 +32,21 @@ class Avalon_Fields_Controller extends Controller {
 				'hidden'=>'Hidden'
 			);
 
+	public function delete_edit($object_id, $field_id) {
+		//delete a field.  it's a destructive edit, might need a prompt
+		
+		$field = \Avalon\Field::find($field_id);
+		$field->delete();
+
+		$object = \Avalon\Object::find($object_id);
+
+		Schema::table($object->table_name, function($table) use ($field) {
+			$table->drop_column($field->field_name);
+		});
+		
+		return Redirect::to_route('fields', $object_id);
+	}
+
 	public function get_add($object_id) {
 		//display the add new field form
 
@@ -65,6 +80,7 @@ class Avalon_Fields_Controller extends Controller {
 		$fields = \Avalon\Field::where('object_id', '=', $object_id)->where('active', '=', 1)->order_by('precedence')->get(array('id', 'title', 'field_name', 'type', 'precedence', 'updated_at'));
 		
 		foreach ($fields as $f) {
+			$f->link = URL::to_route('fields_edit', array($object->id, $f->id));
 			$f->updated_at = \Avalon\Date::format($f->updated_at);
 		}
 
@@ -142,7 +158,6 @@ class Avalon_Fields_Controller extends Controller {
 
 		$field = \Avalon\Field::find($field_id);
 		$field->title 		= Input::get('title');
-		$field->type 		= Input::get('type');
 		$field->visibility	= Input::get('visibility');
 		$field->additional	= Input::get('additional');
 		$field->required	= (Input::get('required') == 'on') ? 1 : 0;

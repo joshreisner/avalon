@@ -28,16 +28,18 @@
 					<th>Type</th>
 					<th>Table &amp; Column</th>
 					<th class="span2 date">Last Update</th>
+					<th class="delete"></th>
 				</tr>
 			</thead>
 			<tbody>
 		@foreach ($fields as $field)
 			   	<tr data-id="{{ $field->id }}" data-precedence="{{ $field->precedence }}">
 			   		<td class="reorder"><i class="icon-reorder"></i></td>
-			   		<td><a href="{{ URL::to_route('fields_edit', array($object->id, $field->id)) }}">{{ $field->title }}</a></td>
+			   		<td><a href="{{ $field->link }}">{{ $field->title }}</a></td>
 			   		<td>{{ $field->type }}</td>
 			   		<td>{{ $object->table_name }}.{{ $field->field_name }}</td>
 			   		<td class="date"><span class="user">Josh</span>{{ $field->updated_at }}</td>
+			   		<td class="delete"><a href="{{ $field->link }}">&times;</a></td>
 			   	</tr>
 		@endforeach
 			</tbody>

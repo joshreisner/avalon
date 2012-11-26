@@ -69,22 +69,32 @@ class Avalon_Instances_Controller extends Controller {
 
 		$id = DB::table($object->table_name)->insert_get_id($values);
 
-		//flash inserted row somehow?
+		//flash inserted $id row somehow?
 		return Redirect::to_route('instances', $object_id);
 	}
 
+	public function post_reorder($object_id) {
+		//use table_dnd to make an ajax request to reorder the instances for an object
+
+		$object = \Avalon\Object::find($object_id);
+
+		if (Request::ajax()) {
+			$instance_ids = explode(',', Input::get('ids'));
+			$precedences = explode(',', Input::get('precedences'));
+			sort($precedences);
+			foreach ($instance_ids as $instance_id) {
+				DB::table($object->table_name)->where('id', '=', $instance_id)->update(array('precedence'=>array_shift($precedences)));
+			}
+    	}
+	}
+
 	public function put_edit($object_id, $instance_id) {
-		return 'not implemented yet';
 
 		$object = \Avalon\Object::find($object_id);
 
 		//set meta values
 		$values = array(
-			'active'	 => 1,
-			'precedence' => DB::table($object->table_name)->max('precedence') + 1,
-			'created_by' => Auth::user()->id,
 			'updated_by' => Auth::user()->id,
-			'created_at' => DB::raw('NOW()'),
 			'updated_at' => DB::raw('NOW()'),
 		);
 
@@ -100,13 +110,9 @@ class Avalon_Instances_Controller extends Controller {
 			$values[$field->field_name] = $value;
 		}
 
-		$id = DB::table($object->table_name)->insert_get_id($values);
+		DB::table($object->table_name)->where('id', '=', $instance_id)->update($values);
 
 		//flash inserted row somehow?
 		return Redirect::to_route('instances', $object_id);
-	}
-
-	public function post_reorder($object_id) {
-		return 'not implemented yet';
 	}
 }

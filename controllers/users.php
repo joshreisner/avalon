@@ -5,6 +5,13 @@ class Avalon_Users_Controller extends Controller {
 	
 	private $roles = array(1=>'Programmer', 2=>'Admin', 3=>'User');
 
+	public function delete_edit($id) {
+		$user = \Avalon\User::find($id);
+		$user->active = 0;
+		$user->save();
+		return Redirect::to_route('users');
+	}
+
 	public function get_add() {
 		$objects = \Avalon\Object::where('active', '=', 1)->order_by('title')->get(array('id', 'title'));
 		return View::make('Avalon::users.add', array(
@@ -50,13 +57,6 @@ class Avalon_Users_Controller extends Controller {
 		));
 	}
 	
-	public function delete_edit($id) {
-		$user = \Avalon\User::find($id);
-		$user->active = 0;
-		$user->save();
-		return Redirect::to_route('users');
-	}
-
 	public function put_edit($id) {
 		$user = \Avalon\User::find($id);
 		$user->firstname = Input::get('firstname');
