@@ -26,5 +26,3 @@ if (Auth::check()) {
 	Asset::container('avalon')->add('avalon_login_css', 'css/login.css');
 	Asset::container('avalon')->add('avalon_login_js', 'js/login.js');
 }
-
-
