@@ -30,6 +30,9 @@
 					@if ($object->order_by == 'precedence')
 					<th class="reorder"></th>
 					@endif
+					@if ($object->show_published)
+					<th class="publish"></th>
+					@endif
 					@foreach ($columns as $column)
 					<th class="{{ $column->type }} {{ $column->field_name }}">{{ $column->title }}</th>
 					@endforeach
@@ -43,11 +46,14 @@
 			   		@if ($object->order_by == 'precedence')
 			   		<td class="reorder"><i class="icon-reorder"></i></td>
 			   		@endif
+					@if ($object->show_published)
+					<td class="publish"><input type="checkbox" data-publish="{{ URL::to_route('instances_publish', array($object->id, $instance->id)) }}"@if ($instance->published) checked@endif>
+					@endif
 			   		@foreach ($columns as $column)
-			   		<td><a href="{{ URL::to_route('instances_edit', array($object->id, $instance->id)) }}">{{ $instance->{$column->field_name} }}</a></td>
+			   		<td><a href="{{ $instance->link }}">{{ $instance->{$column->field_name} }}</a></td>
 			   		@endforeach
 			   		<td class="date"><span class="user">Josh</span>{{ $instance->updated_at }}</td>
-			   		<td class="delete">&times;</td>
+			   		<td class="delete"><a href="{{ $instance->link }}">&times;</a></td>
 			   	</tr>
 		@endforeach
 			</tbody>

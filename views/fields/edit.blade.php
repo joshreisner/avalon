@@ -15,7 +15,7 @@
 @endsection
 
 @section('main')
-	{{ Form::open(URL::to_route('fields_edit', array($object->id, $field->id)), 'PUT', array('class'=>'form-horizontal')) }}
+	{{ Form::open(URL::to_route('fields_edit', array($object->id, $field->id)), 'PUT', array('class'=>'form-horizontal field')) }}
 		<div class="control-group">
 			<label class="control-label" for="title">Title</label>
 			<div class="controls">
@@ -37,7 +37,7 @@
 			</div>
 		</div>
 
-		<div class="control-group type">
+		<div class="control-group type required@if ($field->type == 'checkbox') hidden@endif">
 			<label class="control-label" for="required">Required</label>
 			<div class="controls">
 				<label class="checkbox inline">

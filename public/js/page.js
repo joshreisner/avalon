@@ -1,5 +1,7 @@
 $(function($) {
 
+	//global functions
+
 	//generic form validator
 	$('form').validate({
 		errorElement:"span",
@@ -73,15 +75,34 @@ $(function($) {
 	    }
 	});
 
+	$("table td.publish input").change(function(){
+		var published = $(this).is(':checked');
+        $.ajax({
+        	url: $(this).attr('data-publish'),
+        	type: "POST",
+        	data: { published: published },
+        	success: function(data) {
+        		//alert(data);
+        	}
+        });
+	});
 
+	//local/page-specific functions
 
-	
-	//page specific, set users control group to show or hide the objects checkboxes
-	$("div.control-group.role button").click(function(){
+	//set users control group to show or hide the objects checkboxes
+	$("form.user div.control-group.role button").click(function(){
 		if ($(this).attr('value') == 3) {
 			$("div.control-group.permissions").removeClass("hidden");
 		} else {
 			$("div.control-group.permissions").addClass("hidden");
+		}
+	});
+
+	$("form.field select[name=type]").change(function(){
+		if ($(this).val() == 'checkbox') {
+			$("form.field div.control-group.required").slideUp();
+		} else {
+			$("form.field div.control-group.required").slideDown();			
 		}
 	});
 	

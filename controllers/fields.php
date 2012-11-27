@@ -6,18 +6,18 @@ class Avalon_Fields_Controller extends Controller {
 	//declare acceptable field types.  need to reconsider how this is bound to the rest of the app
 	private $field_types = array(
 				'checkbox'=>'Checkbox',
-				'checkboxes'=>'Checkboxes',
+			//	'checkboxes'=>'Checkboxes',
 				'color'=>'Color',
 				'date'=>'Date',
 				'date-time'=>'Date & Time',
 				'email'=>'Email',
-				'dropdown'=>'Dropdown',
-				'file'=>'File',
-				'file-size'=>'File Size',
-				'file-type'=>'File Type',
-				'image'=>'Image',
+			//	'dropdown'=>'Dropdown',
+			//	'file'=>'File',
+			//	'file-size'=>'File Size',
+			//	'file-type'=>'File Type',
+			//	'image'=>'Image',
 				'integer'=>'Integer',
-				'latitude'=>'Latitude',
+			//	'latitude'=>'Latitude',
 				'text'=>'Text',
 				'textarea-rich'=>'Textarea (Rich)',
 				'textarea-plain'=>'Textarea (Plain)',
@@ -102,6 +102,10 @@ class Avalon_Fields_Controller extends Controller {
 			$field_name = Str::slug(Input::get('title'), '_');
 
 			switch(Input::get('type')) {
+				case 'checkbox':
+					$field = $table->boolean($field_name);
+					break;
+					
 				case 'color':
 				case 'email':
 				case 'text':
@@ -110,6 +114,19 @@ class Avalon_Fields_Controller extends Controller {
 				case 'url-local':
 					$field = $table->string($field_name);
 					break;
+
+				case 'date':
+					$field = $table->date($field_name);
+					break;
+
+				case 'date-time':
+					$field = $table->timestamp($field_name);
+					break;
+
+				case 'integer':
+					$field = $table->integer($field_name);
+					break;
+
 				case 'textarea-plain';
 				case 'textarea-rich';
 					$table->text($field_name);

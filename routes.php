@@ -8,6 +8,7 @@ Route::group(array('before' => 'auth'), function() {
 	Route::any('(:bundle)/instances/(:num)',				array('as'=>'instances',		'uses'=>'avalon::instances@list'));
 	Route::any('(:bundle)/instances/(:num)/add',			array('as'=>'instances_add',	'uses'=>'avalon::instances@add'));
 	Route::any('(:bundle)/instances/(:num)/(:num)',			array('as'=>'instances_edit',	'uses'=>'avalon::instances@edit'));
+	Route::any('(:bundle)/instances/(:num)/publish/(:num)',	array('as'=>'instances_publish','uses'=>'avalon::instances@publish'));
 	Route::any('(:bundle)/instances/(:num)/reorder',		array('as'=>'instances_reorder','uses'=>'avalon::instances@reorder'));
 	Route::get('(:bundle)/objects',							array('as'=>'objects',			'uses'=>'avalon::objects@list'));
 });

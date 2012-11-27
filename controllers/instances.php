@@ -3,7 +3,24 @@ class Avalon_Instances_Controller extends Controller {
 	
 	public $restful = true;
 	
+	public function delete_edit($object_id, $instance_id) {
+		//'delete' an instance, which amounts to setting its active and published flags to off
+		//todo handle all deletes with ajax
+
+		$object = \Avalon\Object::find($object_id);
+		DB::table($object->table_name)->where('id', '=', $instance_id)->update(array(
+				'active' => 0,
+				'published' => 0,
+				'updated_by' => Auth::user()->id,
+				'updated_at' => DB::raw('NOW()'),
+			));
+
+		return Redirect::to_route('instances', $object_id);
+	}
+
 	public function get_add($object_id) {
+		//show the add new instance form
+
 		return View::make('avalon::instances.add', array(
 			'object'=>\Avalon\Object::find($object_id),
 			'title'=>'Add New'
@@ -11,6 +28,8 @@ class Avalon_Instances_Controller extends Controller {
 	}
 
 	public function get_edit($object_id, $instance_id) {
+		//show the edit instance form
+
 		$object = \Avalon\Object::find($object_id);
 		$instance = DB::table($object->table_name)->find($instance_id);
 
@@ -22,6 +41,9 @@ class Avalon_Instances_Controller extends Controller {
 	}
 
 	public function get_list($object_id) {
+		//display the instance list, which is dynamic
+		//todo add string to empty fields for linking
+
 		$object = \Avalon\Object::find($object_id);
 
 		//get table columns
@@ -30,7 +52,15 @@ class Avalon_Instances_Controller extends Controller {
 		//get instances
 		$instances = DB::table($object->table_name)->order_by($object->order_by, $object->direction)->where('active', '=', 1)->get();
 		foreach ($instances as &$instance) {
+			$instance->link = URL::to_route('instances_edit', array($object->id, $instance->id));
 			$instance->updated_at = \Avalon\Date::format($instance->updated_at);
+
+			//per-cell updates
+			foreach ($columns as $column) {
+				if ($column->type == 'checkbox') {
+					$instance->{$column->field_name} = ($instance->{$column->field_name}) ? 'Yes' : '';
+				}
+			}
 		}
 
 		return View::make('avalon::instances.list', array(
@@ -60,7 +90,9 @@ class Avalon_Instances_Controller extends Controller {
 			$value = Input::get($field->field_name);
 			
 			//per-type processing
-			if ($object->type == 'url-local') {
+			if ($field->type == 'checkbox') {
+				$value = ($value == 'on') ? 1 : 0;
+			} elseif ($field->type == 'url-local') {
 				$value = Str::slug($value);
 			}
 
@@ -71,6 +103,12 @@ class Avalon_Instances_Controller extends Controller {
 
 		//flash inserted $id row somehow?
 		return Redirect::to_route('instances', $object_id);
+	}
+
+	public function post_publish($object_id, $instance_id) {
+		//publish or unpublish an instance
+		$object = \Avalon\Object::find($object_id);
+		DB::table($object->table_name)->where('id', '=', $instance_id)->update(array('published'=>(Input::get('published') == 'true')));
 	}
 
 	public function post_reorder($object_id) {
@@ -103,7 +141,9 @@ class Avalon_Instances_Controller extends Controller {
 			$value = Input::get($field->field_name);
 			
 			//per-type processing
-			if ($object->type == 'url-local') {
+			if ($field->type == 'checkbox') {
+				$value = ($value == 'on') ? 1 : 0;
+			} elseif ($field->type == 'url-local') {
 				$value = Str::slug($value);
 			}
 

@@ -19,7 +19,11 @@
 		<div class="control-group {{ $field->field_name }}">
 			<label class="control-label" for="{{ $field->field_name }}">{{ $field->title }}</label>
 			<div class="controls">
-				@if ($field->type == 'text')
+				@if ($field->type == 'checkbox')
+				<label class="checkbox inline">
+					<input type="checkbox" name="{{ $field->field_name }}" id="{{ $field->field_name }}"@if ($instance->{$field->field_name}) checked@endif>
+				</label>				
+				@elseif ($field->type == 'text')
 				<input type="text" name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span5@if ($field->required) required@endif" value="{{ $instance->{$field->field_name} }}">
 				@elseif ($field->type == 'textarea-plain')
 				<textarea name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span5@if ($field->required) required@endif"></textarea>

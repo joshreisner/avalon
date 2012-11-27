@@ -73,6 +73,7 @@ class Avalon_Objects_Controller extends Controller {
 			$table->integer('created_by');
 			$table->integer('updated_by');
 			$table->boolean('active');
+			$table->boolean('published')->default(1);
 			$table->integer('precedence');
 		    $table->timestamps();
 		});

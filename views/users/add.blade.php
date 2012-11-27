@@ -13,7 +13,7 @@
 @endsection
 
 @section('main')
-	{{ Form::open(URL::to_route('users_add'), 'POST', array('class'=>'form-horizontal')) }}
+	{{ Form::open(URL::to_route('users_add'), 'POST', array('class'=>'form-horizontal user')) }}
 		<div class="control-group">
 			<label class="control-label" for="firstname">First Name</label>
 			<div class="controls">

@@ -64,6 +64,14 @@ body .container .main table th.delete,
 body .container .main table td.delete {
   width: 10px;
 }
+body .container .main table th.publish,
+body .container .main table td.publish {
+  width: 10px;
+}
+body .container .main table th.publish input,
+body .container .main table td.publish input {
+  margin-top: -3px;
+}
 body .container .main table th.group,
 body .container .main table td.group {
   font-weight: bold;
