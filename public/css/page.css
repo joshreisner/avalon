@@ -46,23 +46,36 @@ body .container .main table th {
   color: #aaaaaa;
   font-weight: normal;
 }
-body .container .main table th.reorder,
-body .container .main table td.reorder {
-  width: 10px;
-  color: #aaaaaa;
-  cursor: row-resize;
+body .container .main table th.color,
+body .container .main table td.color {
+  width: 28px;
+  padding: 0;
+}
+body .container .main table th.color a,
+body .container .main table td.color a {
+  display: block;
+  height: 28px;
+  width: 28px;
 }
 body .container .main table th.date,
 body .container .main table td.date {
   text-align: right;
-}
-body .container .main table th.integer,
-body .container .main table td.integer {
-  text-align: right;
+  white-space: nowrap;
 }
 body .container .main table th.delete,
 body .container .main table td.delete {
   width: 10px;
+}
+body .container .main table th.group,
+body .container .main table td.group {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 12px;
+  padding-top: 20px;
+}
+body .container .main table th.integer,
+body .container .main table td.integer {
+  text-align: right;
 }
 body .container .main table th.publish,
 body .container .main table td.publish {
@@ -72,12 +85,11 @@ body .container .main table th.publish input,
 body .container .main table td.publish input {
   margin-top: -3px;
 }
-body .container .main table th.group,
-body .container .main table td.group {
-  font-weight: bold;
-  text-transform: uppercase;
-  font-size: 12px;
-  padding-top: 20px;
+body .container .main table th.reorder,
+body .container .main table td.reorder {
+  width: 10px;
+  color: #aaaaaa;
+  cursor: row-resize;
 }
 body .container .main table tr.dragging {
   -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
@@ -93,9 +105,6 @@ body .container .main table tr.dragging td {
 body .container .main table span.user {
   color: #aaaaaa;
   margin-right: 10px;
-}
-body .container .main table span.date {
-  white-space: nowrap;
 }
 body .container .side .inner {
   font-size: 14px;

@@ -34,7 +34,11 @@
 					<th class="publish"></th>
 					@endif
 					@foreach ($columns as $column)
-					<th class="{{ $column->type }} {{ $column->field_name }}">{{ $column->title }}</th>
+			   			@if ($column->type == 'color')
+							<th class="{{ $column->type }} {{ $column->field_name }}"></th>
+						@else
+							<th class="{{ $column->type }} {{ $column->field_name }}">{{ $column->title }}</th>
+						@endif
 					@endforeach
 					<th class="span2 date">Last Update</th>
 					<th class="delete"></th>
@@ -50,7 +54,11 @@
 					<td class="publish"><input type="checkbox" data-publish="{{ URL::to_route('instances_publish', array($object->id, $instance->id)) }}"@if ($instance->published) checked@endif>
 					@endif
 			   		@foreach ($columns as $column)
-			   		<td><a href="{{ $instance->link }}">{{ $instance->{$column->field_name} }}</a></td>
+			   			@if ($column->type == 'color')
+					   		<td class="color"><a href="{{ $instance->link }}" style="background-color:{{ $instance->{$column->field_name} }}"></a></td>
+			   			@else
+					   		<td class="{{ $column->type }}"><a href="{{ $instance->link }}">{{ $instance->{$column->field_name} }}</a></td>
+			   			@endif
 			   		@endforeach
 			   		<td class="date"><span class="user">Josh</span>{{ $instance->updated_at }}</td>
 			   		<td class="delete"><a href="{{ $instance->link }}">&times;</a></td>

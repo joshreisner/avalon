@@ -50,15 +50,19 @@ body {
 			table {
 				th { color: @gray; font-weight: normal; }
 				th, td {
-					&.reorder { width: 10px; color: @gray; cursor: row-resize; }
-					&.date { text-align: right; }
-					&.integer { text-align: right; }
+					&.color {
+						width: 28px; padding: 0;
+						a { display: block; height: 28px; width: 28px; }
+					}
+					&.date { text-align: right; white-space: nowrap; }
 					&.delete { width: 10px; }
+					&.group { font-weight: bold; text-transform: uppercase; font-size: 12px; padding-top: 20px; }
+					&.integer { text-align: right; }
 					&.publish { 
 						width: 10px; 
 						input { margin-top: -3px; }
 					}
-					&.group { font-weight: bold; text-transform: uppercase; font-size: 12px; padding-top: 20px; }
+					&.reorder { width: 10px; color: @gray; cursor: row-resize; }
 				}
 				tr.dragging {
 					.shadowed(); z-index: 1; background-color: @light;
@@ -66,7 +70,6 @@ body {
 				}
 			
 				span.user { color: @gray; margin-right: 10px; }
-				span.date { white-space: nowrap; }
 			}
 		}
 		

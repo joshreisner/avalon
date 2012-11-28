@@ -32,7 +32,7 @@ class Avalon_Objects_Controller extends Controller {
 		foreach ($objects as $o) {
 			$o->count = DB::table($o->table_name)->where('active', '=', 1)->count();
 			if ($latest = DB::table($o->table_name)->where('active', '=', 1)->order_by('updated_at', 'DESC')->first()) {
-				$o->updated_at = \Avalon\Date::format($latest->updated_at);
+				$o->updated_at = \Avalon\Date::relative($latest->updated_at);
 				$o->updated_by = 'Josh';
 			}
 		}

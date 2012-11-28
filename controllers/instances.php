@@ -33,6 +33,14 @@ class Avalon_Instances_Controller extends Controller {
 		$object = \Avalon\Object::find($object_id);
 		$instance = DB::table($object->table_name)->find($instance_id);
 
+		foreach ($object->fields as $field) {
+			if ($field->type == 'date') {
+				if (!empty($instance->{$field->field_name})) {
+					$instance->{$field->field_name} = date('Y-m-d', strtotime($instance->{$field->field_name}));
+				}
+			}
+		}
+
 		return View::make('avalon::instances.edit', array(
 			'object'=>$object,
 			'instance'=>$instance,
@@ -53,12 +61,14 @@ class Avalon_Instances_Controller extends Controller {
 		$instances = DB::table($object->table_name)->order_by($object->order_by, $object->direction)->where('active', '=', 1)->get();
 		foreach ($instances as &$instance) {
 			$instance->link = URL::to_route('instances_edit', array($object->id, $instance->id));
-			$instance->updated_at = \Avalon\Date::format($instance->updated_at);
+			$instance->updated_at = \Avalon\Date::relative($instance->updated_at);
 
 			//per-cell updates
 			foreach ($columns as $column) {
 				if ($column->type == 'checkbox') {
 					$instance->{$column->field_name} = ($instance->{$column->field_name}) ? 'Yes' : '';
+				} elseif ($column->type == 'date') {
+					$instance->{$column->field_name} = \Avalon\Date::format($instance->{$column->field_name});
 				}
 			}
 		}

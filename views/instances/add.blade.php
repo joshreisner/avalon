@@ -23,13 +23,23 @@
 				<label class="checkbox inline">
 					<input type="checkbox" name="{{ $field->field_name }}" id="{{ $field->field_name }}">
 				</label>				
+
+				@elseif ($field->type == 'color')
+				<input type="text" name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span2 color {hash:true@if (!$field->required), required:false@endif}">
+
+				@elseif ($field->type == 'date')
+				<input type="date" name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span2@if ($field->required) required@endif">
+
 				@elseif ($field->type == 'text')
 				<input type="text" name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span5@if ($field->required) required@endif">
+
 				@elseif ($field->type == 'textarea-plain')
 				<textarea name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span5@if ($field->required) required@endif"></textarea>
+
 				@else
 				<div class="alert error">field type of {{ $field->type }} not handled!</div>
 				@endif
+
 				@if (!empty($field->additional))
 				<span class="help-inline">{{ $field->additional }}</span>
 				@endif
