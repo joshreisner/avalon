@@ -48,6 +48,9 @@
 				@elseif ($field->type == 'typeahead')
 				<input type="text" name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span5@if ($field->required) required@endif" value="{{ $instance->{$field->field_name} }}" data-provide="typeahead" data-source="{{ $field->values }}">
 				
+				@elseif ($field->type == 'url')
+				<input type="text" name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span4 url@if ($field->required) required@endif" value="{{ $instance->{$field->field_name} }}">
+
 				@else
 				<div class="alert error">field type of {{ $field->type }} not handled!</div>
 				@endif

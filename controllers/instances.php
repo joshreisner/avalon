@@ -57,6 +57,8 @@ class Avalon_Instances_Controller extends Controller {
 				if (!empty($instance->{$field->field_name})) {
 					$instance->{$field->field_name} = date('Y-m-d', strtotime($instance->{$field->field_name}));
 				}
+			} elseif ($field->type == 'url') {
+				if (empty($instance->{$field->field_name})) $instance->{$field->field_name} = 'http://';
 			}
 		}
 
@@ -125,6 +127,8 @@ class Avalon_Instances_Controller extends Controller {
 			//per-type processing
 			if ($field->type == 'checkbox') {
 				$value = ($value == 'on') ? 1 : 0;
+			} elseif ($field->type == 'url') {
+				if ($value == 'http://') $value = false;
 			} elseif ($field->type == 'url-local') {
 				$value = Str::slug($value);
 			}
@@ -176,6 +180,8 @@ class Avalon_Instances_Controller extends Controller {
 			//per-type processing
 			if ($field->type == 'checkbox') {
 				$value = ($value == 'on') ? 1 : 0;
+			} elseif ($field->type == 'url') {
+				if ($value == 'http://') $value = false;
 			} elseif ($field->type == 'url-local') {
 				$value = Str::slug($value);
 			}
