@@ -21,9 +21,19 @@ class Avalon_Instances_Controller extends Controller {
 	public function get_add($object_id) {
 		//show the add new instance form
 
+		$object = \Avalon\Object::find($object_id);
+		foreach ($object->fields as $field) {
+			if ($field->type == 'typeahead') {
+				$values = DB::table($object->table_name)->where('active', '=', 1)->where($field->field_name, '<>', '')->group_by($field->field_name)->get(array($field->field_name));
+				foreach ($values as &$v) $v = $v->{$field->field_name};
+				$field->values = htmlentities(json_encode($values));
+			}
+		}
+
 		return View::make('avalon::instances.add', array(
-			'object'=>\Avalon\Object::find($object_id),
-			'title'=>'Add New'
+			'object'=>$object,
+			'title'=>'Add New',
+			'link_color'=>DB::table('avalon')->where('id', '=', 1)->only('link_color'),
 		));
 	}
 
@@ -31,6 +41,15 @@ class Avalon_Instances_Controller extends Controller {
 		//show the edit instance form
 
 		$object = \Avalon\Object::find($object_id);
+
+		foreach ($object->fields as $field) {
+			if ($field->type == 'typeahead') {
+				$values = DB::table($object->table_name)->where('active', '=', 1)->where($field->field_name, '<>', '')->group_by($field->field_name)->get(array($field->field_name));
+				foreach ($values as &$v) $v = $v->{$field->field_name};
+				$field->values = htmlentities(json_encode($values));
+			}
+		}
+
 		$instance = DB::table($object->table_name)->find($instance_id);
 
 		foreach ($object->fields as $field) {
@@ -44,7 +63,8 @@ class Avalon_Instances_Controller extends Controller {
 		return View::make('avalon::instances.edit', array(
 			'object'=>$object,
 			'instance'=>$instance,
-			'title'=>'Edit'
+			'title'=>'Edit',
+			'link_color'=>DB::table('avalon')->where('id', '=', 1)->only('link_color'),
 		));
 	}
 
@@ -81,6 +101,7 @@ class Avalon_Instances_Controller extends Controller {
 			'instances'=>$instances,
 			'title'=>$object->title,
 			'user'=>Auth::user(),
+			'link_color'=>DB::table('avalon')->where('id', '=', 1)->only('link_color'),
 		));
 	}
 
@@ -177,7 +198,11 @@ class Avalon_Instances_Controller extends Controller {
 	    $string = str_replace("\t", ' ', $string);   // --- replace with space
 	    
 	    return trim(preg_replace('/ {2,}/', ' ', $string)); 
-
 	}
 
+	private function typeahead_values($table, $column) {
+		//create a JSON array to tell Boostrap what values to suggest for a typeahead field
+		$list_groupings = array('foo', 'bar');
+		return htmlentities(json_encode($list_groupings));
+	}
 }

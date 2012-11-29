@@ -5,6 +5,7 @@
 		<meta charset="UTF-8">
 		{{ Asset::container('avalon')->styles() }}
 		{{ Asset::container('avalon')->scripts() }}
+		<style>a, a:hover { color: {{ $link_color }}; }</style>
 	</head>
 	<body>
 		<div class="container">

@@ -55,7 +55,8 @@ class Avalon_Fields_Controller extends Controller {
 			'object'=>$object,
 			'field_types'=>$this->field_types,
 			'field_visibilities'=>$this->field_visibilities,
-			'title'=>'Add Field'
+			'title'=>'Add Field',
+			'link_color'=>DB::table('avalon')->where('id', '=', 1)->only('link_color'),
 		));
 	}
 	
@@ -69,7 +70,8 @@ class Avalon_Fields_Controller extends Controller {
 			'field'=>$field,
 			'field_types'=>$this->field_types,
 			'field_visibilities'=>$this->field_visibilities,
-			'title'=>$field->title
+			'title'=>$field->title,
+			'link_color'=>DB::table('avalon')->where('id', '=', 1)->only('link_color'),
 		));
 	}
 
@@ -87,7 +89,8 @@ class Avalon_Fields_Controller extends Controller {
 		return View::make('avalon::fields.list', array(
 			'object'=>$object,
 			'fields'=>$fields,
-			'title'=>'Fields'
+			'title'=>'Fields',
+			'link_color'=>DB::table('avalon')->where('id', '=', 1)->only('link_color'),
 		));
 	}
 

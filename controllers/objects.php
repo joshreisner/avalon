@@ -8,7 +8,8 @@ class Avalon_Objects_Controller extends Controller {
 
 		return View::make('avalon::objects.add', array(
 			'list_groupings'=>$this->list_groupings(),
-			'title'=>'Add Object'
+			'title'=>'Add Object',
+			'link_color'=>DB::table('avalon')->where('id', '=', 1)->only('link_color'),
 		));
 	}
 	
@@ -19,7 +20,8 @@ class Avalon_Objects_Controller extends Controller {
 		return View::make('avalon::objects.edit', array(
 			'object'=>$object,
 			'list_groupings'=>$this->list_groupings(),
-			'title'=>'Object Settings'
+			'title'=>'Object Settings',
+			'link_color'=>DB::table('avalon')->where('id', '=', 1)->only('link_color'),
 		));
 	}
 	
@@ -40,7 +42,8 @@ class Avalon_Objects_Controller extends Controller {
 		return View::make('avalon::objects.list', array(
 			'user'=>$user,
 			'objects'=>$objects,
-			'title'=>'Objects'
+			'title'=>'Objects',
+			'link_color'=>DB::table('avalon')->where('id', '=', 1)->only('link_color'),
 		));
 	}
 

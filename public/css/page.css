@@ -46,6 +46,7 @@ body .container .main form .redactor_box {
   overflow: auto;
   width: 570px;
   border-radius: 4px;
+  border: 1px solid #CCCCCC;
 }
 body .container .main form .redactor_box .redactor_editor {
   height: 220px;
@@ -96,6 +97,7 @@ body .container .main table td.integer {
 body .container .main table th.publish,
 body .container .main table td.publish {
   width: 10px;
+  padding-right: 5px;
 }
 body .container .main table th.publish input,
 body .container .main table td.publish input {
@@ -106,6 +108,7 @@ body .container .main table td.reorder {
   width: 10px;
   color: #aaaaaa;
   cursor: row-resize;
+  padding-right: 5px;
 }
 body .container .main table th.updated,
 body .container .main table td.updated {

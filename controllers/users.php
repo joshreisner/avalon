@@ -17,7 +17,8 @@ class Avalon_Users_Controller extends Controller {
 		return View::make('Avalon::users.add', array(
 			'roles'=>$this->roles,
 			'objects'=>$objects,
-			'title'=>'Add User'
+			'title'=>'Add User',
+			'link_color'=>DB::table('avalon')->where('id', '=', 1)->only('link_color'),
 		));
 	}
 	
@@ -34,7 +35,8 @@ class Avalon_Users_Controller extends Controller {
 			'roles'=>$this->roles,
 			'objects'=>$objects,
 			'permissions'=>$permissions,
-			'title'=>'Edit User'
+			'title'=>'Edit User',
+			'link_color'=>DB::table('avalon')->where('id', '=', 1)->only('link_color'),
 		));
 	}
 
@@ -53,7 +55,8 @@ class Avalon_Users_Controller extends Controller {
 		return View::make('Avalon::users.list', array(
 			'user'=>$user,
 			'users'=>$users,
-			'title'=>'Users'
+			'title'=>'Users',
+			'link_color'=>DB::table('avalon')->where('id', '=', 1)->only('link_color'),
 		));
 	}
 	

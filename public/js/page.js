@@ -71,6 +71,30 @@ $(function($) {
     });
 
 
+    //url mask
+    $("input.url").keydown(function(event) {
+		//alert(event.keyCode);
+   		if ((event.keyCode >= 65) && (event.keyCode <= 90)) {
+    		//a to z, return
+    		return;
+    	} else if ((event.keyCode == 8) || (event.keyCode == 9) || (event.keyCode == 13) || (event.keyCode == 16) || (event.keyCode == 20) || (event.keyCode == 91) || (event.keyCode == 189)) {
+    		//del, tab, return, capslock, shift, command and underscore/dash ok
+    		return;
+    	} else if (event.shiftKey === true) {
+    		if (event.keyCode == 186) {
+    			//colon ok
+    			return;
+    		}
+    	} else {
+    		if ((event.keyCode == 190) || (event.keyCode == 191) || ((event.keyCode >= 48) && (event.keyCode <= 57))) {
+    			//slash and numbers ok not sure what 190 is
+    			return;
+    		}
+    	}
+    	event.preventDefault();
+    });
+
+
 	//redactor
 	$("textarea.textarea_rich").redactor();
 

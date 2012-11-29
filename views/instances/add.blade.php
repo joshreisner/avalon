@@ -30,6 +30,9 @@
 				@elseif ($field->type == 'date')
 				<input type="date" name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span2@if ($field->required) required@endif">
 
+				@elseif ($field->type == 'email')
+				<input type="text" name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span3 email@if ($field->required) required@endif">
+
 				@elseif ($field->type == 'integer')
 				<input type="text" name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span2 integer@if ($field->required) required@endif">
 
@@ -41,6 +44,12 @@
 
 				@elseif ($field->type == 'textarea-rich')
 				<textarea name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="textarea_rich@if ($field->required) required@endif"></textarea>
+
+				@elseif ($field->type == 'typeahead')
+				<input type="text" name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span5 typeahead@if ($field->required) required@endif" data-provide="typeahead" data-source="{{ $field->values }}">
+
+				@elseif ($field->type == 'url')
+				<input type="text" name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span4 url@if ($field->required) required@endif" value="http://">
 
 				@else
 				<div class="alert error">field type of {{ $field->type }} not handled!</div>

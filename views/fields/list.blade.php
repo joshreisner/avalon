@@ -27,7 +27,7 @@
 					<th>Object</th>
 					<th>Type</th>
 					<th>Table &amp; Column</th>
-					<th class="span2 date">Last Update</th>
+					<th class="date updated">Last Update</th>
 					<th class="delete"></th>
 				</tr>
 			</thead>
@@ -38,7 +38,7 @@
 			   		<td><a href="{{ $field->link }}">{{ $field->title }}</a></td>
 			   		<td>{{ $field->type }}</td>
 			   		<td>{{ $object->table_name }}.{{ $field->field_name }}</td>
-			   		<td class="date"><span class="user">Josh</span>{{ $field->updated_at }}</td>
+			   		<td class="date updated"><span class="user">Josh</span>{{ $field->updated_at }}</td>
 			   		<td class="delete"><a href="{{ $field->link }}">&times;</a></td>
 			   	</tr>
 		@endforeach

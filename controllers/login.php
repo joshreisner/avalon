@@ -23,6 +23,14 @@ class Avalon_Login_Controller extends Controller {
 			$user->save();
 			
 			Auth::login($user->id, true);
+
+			//set up settings row
+			if (0 == \Avalon\Settings::count()) {
+				$settings = new \Avalon\Settings;
+				$settings->link_color = '#0088CC';
+				$settings->save();
+			}
+
 			return Redirect::to_route('objects');
 
         } else {

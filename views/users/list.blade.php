@@ -28,7 +28,7 @@
 				<tr>
 					<th class="string">Name</th>
 					<th class="string">Role</th>
-					<th class="date">Last Login</th>
+					<th class="date updated">Last Login</th>
 					@if ($user->role < 3)
 					<th class="delete"></th>
 					@endif
@@ -39,7 +39,7 @@
 			   	<tr>
 			   		<td class="string"><a href="{{ $u->link }}">{{ $u->lastname }}, {{ $u->firstname }}</a></td>
 			   		<td class="string">{{ $u->role }}</td>
-			   		<td class="date">{{ $u->last_login }}</td>
+			   		<td class="date updated">{{ $u->last_login }}</td>
 					@if ($user->role < 3)
 					<td class="delete">@if ($u->id != $user->id)<a href="{{ $u->link }}">&times;</a>@endif</td>
 					@endif

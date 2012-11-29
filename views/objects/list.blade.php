@@ -26,7 +26,7 @@
 				<tr>
 					<th>Object</th>
 					<th class="integer"># Active</th>
-					<th class="date">Last Update</th>
+					<th class="date updated">Last Update</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -40,7 +40,7 @@
 			   	<tr>
 			   		<td><a href="{{ URL::to_route('instances', $object->id) }}">{{ $object->title }}</a></td>
 			   		<td class="integer">{{ $object->count }}</td>
-			   		<td class="date">@if (!empty($object->updated_by))<span class="user">{{ $object->updated_by }}</span>@endif{{ $object->updated_at }}</td>
+			   		<td class="date updated">@if (!empty($object->updated_by))<span class="user">{{ $object->updated_by }}</span>@endif{{ $object->updated_at }}</td>
 			   	</tr>
 		@endforeach
 			</tbody>
