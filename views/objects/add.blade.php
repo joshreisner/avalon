@@ -40,3 +40,16 @@
 		</div>		
 	</form>
 @endsection
+
+@section('side')
+	<div class="inner">
+		<p>You can also choose an object template from the list below:</p>
+		<div class="btn-group">
+			<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Templates <span class="caret"></span></a>
+			<ul class="dropdown-menu">
+		    	<li><a href="">News</a></li>
+		    	<li><a href="">Pages</a></li>
+			</ul>
+		</div>
+	</div>
+@endsection

@@ -55,7 +55,7 @@ class Avalon_Instances_Controller extends Controller {
 		$object = \Avalon\Object::find($object_id);
 
 		//get table columns
-		$columns = \Avalon\Field::where('object_id', '=', $object_id)->where('visibility', '=', 'list')->where('active', '=', 1)->order_by('precedence', 'ASC')->get(array('title', 'field_name', 'type'));
+		$columns = \Avalon\Field::where('object_id', '=', $object_id)->where('visibility', '=', 'list')->where('active', '=', 1)->order_by('precedence', 'ASC')->take(5)->get(array('title', 'field_name', 'type'));
 
 		//get instances
 		$instances = DB::table($object->table_name)->order_by($object->order_by, $object->direction)->where('active', '=', 1)->get();
@@ -69,6 +69,8 @@ class Avalon_Instances_Controller extends Controller {
 					$instance->{$column->field_name} = ($instance->{$column->field_name}) ? 'Yes' : '';
 				} elseif ($column->type == 'date') {
 					$instance->{$column->field_name} = \Avalon\Date::format($instance->{$column->field_name});
+				} elseif ($column->type == 'textarea-rich') {
+					$instance->{$column->field_name} = $this->rip_tags($instance->{$column->field_name});
 				}
 			}
 		}
@@ -165,4 +167,17 @@ class Avalon_Instances_Controller extends Controller {
 		//flash inserted row somehow?
 		return Redirect::to_route('instances', $object_id);
 	}
+
+	private function rip_tags($string) { 
+	    //thanks bzplan http://www.php.net/manual/en/function.strip-tags.php#110280
+
+	    $string = preg_replace ('/<[^>]*>/', ' ', $string); 
+	    $string = str_replace("\r", '', $string);    // --- replace with empty space
+	    $string = str_replace("\n", ' ', $string);   // --- replace with space
+	    $string = str_replace("\t", ' ', $string);   // --- replace with space
+	    
+	    return trim(preg_replace('/ {2,}/', ' ', $string)); 
+
+	}
+
 }

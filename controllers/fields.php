@@ -129,7 +129,7 @@ class Avalon_Fields_Controller extends Controller {
 
 				case 'textarea-plain';
 				case 'textarea-rich';
-					$table->text($field_name);
+					$field = $table->text($field_name);
 					break;
 			}
 			$field->nullable = (Input::get('required') != 'on');

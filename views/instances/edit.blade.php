@@ -30,12 +30,18 @@
 				@elseif ($field->type == 'date')
 				<input type="date" name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span2@if ($field->required) required@endif" value="{{ $instance->{$field->field_name} }}">
 				
+				@elseif ($field->type == 'integer')
+				<input type="text" name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span2 integer@if ($field->required) required@endif" value="{{ $instance->{$field->field_name} }}">
+
 				@elseif ($field->type == 'text')
 				<input type="text" name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span5@if ($field->required) required@endif" value="{{ $instance->{$field->field_name} }}">
 				
 				@elseif ($field->type == 'textarea-plain')
-				<textarea name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span5@if ($field->required) required@endif"></textarea>
+				<textarea name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="span6@if ($field->required) required@endif">{{ $instance->{$field->field_name} }}</textarea>
 				
+				@elseif ($field->type == 'textarea-rich')
+				<textarea name="{{ $field->field_name }}" id="{{ $field->field_name }}" class="textarea_rich@if ($field->required) required@endif">{{ $instance->{$field->field_name} }}</textarea>
+
 				@else
 				<div class="alert error">field type of {{ $field->type }} not handled!</div>
 				@endif

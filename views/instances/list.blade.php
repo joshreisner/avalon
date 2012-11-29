@@ -40,7 +40,7 @@
 							<th class="{{ $column->type }} {{ $column->field_name }}">{{ $column->title }}</th>
 						@endif
 					@endforeach
-					<th class="span2 date">Last Update</th>
+					<th class="span2 date updated">Last Update</th>
 					<th class="delete"></th>
 				</tr>
 			</thead>
@@ -60,7 +60,7 @@
 					   		<td class="{{ $column->type }}"><a href="{{ $instance->link }}">{{ $instance->{$column->field_name} }}</a></td>
 			   			@endif
 			   		@endforeach
-			   		<td class="date"><span class="user">Josh</span>{{ $instance->updated_at }}</td>
+			   		<td class="date updated"><span class="user">Josh</span>{{ $instance->updated_at }}</td>
 			   		<td class="delete"><a href="{{ $instance->link }}">&times;</a></td>
 			   	</tr>
 		@endforeach

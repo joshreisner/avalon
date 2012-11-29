@@ -22,6 +22,8 @@ if (Auth::check()) {
 	Asset::container('avalon')->add('table_dnd_js', 'vendor/jquery.table-multi-dnd.js');
 	Asset::container('avalon')->add('fontawesome_css', 'vendor/fontawesome/css/font-awesome.css');
 	Asset::container('avalon')->add('bootstrap_js', 'vendor/bootstrap/js/bootstrap.min.js');
+	Asset::container('avalon')->add('redactor_css', 'vendor/redactor/redactor.css');
+	Asset::container('avalon')->add('redactor_js', 'vendor/redactor/redactor.min.js');
 } else {
 	Asset::container('avalon')->add('avalon_login_css', 'css/login.css');
 	Asset::container('avalon')->add('avalon_login_js', 'js/login.js');

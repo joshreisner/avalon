@@ -1,13 +1,13 @@
 $(function($) {
 
-	//global functions
+	//global form functions
 
 	//generic form validator
 	$('form').validate({
 		errorElement:"span",
 		errorClass:"help-inline",
 		onfocusout:false,
-		onkeyup:true,
+    	onkeyup: function(element) { },
 		highlight: function(element, errorClass, validClass) {
 			if (element.type === 'radio') {
 				//this.findByName(element.name).parent("div").parent("div").addClass("error").removeClass(validClass);
@@ -24,7 +24,9 @@ $(function($) {
 		}
 	});
 
-	$('form input[type=text]').first().focus();
+
+	//autoselect first text element that's not a color (they get messed up when they're autoselected)
+	$('form input[type=text]:not(.color)').first().focus();
 	
 
 	//make all delete links use the DELETE HTTP verb
@@ -47,6 +49,30 @@ $(function($) {
 			if (button.val() == hidden.val()) button.addClass('active');
 		});
 	});
+
+
+	//integer mask
+    $("input.integer").keydown(function(event) {
+    	// http://stackoverflow.com/questions/995183/how-to-allow-only-numeric-0-9-in-html-inputbox-using-jquery?page=1&tab=votes#tab-top
+        // Allow: backspace, delete, tab, escape, and enter
+        if (event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 || 
+             // Allow: Ctrl+A
+            (event.keyCode == 65 && event.ctrlKey === true) || 
+             // Allow: home, end, left, right
+            (event.keyCode >= 35 && event.keyCode <= 39)) {
+                 // let it happen, don't do anything
+                 return;
+        } else {
+            // Ensure that it is a number and stop the keypress
+            if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105 )) {
+                event.preventDefault(); 
+            }   
+        }
+    });
+
+
+	//redactor
+	$("textarea.textarea_rich").redactor();
 
 
 	//make tables reorderable, requires some data- attributes
@@ -75,6 +101,7 @@ $(function($) {
 	    }
 	});
 
+	//handle publish checkbox toggling
 	$("table td.publish input").change(function(){
 		var published = $(this).is(':checked');
         $.ajax({
