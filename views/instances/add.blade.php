@@ -18,6 +18,11 @@
 	@foreach ($object->fields as $field)
 		<div class="control-group {{ $field->field_name }}">
 			<label class="control-label" for="{{ $field->field_name }}">{{ $field->title }}</label>
+			
+			@if (($user->role == 1) && ($field->type == 'textarea-rich'))
+			<a class="help" href="#lorem-ipsum">Lorem Ipsum</a>
+			@endif
+			
 			<div class="controls">
 				@if ($field->type == 'checkbox')
 				<label class="checkbox inline">

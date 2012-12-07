@@ -137,6 +137,13 @@ $(function($) {
         	}
         });
 	});
+	
+	
+	//lorem ipsum links
+	$("form a[href=#lorem-ipsum]").click(function(e){
+		e.preventDefault();
+		$(this).closest("div.control-group").find(".textarea_rich").setCode(LoremIpsum.paragraphs((2 + Math.floor(Math.random()*2)), "<p>%s</p>"));
+	});
 
 	//local/page-specific functions
 
@@ -156,6 +163,7 @@ $(function($) {
 			$("form.field div.control-group.required").slideDown();			
 		}
 	});
+	
 	
 });
 

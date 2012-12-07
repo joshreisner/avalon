@@ -16,9 +16,11 @@ Asset::container('avalon')->add('jquery_valdate', 'vendor/jquery.validate.min.js
 Asset::container('avalon')->add('bootstrap_css', 'vendor/bootstrap/css/bootstrap.min.css');
 
 if (Auth::check()) {
+	//todo: only include assets on pages when they're needed?
 	Asset::container('avalon')->add('avalon_page_css', 'css/page.css');
 	Asset::container('avalon')->add('avalon_page_js', 'js/page.js');
-	Asset::container('avalon')->add('avalon_colorjs', 'vendor/jscolor/jscolor.js');
+	Asset::container('avalon')->add('color_js', 'vendor/jscolor/jscolor.js');
+	Asset::container('avalon')->add('lorem_ipsum_js', 'vendor/lorem_ipsum.js');
 	Asset::container('avalon')->add('table_dnd_js', 'vendor/jquery.table-multi-dnd.js');
 	Asset::container('avalon')->add('fontawesome_css', 'vendor/fontawesome/css/font-awesome.css');
 	Asset::container('avalon')->add('bootstrap_js', 'vendor/bootstrap/js/bootstrap.min.js');
