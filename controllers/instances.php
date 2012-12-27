@@ -32,6 +32,7 @@ class Avalon_Instances_Controller extends Controller {
 
 		return View::make('avalon::instances.add', array(
 			'object'=>$object,
+			'user'=>Auth::user(),
 			'title'=>'Add New',
 			'link_color'=>DB::table('avalon')->where('id', '=', 1)->only('link_color'),
 		));
@@ -65,6 +66,7 @@ class Avalon_Instances_Controller extends Controller {
 		return View::make('avalon::instances.edit', array(
 			'object'=>$object,
 			'instance'=>$instance,
+			'user'=>Auth::user(),
 			'title'=>'Edit',
 			'link_color'=>DB::table('avalon')->where('id', '=', 1)->only('link_color'),
 		));
