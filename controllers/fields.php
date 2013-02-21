@@ -11,7 +11,7 @@ class Avalon_Fields_Controller extends Controller {
 				'date'=>'Date',
 				'date-time'=>'Date & Time',
 				'email'=>'Email',
-			//	'dropdown'=>'Dropdown',
+				'dropdown'=>'Dropdown',
 			//	'file'=>'File',
 			//	'file-size'=>'File Size',
 			//	'file-type'=>'File Type',
@@ -55,6 +55,7 @@ class Avalon_Fields_Controller extends Controller {
 			'object'=>$object,
 			'field_types'=>$this->field_types,
 			'field_visibilities'=>$this->field_visibilities,
+			'related_objects'=>$this->related_objects($object_id),
 			'title'=>'Add Field',
 			'link_color'=>DB::table('avalon')->where('id', '=', 1)->only('link_color'),
 		));
@@ -187,4 +188,12 @@ class Avalon_Fields_Controller extends Controller {
 		return Redirect::to_route('fields', $field->object_id);
 	}
 
+	public function related_objects($object_id) {
+		if ($objects = \Avalon\Object::where('id', '<>', $object_id)->get(array('id', 'title'))) {
+			$return = array();
+			foreach ($objects as $o) $return[$o->id] = $o->title;
+			return $return;
+		}
+		return false;
+	}
 }

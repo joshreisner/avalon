@@ -51,14 +51,20 @@ body {
 				}
 				textarea { height: 100px; }
 
-				&.objects_edit, &.objects_add {
-					select[name=direction] { width: auto; }
-				}
-
 				.redactor_box {
 					overflow: auto; width: 570px; border-radius: 4px; border: 1px solid #CCCCCC;
 					.redactor_editor {
 						height: 220px; width: 540px; /* padding 15px */
+					}
+				}
+
+				&.objects_edit, &.objects_add {
+					select[name=direction] { width: auto; }
+				}
+
+				&.field {
+					.control-group.related_object {
+						display: none;
 					}
 				}
 			}

@@ -45,10 +45,6 @@ body .container .main form .form-actions {
 body .container .main form textarea {
   height: 100px;
 }
-body .container .main form.objects_edit select[name=direction],
-body .container .main form.objects_add select[name=direction] {
-  width: auto;
-}
 body .container .main form .redactor_box {
   overflow: auto;
   width: 570px;
@@ -60,6 +56,13 @@ body .container .main form .redactor_box .redactor_editor {
   width: 540px;
   /* padding 15px */
 
+}
+body .container .main form.objects_edit select[name=direction],
+body .container .main form.objects_add select[name=direction] {
+  width: auto;
+}
+body .container .main form.field .control-group.related_object {
+  display: none;
 }
 body .container .main table th {
   color: #aaaaaa;

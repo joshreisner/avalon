@@ -162,6 +162,13 @@ $(function($) {
 		} else {
 			$("form.field div.control-group.required").slideDown();			
 		}
+		
+		if ($(this).val() == 'dropdown') {
+			$("form.field div.control-group.related_object").slideDown();
+		} else if ($("form.field div.control-group.related_object:visible")) {
+			$("form.field div.control-group.related_object").slideUp();			
+		}
+		
 	});
 	
 	

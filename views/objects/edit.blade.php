@@ -43,12 +43,14 @@
 			</div>
 		</div>
 
+		@if ($group_by_fields)
 		<div class="control-group">
 			<label class="control-label" for="order_by">Group By</label>
 			<div class="controls">
-				{{ Form::select('group_by_field', array()) }}
+				{{ Form::select('group_by_field', $group_by_fields, $object->group_by_field) }}
 			</div>
 		</div>
+		@endif
 
 		<div class="control-group type">
 			<label class="control-label" for="show_published">Show Published</label>

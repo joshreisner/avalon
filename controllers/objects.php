@@ -17,8 +17,10 @@ class Avalon_Objects_Controller extends Controller {
 		//display edit form
 
 		$object = \Avalon\Object::find($id);
+		//$fields = \Avalon\Field::where('object_id'=>$id)
 		return View::make('avalon::objects.edit', array(
 			'object'=>$object,
+			'group_by_fields'=>$this->group_by_fields($id),
 			'list_groupings'=>$this->list_groupings(),
 			'title'=>'Object Settings',
 			'link_color'=>DB::table('avalon')->where('id', '=', 1)->only('link_color'),
@@ -47,6 +49,16 @@ class Avalon_Objects_Controller extends Controller {
 		));
 	}
 
+	public function group_by_fields($object_id) {
+	
+		if ($fields = \Avalon\Field::where('object_id', '=', $object_id)->where('type', '=', 'dropdown')->get(array('id', 'title'))) {
+			$return = array(''=>'');
+			foreach ($fields as $f) $return[$f->id] = $f->title;
+			return $return;
+		}
+		return false;				
+	}
+	
 	private function list_groupings() {
 		//create a JSON array to tell Boostrap what values to suggest for the List Grouping field
 		$list_groupings = array();

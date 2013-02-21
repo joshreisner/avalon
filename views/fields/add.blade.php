@@ -30,6 +30,13 @@
 			</div>
 		</div>
 
+		<div class="control-group related_object">
+			<label class="control-label" for="title">Related Object</label>
+			<div class="controls">
+				{{ Form::select('related_object', $related_objects); }}
+			</div>
+		</div>
+
 		<div class="control-group type">
 			<label class="control-label" for="visibility">Visibility</label>
 			<div class="controls">
