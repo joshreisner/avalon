@@ -19,7 +19,7 @@ class Avalon_Login_Controller extends Controller {
 			$user->lastname   = Input::get('lastname');
 			$user->role       = 1;
 			$user->active     = 1;
-			$user->last_login = date('Y-m-d H:i:s');
+			$user->last_login = new DateTime;
 			$user->save();
 			
 			Auth::login($user->id, true);
@@ -37,8 +37,8 @@ class Avalon_Login_Controller extends Controller {
             //check login credentials
             if ($user = \Avalon\User::where('email', '=', Input::get('email'))->first()) {
                 if (Hash::check(Input::get('password'), $user->password)) {
-					Auth::login($user->id);
-					$user->last_login = date('Y-m-d H:i:s');
+					Auth::login($user->id, true);
+					$user->last_login = new DateTime;
 					\Avalon\User::$timestamps = false;
 					$user->save();
                 }
