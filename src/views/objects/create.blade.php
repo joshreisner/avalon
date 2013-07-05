@@ -26,10 +26,9 @@
 	    		<input type="text" name="title" class="required title" autofocus="autofocus">
 	    	</div>
 		</div>
-		<div class="control-group">
-	    	<div class="controls">
-	    		<input type="submit" class="btn" value="{{ Lang::get('avalon::messages.objects_create') }}">
-	    	</div>
+		<div class="form-actions">
+			<button type="submit" class="btn btn-primary">{{ Lang::get('avalon::messages.site_save') }}</button>
+			<a class="btn" href="/login/objects">{{ Lang::get('avalon::messages.site_cancel') }}</a>
 		</div>
 	</form>
 @endsection

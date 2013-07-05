@@ -14,37 +14,37 @@ class ObjectController extends \BaseController {
 	public function post_store() {
 		
 		//determine table name, todo check if unique
-		$table_name = Str::slug(Input::get('title'), '_');
+		$name = Str::slug(Input::get('title'), '_');
 		
 		//create entry in objects table for new object
 		$object_id = DB::table('avalon_objects')->insertGetId(array(
 			'title'=>Input::get('title'),
-			'table_name'=>$table_name,
-			'updated_by'=>$_SESSION['avalon_id'],
+			'name'=>$name,
+			'updated_by'=>Session::get('avalon_id'),
 			'updated_at'=>new DateTime,
 		));
 		
 		//create title field for table by default
 		DB::table('avalon_fields')->insert(array(
 			'title'=>'Title',
-			'field_name'=>'title',
+			'name'=>'title',
 			'type'=>'string',
 			'visibility'=>'list',
 			'required'=>1,
 			'object_id'=>$object_id,
-			'updated_by'=>$_SESSION['avalon_id'],
+			'updated_by'=>Session::get('avalon_id'),
 			'updated_at'=>new DateTime,
 			'precedence'=>1
 		));
 		
 		//create table with boilerplate fields
-		Schema::create($table_name, function($table){
+		Schema::create($name, function($table){
 			$table->increments('id');
 			$table->string('title');
 			$table->integer('updated_by')->nullable();
 			$table->timestamp('updated_at');
-			$table->boolean('active');
-			$table->boolean('published');
+			$table->boolean('active')->default(1);
+			$table->boolean('published')->default(1);
 			$table->integer('precedence');
 			$table->integer('subsequence')->nullable();
 		});

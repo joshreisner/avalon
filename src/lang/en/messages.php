@@ -2,8 +2,9 @@
 
 return array(
 
-	'instances_create'		=> 'Create New',
+	'instances_create'		=> 'Create',
 	'instances_empty'		=> 'No :title have been added yet.',
+	'instances_fields'		=> 'Fields',
 
 	'objects'				=> 'Objects',
 	'objects_create'		=> 'Add New Object',
@@ -20,9 +21,11 @@ return array(
 	'users_password'		=> 'Last Name',
 	'users_password_reset'	=> 'Reset Password',
 	
+    'site_cancel'			=> 'Cancel',
 	'site_install'			=> 'Install',
 	'site_login'			=> 'Log In',
 	'site_logout'			=> 'Log Out',
+    'site_save'				=> 'Save Changes',
     'site_settings'			=> 'Site Settings',
     'site_welcome'			=> 'Welcome to Avalon',
 );

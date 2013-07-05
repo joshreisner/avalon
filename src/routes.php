@@ -22,3 +22,4 @@ Route::post('/login/objects/create',	'ObjectController@post_store');
 
 Route::get('/login/objects/{id}',		'InstanceController@get_index');
 Route::get('/login/objects/{id}/create','InstanceController@get_create');
+Route::post('/login/objects/{id}',		'InstanceController@post_store');

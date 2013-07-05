@@ -24,7 +24,7 @@ class AvalonCreateTables extends Migration {
 			$table->integer('object_id');
 			$table->string('type');
 			$table->string('title');
-			$table->string('field_name');
+			$table->string('name');
 			$table->integer('related_field_id')->nullable();
 			$table->integer('related_object_id')->nullable();
 			$table->string('visibility')->default('normal');
@@ -50,10 +50,13 @@ class AvalonCreateTables extends Migration {
 		Schema::create('avalon_objects', function($table){
 			$table->increments('id');
 			$table->string('title');
-			$table->string('table_name');
+			$table->string('name');
 			$table->string('order_by')->default('title');
 			$table->string('direction')->default('ASC');
 			$table->integer('group_by_field')->nullable();
+			$table->integer('instance_count')->default(0);
+			$table->timestamp('instance_updated_at')->nullable();
+			$table->integer('instance_updated_by')->nullable();
 			$table->text('list_help')->nullable();
 			$table->text('form_help')->nullable();
 			$table->boolean('show_published')->default(0);
@@ -69,11 +72,11 @@ class AvalonCreateTables extends Migration {
 			$table->string('lastname');
 			$table->string('email')->unique();
 			$table->string('password');
-			$table->string('token')->unique();
+			//$table->string('token')->unique();
 			$table->integer('role')->default(3);
 			$table->boolean('active')->default(1);
 			$table->timestamp('last_login');
-			$table->integer('updated_by');
+			$table->integer('updated_by')->nullable(); //for first user only, temporary
 			$table->timestamp('updated_at');
 		});
 		

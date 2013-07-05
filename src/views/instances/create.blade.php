@@ -17,25 +17,26 @@
 	
 	<div class="btn-group">
 		<a class="btn" href="/login/objects/{{ $object->id }}/settings"><i class="icon-cog"></i> {{ Lang::get('avalon::messages.objects_settings', array('title'=>$object->title)) }}</a>
+		<a class="btn" href="/login/objects/{{ $object->id }}/fields"><i class="icon-list"></i> {{ Lang::get('avalon::messages.instances_fields') }}</a>
 		<a class="btn active" href="/login/objects/add"><i class="icon-plus"></i> {{ Lang::get('avalon::messages.instances_create', array('title'=>$object->title)) }}</a>
 	</div>
 
-	<form class="form-horizontal" method="post" action="/login/objects/create">
+	<form class="form-horizontal" method="post" action="/login/objects/{{ $object->id }}">
 	
 		@foreach ($fields as $field)
 		<div class="control-group">
 			<label class="control-label" for="email">{{ $field->title }}</label>
 	    	<div class="controls">
-	    		<input type="text" name="{{ $field->field_name }}" class="required title"@if ($field->precedence == 1) autofocus="autofocus"@endif>
+	    		<input type="text" name="{{ $field->name }}" class="required title"@if ($field->precedence == 1) autofocus="autofocus"@endif>
 	    	</div>
 		</div>
 		@endforeach
 		
-		<div class="control-group">
-	    	<div class="controls">
-	    		<input type="submit" class="btn" value="{{ Lang::get('avalon::messages.objects_create') }}">
-	    	</div>
+		<div class="form-actions">
+			<button type="submit" class="btn btn-primary">{{ Lang::get('avalon::messages.site_save') }}</button>
+			<a class="btn" href="/login/objects/{{ $object->id }}">{{ Lang::get('avalon::messages.site_cancel') }}</a>
 		</div>
+		
 	</form>
 @endsection
 

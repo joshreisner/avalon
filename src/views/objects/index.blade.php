@@ -18,7 +18,7 @@
 	</div>
 
 	@if (count($objects))
-	<table class="table table-hover table-condensed">
+	<table class="table table-condensed">
 		<thead>
 		<tr>
 			<th>Object</th>
