@@ -1,0 +1,7 @@
+@import "bootstrap.css";
+@import "font-awesome.css";
+body.login{background-color:#ddd;}
+body form .control-group:last-child{margin-bottom:0;}
+body .main h1{font-weight:normal;font-size:24px;line-height:34px;}body .main h1 i{color:#bbbbbb;}
+body .main .btn-group{margin-bottom:20px;}
+body .side .inner{border-left:2px dashed #bbbbbb;padding:20px;color:#bbbbbb;margin-top:38px;}body .side .inner p{margin:0 0 20px 0;}
