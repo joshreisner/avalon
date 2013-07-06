@@ -99,7 +99,7 @@ class ObjectController extends \BaseController {
 			'form_help'=>Input::get('form_help'),
 		));
 		
-		return Redirect::to('/login/objects/' . $object_id, 303);
+		return Redirect::action('ObjectController@show', $object_id);
 	}
 	
 	//destroy object
@@ -108,7 +108,7 @@ class ObjectController extends \BaseController {
 		DB::table('avalon_objects')->where('id', $object_id)->delete();
 		DB::table('avalon_fields')->where('object_id', $object_id)->delete();
 		DB::table('avalon_object_links')->where('object_id', $object_id)->orWhere('linked_id', $object_id)->delete();
-		return Redirect::to('/login/objects', 303);
+		return Redirect::action('ObjectController@index');
 	}
 	
 }

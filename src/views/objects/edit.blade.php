@@ -47,7 +47,7 @@
 
 		<div class="form-actions">
 			<button type="submit" class="btn btn-primary">{{ Lang::get('avalon::messages.site_save') }}</button>
-			<a class="btn" href="/login/objects/{{ $object->id }}">{{ Lang::get('avalon::messages.site_cancel') }}</a>
+			<a class="btn" href="{{ URL::action('ObjectController@show', $object->id) }}">{{ Lang::get('avalon::messages.site_cancel') }}</a>
 		</div>
 		
 	{{ Form::close() }}
