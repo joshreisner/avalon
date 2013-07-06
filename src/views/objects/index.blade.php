@@ -22,11 +22,15 @@
 		<thead>
 		<tr>
 			<th>Object</th>
+			<th class="center">Count</th>
+			<th class="right">Updated</th>
 		</tr>
 		</thead>
 		@foreach ($objects as $object)
 		<tr>
 			<td><a href="/login/objects/{{ $object->id }}">{{ $object->title }}</a></td>
+			<td class="center">{{ $object->instance_count }}</td>
+			<td class="right">{{ $object->instance_updated_at }}</td>
 		</tr>
 		@endforeach
 	</table>

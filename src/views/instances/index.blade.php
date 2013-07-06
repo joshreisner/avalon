@@ -26,6 +26,7 @@
 			@foreach($fields as $field)
 			<th>{{ $field->title }}</th>
 			@endforeach
+			<th class="right">Updated</th>
 		</tr>
 		</thead>
 		@foreach ($instances as $instance)
@@ -34,6 +35,7 @@
 			<?php $field_name = $field->name //make this less of a hack ?>
 			<td>{{ $instance->$field_name }}</td>
 			@endforeach
+			<td class="right">{{ $instance->updated_at }}</td>
 		</tr>
 		@endforeach
 	</table>

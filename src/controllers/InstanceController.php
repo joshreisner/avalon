@@ -7,6 +7,11 @@ class InstanceController extends \BaseController {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->where('visibility', 'list')->get();
 		$instances = DB::table($object->name)->get(); //todo select only $fields
+		
+		foreach ($instances as &$instance) {
+			$instance->updated_at = \Carbon\Carbon::createFromTimeStamp(strtotime($instance->updated_at))->diffForHumans();
+		}
+		
 		return View::make('avalon::instances.index', array(
 			'object'=>$object, 
 			'fields'=>$fields, 
@@ -45,6 +50,14 @@ class InstanceController extends \BaseController {
 		}
 		
 		DB::table($object->name)->insert($inserts);
+		
+		//update objects table with latest counts
+		DB::table('avalon_objects')->where('id', $object_id)->update(array(
+			'instance_count'=>DB::table($object->name)->count(),
+			'instance_updated_at'=>new DateTime,
+			'instance_updated_by'=>Session::get('avalon_id')
+		));
+		
 		return Redirect::to('/login/objects/' . $object_id, 303);
 	}
 }
