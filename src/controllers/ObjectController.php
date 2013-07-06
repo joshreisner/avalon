@@ -3,21 +3,22 @@
 class ObjectController extends \BaseController {
 
 	//display list for home page
-	public function get_index() {
+	public function index() {
 		$objects = DB::table('avalon_objects')->orderby('title')->get();
 		foreach ($objects as &$object) {
-			$object->instance_updated_at = \Carbon\Carbon::createFromTimeStamp(strtotime($object->instance_updated_at))->diffForHumans();
+			if (!empty($object->instance_updated_at)) $object->instance_updated_at = \Carbon\Carbon::createFromTimeStamp(strtotime($object->instance_updated_at))->diffForHumans();
+			if ($object->instance_count == 0) $object->instance_count = '';
 		}
 		return View::make('avalon::objects.index', array('objects'=>$objects));
 	}
 	
 	//display create object form
-	public function get_create() {
+	public function create() {
 		return View::make('avalon::objects.create');
 	}
 	
 	//store create object form post data
-	public function post_store() {
+	public function store() {
 		
 		//determine table name, todo check if unique
 		$name = Str::slug(Input::get('title'), '_');
@@ -56,6 +57,58 @@ class ObjectController extends \BaseController {
 		});
 		
 		return Redirect::to('/login/objects/' . $object_id, 303);
+	}
+
+	//show list of instances for an object
+	public function show($object_id) {
+		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
+		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->where('visibility', 'list')->get();
+		$instances = DB::table($object->name)->get(); //todo select only $fields
+		
+		foreach ($instances as &$instance) {
+			$instance->updated_at = \Carbon\Carbon::createFromTimeStamp(strtotime($instance->updated_at))->diffForHumans();
+		}
+		
+		return View::make('avalon::objects.show', array(
+			'object'=>$object, 
+			'fields'=>$fields, 
+			'instances'=>$instances
+		));
+	}
+	
+	//edit object settings
+	public function edit($object_id) {
+		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
+		return View::make('avalon::objects.edit', array(
+			'object'=>$object, 
+		));
+	}
+	
+	//edit object settings
+	public function update($object_id) {
+		//rename table if necessary
+		$old_name = DB::table('avalon_objects')->where('id', $object_id)->pluck('name');
+		$new_name = Str::slug(Input::get('name'), '_');
+		if ($old_name != $new_name) Schema::rename($old_name, $new_name);
+		
+		//update objects table
+		DB::table('avalon_objects')->where('id', $object_id)->update(array(
+			'title'=>Input::get('title'),
+			'name'=>$new_name,
+			'list_help'=>Input::get('list_help'),
+			'form_help'=>Input::get('form_help'),
+		));
+		
+		return Redirect::to('/login/objects/' . $object_id, 303);
+	}
+	
+	//destroy object
+	public function destroy($object_id) {
+		Schema::dropIfExists(DB::table('avalon_objects')->where('id', $object_id)->pluck('name'));
+		DB::table('avalon_objects')->where('id', $object_id)->delete();
+		DB::table('avalon_fields')->where('object_id', $object_id)->delete();
+		DB::table('avalon_object_links')->where('object_id', $object_id)->orWhere('linked_id', $object_id)->delete();
+		return Redirect::to('/login/objects', 303);
 	}
 	
 }

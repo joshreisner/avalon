@@ -1,4 +1,4 @@
-@extends('avalon::template');
+@extends('avalon::template')
 
 @section('title')
 	{{ Lang::get('avalon::messages.objects') }}
@@ -12,7 +12,7 @@
 	</h1>
 	
 	<div class="btn-group">
-		<a class="btn" href="/login/settings"><i class="icon-cog"></i> {{ Lang::get('avalon::messages.site_settings') }}</a>
+		<!--<a class="btn" href="/login/settings"><i class="icon-cog"></i> {{ Lang::get('avalon::messages.site_settings') }}</a>-->
 		<a class="btn" href="/login/users"><i class="icon-group"></i> {{ Lang::get('avalon::messages.users') }}</a>
 		<a class="btn" href="/login/objects/create"><i class="icon-plus"></i> {{ Lang::get('avalon::messages.objects_create') }}</a>
 	</div>

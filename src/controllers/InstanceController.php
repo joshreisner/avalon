@@ -2,23 +2,6 @@
 
 class InstanceController extends \BaseController {
 
-	//show list of instances for an object
-	public function get_index($object_id) {
-		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
-		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->where('visibility', 'list')->get();
-		$instances = DB::table($object->name)->get(); //todo select only $fields
-		
-		foreach ($instances as &$instance) {
-			$instance->updated_at = \Carbon\Carbon::createFromTimeStamp(strtotime($instance->updated_at))->diffForHumans();
-		}
-		
-		return View::make('avalon::instances.index', array(
-			'object'=>$object, 
-			'fields'=>$fields, 
-			'instances'=>$instances
-		));
-	}
-
 	//show create form for an object instance
 	public function get_create($object_id) {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
@@ -29,7 +12,7 @@ class InstanceController extends \BaseController {
 		));
 	}
 
-	//save a new object to the database
+	//save a new object instance to the database
 	public function post_store($object_id) {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->get();

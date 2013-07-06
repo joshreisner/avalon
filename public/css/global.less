@@ -2,9 +2,11 @@
 @import "font-awesome.less";
 
 @gray : #bbb;
-@margin : 20px;
+@margin : 24px;
 
 body {
+	margin-top: @margin;
+
 	&.login { background-color: #ddd; }
 	
 	form {
@@ -13,10 +15,12 @@ body {
 		}
 	}
 	
+	.header { margin-bottom: @margin; }
+	
 	.main {
 		
 		h1 {
-			font-weight: normal; font-size: 24px; line-height: 34px;
+			font-weight: normal; font-size: @margin; line-height: @margin; margin: 0 0 @margin 0;
 			i { color: @gray; }
 		}
 		

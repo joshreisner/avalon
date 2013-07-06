@@ -1,4 +1,4 @@
-@extends('avalon::template');
+@extends('avalon::template')
 
 @section('title')
 	{{ Lang::get('avalon::messages.objects_create') }}
@@ -14,23 +14,27 @@
 	</h1>
 	
 	<div class="btn-group">
-		<a class="btn" href="/login/settings"><i class="icon-cog"></i> {{ Lang::get('avalon::messages.site_settings') }}</a>
+		<!--<a class="btn" href="/login/settings"><i class="icon-cog"></i> {{ Lang::get('avalon::messages.site_settings') }}</a>-->
 		<a class="btn" href="/login/users"><i class="icon-group"></i> {{ Lang::get('avalon::messages.users') }}</a>
 		<a class="btn active" href="/login/objects/add"><i class="icon-plus"></i> {{ Lang::get('avalon::messages.objects_create') }}</a>
 	</div>
 
-	<form class="form-horizontal" method="post" action="/login/objects/create">
+	{{ Form::open(array('action'=>'ObjectController@store', 'class'=>'form-horizontal')) }}
+
 		<div class="control-group">
 			<label class="control-label" for="email">{{ Lang::get('avalon::messages.objects_title') }}</label>
 	    	<div class="controls">
-	    		<input type="text" name="title" class="required title" autofocus="autofocus">
+	    		<input type="text" name="title" class="required" autofocus="autofocus">
 	    	</div>
 		</div>
+
 		<div class="form-actions">
 			<button type="submit" class="btn btn-primary">{{ Lang::get('avalon::messages.site_save') }}</button>
 			<a class="btn" href="/login/objects">{{ Lang::get('avalon::messages.site_cancel') }}</a>
 		</div>
-	</form>
+		
+	{{ Form::close() }}
+	
 @endsection
 
 @section('side')

@@ -9,7 +9,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="span12 header">
-					<img src="/packages/joshreisner/avalon/img/banner.png" width="1170" height="130">
+					<img src="/packages/joshreisner/avalon/img/banner.png" width="1170" height="92">
 				</div>
 			</div>
 			<div class="row">
