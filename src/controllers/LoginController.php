@@ -15,24 +15,12 @@ class LoginController extends \BaseController {
 	//show login page if not logged in
 	public function get_login()
 	{
+		//show install form
 		if (!DB::table('avalon')->count()) return View::make('avalon::login.install');
 
-		if (Session::has('avalon_id')) return Redirect::to('/login/objects', 303);
+		//already logged in
+		if (Session::has('avalon_id')) return Redirect::action('ObjectController@index');
 		
-		/*save session with token
-		if ($token = Cookie::get('avalon_token')) {
-			//has logged in
-			if ($user_id = DB::table('avalon_users')->where('token', $token)->pluck('id')) {
-				//log in with cookie
-				Session::get('avalon_id') = $user_id;
-				DB::table('avalon_users')->where('id', $user_id)->update(array('last_login' => new DateTime));
-			} else {
-				//unset bad cookie
-				Cookie::forget('avalon_token');
-			}
-			return Redirect::to('/login', 303); 
-		}*/
-
 		//not logged in
 		return View::make('avalon::login.index');
 	}
@@ -40,6 +28,7 @@ class LoginController extends \BaseController {
 	//handle a post to the login or install form
 	public function post_login()
 	{
+		//regular login
 		if (DB::table('avalon')->count()) {
 			//attempt auth
 			if ($user = DB::table('avalon_users')->where('email', Input::get('email'))->select('id', 'password')->first()) {
@@ -47,13 +36,11 @@ class LoginController extends \BaseController {
 					//log in with supplied credentials
 					Session::put('avalon_id', $user->id);
 					DB::table('avalon_users')->where('id', $user->id)->update(array('last_login' => new DateTime));
-					return Redirect::to('/login/objects', 303);
+					return Redirect::action('ObjectController@index');
 				}
 			}
-			return Redirect::to('/login', 303);
+			return Redirect::action('LoginController@get_login');
 		} 
-		
-		//$token = Str::random();
 		
 		//make user
 		$user_id = DB::table('avalon_users')->insertGetId(array(
@@ -61,7 +48,6 @@ class LoginController extends \BaseController {
 			'lastname'		=> Input::get('lastname'),
 			'email'			=> Input::get('email'),
 			'password'		=> Hash::make(Input::get('password')),
-			//'token'			=> $token,
 			'role'			=> 1,
 			'last_login'	=> new DateTime,
 			'updated_at'	=> new DateTime,
@@ -78,14 +64,14 @@ class LoginController extends \BaseController {
 		
 		Session::put('avalon_id', $user_id);
 		
-		return Redirect::to('/login/objects', 303);//->withCookie(Cookie::forever('avalon_token', $token));
+		return Redirect::action('ObjectController@index');
 
 	}
 	
-	public function get_logout()
+	public function logout()
 	{
 		Session::forget('avalon_id');
-		return Redirect::to('/login', 303);
+		return Redirect::action('LoginController@get_login');
 	}
 
 }

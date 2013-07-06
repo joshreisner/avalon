@@ -13,8 +13,8 @@
 	
 	<div class="btn-group">
 		<!--<a class="btn" href="/login/settings"><i class="icon-cog"></i> {{ Lang::get('avalon::messages.site_settings') }}</a>-->
-		<a class="btn" href="/login/users"><i class="icon-group"></i> {{ Lang::get('avalon::messages.users') }}</a>
-		<a class="btn" href="/login/objects/create"><i class="icon-plus"></i> {{ Lang::get('avalon::messages.objects_create') }}</a>
+		<a class="btn" href="{{ URL::action('UserController@index') }}"><i class="icon-group"></i> {{ Lang::get('avalon::messages.users') }}</a>
+		<a class="btn" href="{{ URL::action('ObjectController@create') }}"><i class="icon-plus"></i> {{ Lang::get('avalon::messages.objects_create') }}</a>
 	</div>
 
 	@if (count($objects))
@@ -28,7 +28,7 @@
 		</thead>
 		@foreach ($objects as $object)
 		<tr>
-			<td><a href="/login/objects/{{ $object->id }}">{{ $object->title }}</a></td>
+			<td><a href="{{ URL::action('ObjectController@show', $object->id) }}">{{ $object->title }}</a></td>
 			<td class="center">{{ $object->instance_count }}</td>
 			<td class="right">{{ $object->instance_updated_at }}</td>
 		</tr>
@@ -43,5 +43,5 @@
 
 @section('side')
 	<p>{{ Lang::get('avalon::messages.objects_help') }}</p>
-	<p><a href="/login/logout" class="btn btn-mini">{{ Lang::get('avalon::messages.site_logout') }}</a>
+	<p><a href="{{ URL::action('LoginController@logout') }}" class="btn btn-mini">{{ Lang::get('avalon::messages.site_logout') }}</a>
 @endsection

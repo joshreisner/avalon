@@ -8,15 +8,15 @@
 	<h1 class="breadcrumbs">
 		<a href="/"><i class="icon-home"></i></a>
 		<i class="icon-chevron-right"></i>
-		<a href="/login/objects">{{ Lang::get('avalon::messages.objects') }}</a>
+		<a href="{{ URL::action('ObjectController@index') }}">{{ Lang::get('avalon::messages.objects') }}</a>
 		<i class="icon-chevron-right"></i>
 		{{ $object->title }}
 	</h1>
 	
 	<div class="btn-group">
-		<a class="btn" href="/login/objects/{{ $object->id }}/edit"><i class="icon-cog"></i> {{ Lang::get('avalon::messages.objects_edit', array('title'=>$object->title)) }}</a>
-		<a class="btn" href="/login/objects/{{ $object->id }}/fields"><i class="icon-list"></i> {{ Lang::get('avalon::messages.instances_fields') }}</a>
-		<a class="btn" href="/login/objects/{{ $object->id }}/create"><i class="icon-plus"></i> {{ Lang::get('avalon::messages.instances_create') }}</a>
+		<a class="btn" href="{{ URL::action('ObjectController@edit', $object->id) }}"><i class="icon-cog"></i> {{ Lang::get('avalon::messages.objects_edit', array('title'=>$object->title)) }}</a>
+		<!--<a class="btn" href="/login/objects/{{ $object->id }}/fields"><i class="icon-list"></i> {{ Lang::get('avalon::messages.instances_fields') }}</a>-->
+		<a class="btn" href="{{ URL::action('InstanceController@create', $object->id) }}"><i class="icon-plus"></i> {{ Lang::get('avalon::messages.instances_create') }}</a>
 	</div>
 
 	@if (count($instances))

@@ -56,7 +56,7 @@ class ObjectController extends \BaseController {
 			$table->integer('subsequence')->nullable();
 		});
 		
-		return Redirect::to('/login/objects/' . $object_id, 303);
+		return Redirect::action('ObjectController@show', $object_id);
 	}
 
 	//show list of instances for an object

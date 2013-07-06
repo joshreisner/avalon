@@ -5,7 +5,7 @@
 @endsection
 
 @section('main')
-	<form method="post" action="/login" class="form-horizontal">
+	{{ Form::open(array('action'=>'LoginController@get_login', 'class'=>'form-horizontal')) }}
 		
 		<div class="modal">
 		
@@ -38,5 +38,5 @@
 		
 		</div>
 		
-	</form>
+	{{ Form::close() }}
 @endsection

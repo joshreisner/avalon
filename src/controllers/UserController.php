@@ -20,5 +20,17 @@ class UserController extends \BaseController {
 			'users'=>$users
 		));
 	}
+	
+	public function create() {
+		$objects = DB::table('avalon_objects')->get();
+		return View::make('avalon::users.create', array(
+			'roles'=>self::$roles,
+			'objects'=>$objects,
+		));
+	}
+	
+	public function edit($user_id) {
+		return 'edit screen for user ' . $user_id;
+	}
 
 }

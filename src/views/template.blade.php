@@ -9,7 +9,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="span12 header">
-					<img src="/packages/joshreisner/avalon/img/banner.png" width="1170" height="92">
+					<a href="{{ URL::action('ObjectController@index') }}"><img src="/packages/joshreisner/avalon/img/banner.png" width="1170" height="92"></a>
 				</div>
 			</div>
 			<div class="row">

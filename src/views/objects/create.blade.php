@@ -8,17 +8,11 @@
 	<h1 class="breadcrumbs">
 		<a href="/"><i class="icon-home"></i></a>
 		<i class="icon-chevron-right"></i>
-		<a href="/login/objects">{{ Lang::get('avalon::messages.objects') }}</a>
+		<a href="{{ URL::action('ObjectController@index') }}">{{ Lang::get('avalon::messages.objects') }}</a>
 		<i class="icon-chevron-right"></i>
 		{{ Lang::get('avalon::messages.objects_create') }}
 	</h1>
 	
-	<div class="btn-group">
-		<!--<a class="btn" href="/login/settings"><i class="icon-cog"></i> {{ Lang::get('avalon::messages.site_settings') }}</a>-->
-		<a class="btn" href="/login/users"><i class="icon-group"></i> {{ Lang::get('avalon::messages.users') }}</a>
-		<a class="btn active" href="/login/objects/add"><i class="icon-plus"></i> {{ Lang::get('avalon::messages.objects_create') }}</a>
-	</div>
-
 	{{ Form::open(array('action'=>'ObjectController@store', 'class'=>'form-horizontal')) }}
 
 		<div class="control-group">
@@ -30,7 +24,7 @@
 
 		<div class="form-actions">
 			<button type="submit" class="btn btn-primary">{{ Lang::get('avalon::messages.site_save') }}</button>
-			<a class="btn" href="/login/objects">{{ Lang::get('avalon::messages.site_cancel') }}</a>
+			<a class="btn" href="{{ URL::action('ObjectController@index') }}">{{ Lang::get('avalon::messages.site_cancel') }}</a>
 		</div>
 		
 	{{ Form::close() }}

@@ -9,7 +9,7 @@ return array(
 	'objects'				=> 'Objects',
 	'objects_create'		=> 'Add New Object',
 	'objects_create_help'	=> 'This action will create a new table in the database.',
-	'objects_edit'			=> ':title Settings',
+	'objects_edit'			=> 'Settings',
 	'objects_empty'			=> 'No objects have been added yet.',
 	'objects_form_help'		=> 'Form Help',
 	'objects_help'			=> 'This is the home page, an index of editable \'objects.\'',
@@ -18,6 +18,7 @@ return array(
 	'objects_title'			=> 'Title',
 
 	'users'					=> 'Users',
+	'users_create'			=> 'Create New User',
 	'users_email'			=> 'Email',
 	'users_firstname'		=> 'First Name',
 	'users_help'			=> 'These users have access to the CMS.',

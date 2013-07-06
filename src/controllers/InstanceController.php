@@ -3,7 +3,7 @@
 class InstanceController extends \BaseController {
 
 	//show create form for an object instance
-	public function get_create($object_id) {
+	public function create($object_id) {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->get();
 		return View::make('avalon::instances.create', array(
@@ -13,7 +13,7 @@ class InstanceController extends \BaseController {
 	}
 
 	//save a new object instance to the database
-	public function post_store($object_id) {
+	public function store($object_id) {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->get();
 		
@@ -41,6 +41,6 @@ class InstanceController extends \BaseController {
 			'instance_updated_by'=>Session::get('avalon_id')
 		));
 		
-		return Redirect::to('/login/objects/' . $object_id, 303);
+		return Redirect::action('ObjectController@show', $object_id);
 	}
 }
