@@ -1,39 +1,46 @@
 @extends('avalon::template')
 
 @section('title')
-	{{ Lang::get('avalon::messages.objects') }} &lt; {{ Lang::get('avalon::messages.objects_create') }}
+	{{ Lang::get('avalon::messages.instances_edit') }}
 @endsection
 
 @section('main')
-	<h1 class="breadcrumbs">
-		<a href="/"><i class="icon-home"></i></a>
-		<i class="icon-chevron-right"></i>
-		<a href="{{ URL::action('ObjectController@index') }}">{{ Lang::get('avalon::messages.objects') }}</a>
-		<i class="icon-chevron-right"></i>
-		<a href="{{ URL::action('ObjectController@show', $object->id) }}">{{ $object->title }}</a>
-		<i class="icon-chevron-right"></i>
-		{{ Lang::get('avalon::messages.instances_create') }}
-	</h1>
+
+	{{ Breadcrumbs::leave(array(
+		URL::action('ObjectController@index')=>Lang::get('avalon::messages.objects'),
+		URL::action('ObjectController@show', $object->id)=>$object->title,
+		Lang::get('avalon::messages.instances_edit'),
+		)) }}
+
+	{{ Former::horizontal_open()->action(URL::action('InstanceController@update', array($object->id, $instance->id)))->method('put') }}
 	
-	{{ Form::open(array('action'=>array('InstanceController@store', $object->id), 'class'=>'form-horizontal')) }}
+	@foreach ($fields as $field)
+		@if ($field->type == 'string')
+			{{ Former::text($field->name)
+				->label($field->title)
+				->class($field->required ? 'required' : '')
+				->value($instance->{$field->name})
+				->inlineHelp($field->help)
+				}}
+		@elseif ($field->type == 'text')
+			{{ Former::textarea($field->name)
+				->label($field->title)
+				->class($field->required ? 'required' : '')
+				->value($instance->{$field->name})
+				->inlineHelp($field->help)
+				}}
+		@endif
+	@endforeach
 	
-		@foreach ($fields as $field)
-		<div class="control-group">
-			<label class="control-label" for="email">{{ $field->title }}</label>
-	    	<div class="controls">
-	    		<input type="text" name="{{ $field->name }}" class="required title"@if ($field->precedence == 1) autofocus="autofocus"@endif>
-	    	</div>
-		</div>
-		@endforeach
-		
-		<div class="form-actions">
-			<button type="submit" class="btn btn-primary">{{ Lang::get('avalon::messages.site_save') }}</button>
-			<a class="btn" href="{{ URL::action('ObjectController@show', $object->id) }}">{{ Lang::get('avalon::messages.site_cancel') }}</a>
-		</div>
-		
-	{{ Form::close() }}
+	{{ Former::actions()
+		->primary_submit(Lang::get('avalon::messages.site_save'))
+		->link(Lang::get('avalon::messages.site_cancel'), URL::action('ObjectController@show', $object->id))
+		}}
+	
+	{{ Former::close() }}
+
 @endsection
 
 @section('side')
-	<p>{{ Lang::get('avalon::messages.objects_create_help') }}</p>
+	<p>{{ $object->form_help }}</p>
 @endsection

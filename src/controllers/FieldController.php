@@ -90,7 +90,29 @@ class FieldController extends \BaseController {
 	
 	//save edits to database
 	public function update($object_id, $field_id) {
+		$table_name = DB::table('avalon_objects')->where('id', $object_id)->pluck('name');
+		$new_field_name = Str::slug(Input::get('name'), '_');
+		$old_field_name = DB::table('avalon_fields')->where('id', $field_id)->pluck('name');
+		$required	= Input::has('required') ? 1 : 0;
+
+		//rename column if necessary		
+		if ($old_field_name != $new_field_name) {
+			Schema::table($table_name, function($table) use ($old_field_name, $new_field_name) {
+				//todo check in a bit to see if this is working -- mysterious error "Call to undefined method"
+				//$table->renameColumn($old_field_name, $new_field_name);
+			});
+		}
+
+		DB::table('avalon_fields')->where('id', $field_id)->update(array(
+			'title'		=>Input::get('title'),
+			//'name'		=>$new_field_name,
+			'visibility'=>Input::get('visibility'),
+			'required'	=>$required,
+			'updated_by'=>Session::get('avalon_id'),
+			'updated_at'=>new DateTime,
+		));
 		
+		return Redirect::action('FieldController@index', $object_id);
 	}
 	
 	//delete field & remove from database

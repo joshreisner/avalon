@@ -17,7 +17,7 @@
 	
 	{{ Former::text('title')
 		->label(Lang::get('avalon::messages.fields_title'))
-		->required()
+		->class('required')
 		}}
 	
 	{{ Former::select('type')

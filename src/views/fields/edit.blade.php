@@ -18,13 +18,13 @@
 	{{ Former::text('title')
 		->label(Lang::get('avalon::messages.fields_title'))
 		->value($field->title)
-		->required()
+		->class('required')
 		}}
 	
 	{{ Former::text('name')
 		->label(Lang::get('avalon::messages.fields_name'))
 		->value($field->name)
-		->required()
+		->class('required')
 		}}
 	
 	{{ Former::select('type')

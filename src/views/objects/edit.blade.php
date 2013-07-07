@@ -17,14 +17,14 @@
 	{{ Former::text('title')
 		->label(Lang::get('avalon::messages.objects_title'))
 		->value($object->title)
-		->required()
+		->class('required')
 		->inlineHelp(Lang::get('avalon::messages.objects_title_help'))
 		}}
 	
 	{{ Former::text('name')
 		->label(Lang::get('avalon::messages.objects_name'))
 		->value($object->name)
-		->required()
+		->class('required')
 		}}
 	
 	{{ Former::textarea('list_help')

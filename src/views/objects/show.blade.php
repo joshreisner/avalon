@@ -30,8 +30,7 @@
 		@foreach ($instances as $instance)
 		<tr>
 			@foreach($fields as $field)
-			<?php $field_name = $field->name //make this less of a hack ?>
-			<td>{{ $instance->$field_name }}</td>
+			<td><a href="{{ URL::action('InstanceController@edit', array($object->id, $instance->id)) }}">{{ $instance->{$field->name} }}</a></td>
 			@endforeach
 			<td class="right">{{ $instance->updated_at }}</td>
 		</tr>

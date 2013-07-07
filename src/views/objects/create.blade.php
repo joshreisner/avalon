@@ -15,7 +15,7 @@
 	
 	{{ Former::text('title')
 		->label(Lang::get('avalon::messages.objects_title'))
-		->required()
+		->class('required')
 		->inlineHelp(Lang::get('avalon::messages.objects_title_help'))
 		}}
 	

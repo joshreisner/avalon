@@ -3,6 +3,7 @@
 return array(
 
 	'instances_create'		=> 'Create',
+	'instances_edit'		=> 'Edit',
 	'instances_empty'		=> 'No :title have been added yet.',
 
 	'objects'				=> 'Objects',
