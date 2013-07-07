@@ -18,9 +18,17 @@
 	</div>
 
 	@if (count($instances))
+		@if (($object->order_by == 'precedence') && (count($instances) > 1))
+	<table class="table table-condensed draggable" data-draggable-url="{{ URL::action('InstanceController@postReorder', $object->id) }}">
+		@else
 	<table class="table table-condensed">
+		@endif
+	
 		<thead>
 		<tr>
+			@if (($object->order_by == 'precedence') && (count($instances) > 1))
+			<th class="draggy"></th>
+			@endif
 			@foreach($fields as $field)
 			<th>{{ $field->title }}</th>
 			@endforeach
@@ -28,7 +36,10 @@
 		</tr>
 		</thead>
 		@foreach ($instances as $instance)
-		<tr>
+		<tr id="{{ $instance->id }}">
+			@if (($object->order_by == 'precedence') && (count($instances) > 1))
+			<td class="draggy"><i class="icon-reorder"></i></td>
+			@endif
 			@foreach($fields as $field)
 			<td><a href="{{ URL::action('InstanceController@edit', array($object->id, $instance->id)) }}">{{ $instance->{$field->name} }}</a></td>
 			@endforeach

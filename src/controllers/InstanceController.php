@@ -92,4 +92,19 @@ class InstanceController extends \BaseController {
 	public function destroy($object_id, $instance_id) {
 		
 	}
+	
+	//reorder fields by drag-and-drop
+	public function postReorder($object_id) {
+		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
+		$instances = explode('&', Input::get('order'));
+		$precedence = 1;
+		foreach ($instances as $instance) {
+			list($garbage, $id) = explode('=', $instance);
+			if (!empty($id)) {
+				DB::table($object->name)->where('id', $id)->update(array('precedence'=>$precedence));
+				$precedence++;
+			}
+		}
+		//echo 'done reordering';
+	}
 }

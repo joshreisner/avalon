@@ -48,6 +48,8 @@ body {
 				input { background-color: #FFADB9; }
 				.help-inline { display: none !important; }
 			}
+			
+			textarea { width: 676px; height: 176px; max-width: 100%; }
 		}
 	}
 	
@@ -67,9 +69,22 @@ body {
 		table {
 			table-layout: fixed;
 			th, td {
-				&.draggy { width: 18px; text-align: center; color: @gray; cursor: move; }
+				&.draggy { width: 18px; text-align: center; color: @gray; 
+				/* cursor: move;  */
+				cursor: url(https://mail.google.com/mail/images/2/openhand.cur), default !important;
+				}
 				&.center { text-align: center; }
 				&.right { text-align: right; }
+			}
+			tr.dragging {
+				td.draggy {
+					cursor: url(https://mail.google.com/mail/images/2/closedhand.cur), default !important;
+				}
+				td { 
+					border-color: darken(@gray, 20%); border-bottom-width: 1px; border-bottom-style: solid; 
+					background-color: lighten(@gray, 20%);
+				}
+				
 			}
 		}
 		

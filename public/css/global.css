@@ -1222,10 +1222,13 @@ body form .control-group label sup{display:none;}
 body form .control-group:last-child{margin-bottom:0;}
 body form .control-group.error input{background-color:#FFADB9;}
 body form .control-group.error .help-inline{display:none !important;}
+body form .control-group textarea{width:676px;height:176px;max-width:100%;}
 body .header{margin-bottom:24px;}
 body .main h1{font-weight:normal;font-size:24px;line-height:24px;margin:0 0 24px 0;}body .main h1 i{color:#bbbbbb;}
 body .main .btn-group{margin-bottom:24px;}
-body .main table{table-layout:fixed;}body .main table th.draggy,body .main table td.draggy{width:18px;text-align:center;color:#bbbbbb;cursor:move;}
+body .main table{table-layout:fixed;}body .main table th.draggy,body .main table td.draggy{width:18px;text-align:center;color:#bbbbbb;cursor:url(https://mail.google.com/mail/images/2/openhand.cur),default !important;}
 body .main table th.center,body .main table td.center{text-align:center;}
 body .main table th.right,body .main table td.right{text-align:right;}
+body .main table tr.dragging td.draggy{cursor:url(https://mail.google.com/mail/images/2/closedhand.cur),default !important;}
+body .main table tr.dragging td{border-color:#888888;border-bottom-width:1px;border-bottom-style:solid;background-color:#eeeeee;}
 body .side .inner{border-left:2px dashed #bbbbbb;padding:24px;color:#bbbbbb;margin-top:38px;}body .side .inner p{margin:0 0 24px 0;}

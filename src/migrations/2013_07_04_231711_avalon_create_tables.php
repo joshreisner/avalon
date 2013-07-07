@@ -16,7 +16,7 @@ class AvalonCreateTables extends Migration {
 			$table->string('link_color')->default('#336699');
 			$table->string('banner_image')->default('/packages/joshreisner/avalon/img/banner.png');
 			$table->integer('updated_by');
-			$table->timestamp('updated_at');
+			$table->dateTime('updated_at');
 		});
 		
 		Schema::create('avalon_fields', function($table){
@@ -34,7 +34,7 @@ class AvalonCreateTables extends Migration {
 			$table->string('help')->nullable();
 			$table->integer('updated_by');
 			$table->integer('precedence');
-			$table->timestamp('updated_at');
+			$table->dateTime('updated_at');
 		});
 		
 		Schema::create('avalon_object_links', function($table){
@@ -51,11 +51,11 @@ class AvalonCreateTables extends Migration {
 			$table->increments('id');
 			$table->string('title');
 			$table->string('name');
-			$table->string('order_by')->default('title');
+			$table->string('order_by')->default('precedence');
 			$table->string('direction')->default('ASC');
 			$table->integer('group_by_field')->nullable();
 			$table->integer('instance_count')->default(0);
-			$table->timestamp('instance_updated_at')->nullable();
+			$table->dateTime('instance_updated_at')->nullable();
 			$table->integer('instance_updated_by')->nullable();
 			$table->text('list_help')->nullable();
 			$table->text('form_help')->nullable();
@@ -63,7 +63,7 @@ class AvalonCreateTables extends Migration {
 			$table->string('web_page')->nullable();
 			$table->string('list_grouping')->nullable();
 			$table->integer('updated_by');
-			$table->timestamp('updated_at');
+			$table->dateTime('updated_at');
 		});
 		
 		Schema::create('avalon_users', function($table){
@@ -73,11 +73,11 @@ class AvalonCreateTables extends Migration {
 			$table->string('email')->unique();
 			$table->string('password');
 			//$table->string('token')->unique();
-			$table->integer('role')->default(3);
+			$table->integer('role');
 			$table->boolean('active')->default(1);
-			$table->timestamp('last_login');
-			$table->integer('updated_by')->nullable(); //for first user only, temporary
-			$table->timestamp('updated_at');
+			$table->dateTime('last_login')->nullable();
+			$table->integer('updated_by')->nullable(); //for first user
+			$table->dateTime('updated_at');
 		});
 		
 	}

@@ -63,7 +63,7 @@ class ObjectController extends \BaseController {
 	public function show($object_id) {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->where('visibility', 'list')->orderBy('precedence')->get();
-		$instances = DB::table($object->name)->get(); //todo select only $fields
+		$instances = DB::table($object->name)->orderBy($object->order_by, $object->direction)->get(); //todo select only $fields
 		
 		foreach ($instances as &$instance) {
 			$instance->updated_at = \Carbon\Carbon::createFromTimeStamp(strtotime($instance->updated_at))->diffForHumans();

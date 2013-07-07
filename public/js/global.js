@@ -33,11 +33,11 @@ $(function(){
 	//draggable tables
 	$('table.draggable').tableDnD({
 		dragHandle: '.draggy',
+		onDragClass: 'dragging',
 		onDrop: function(table, row) {
 			$.post($(table).attr('data-draggable-url'), { order: $(table).tableDnDSerialize() }, function(data){
-				console.log(data);
-			});
-			//alert();
+				//window.console.log('sent post and data was ' + data);
+			}).fail(function() { alert("error"); });
 		}
 	});
 });
