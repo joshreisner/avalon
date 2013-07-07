@@ -26,6 +26,7 @@ return array(
 	'fields_destroy'		=> 'Destroy Field',
 	'fields_help'			=> 'Help',
 	'fields_list_help'		=> 'A list of fields for the :title object.',
+	'fields_name'			=> 'Column Name',
 	'fields_title'			=> 'Title',
 	'fields_required'		=> 'Required',
 	'fields_type'			=> 'Type',

@@ -13,51 +13,50 @@
 		Lang::get('avalon::messages.fields_edit'),
 		)) }}
 
-	{{ Form::open(array('action'=>array('FieldController@store', $object->id), 'class'=>'form-horizontal')) }}
-
-		<div class="control-group">
-			<label class="control-label" for="title">{{ Lang::get('avalon::messages.fields_title') }}</label>
-	    	<div class="controls">
-	    		<input type="text" id="title" name="title" class="required" autofocus="autofocus" value="{{ $field->title }}">
-	    	</div>
-		</div>
-
-		<div class="control-group">
-			<label class="control-label" for="name">{{ Lang::get('avalon::messages.fields_title') }}</label>
-	    	<div class="controls">
-	    		<input type="text" id="name" name="name" class="required" value="{{ $field->name }}">
-	    	</div>
-		</div>
-
-		<div class="control-group">
-			<label class="control-label" for="type">{{ Lang::get('avalon::messages.fields_type') }}</label>
-	    	<div class="controls">
-	    		{{ Form::select('type', $types, $field->type, array('disabled'=>'disabled')) }}
-	    	</div>
-		</div>
-
-		<div class="control-group">
-			<label class="control-label" for="visibility">{{ Lang::get('avalon::messages.fields_visibility') }}</label>
-	    	<div class="controls">
-	    		{{ Form::select('visibility', $visibility) }}
-	    	</div>
-		</div>
-
-		<div class="control-group">
-			<label class="control-label" for="required">{{ Lang::get('avalon::messages.fields_required') }}</label>
-	    	<div class="controls">
-				<label class="checkbox">
-					<input type="checkbox" name="required">
-				</label>
-	    	</div>
-		</div>
-
-		<div class="form-actions">
-			<button type="submit" class="btn btn-primary">{{ Lang::get('avalon::messages.site_save') }}</button>
-			<a class="btn" href="{{ URL::action('FieldController@index', $object->id) }}">{{ Lang::get('avalon::messages.site_cancel') }}</a>
-		</div>
-		
-	{{ Form::close() }}
+	{{ Former::horizontal_open()->action(URL::action('FieldController@update', array($object->id, $field->id)))->method('put') }}
+	
+	{{ Former::text('title')
+		->label(Lang::get('avalon::messages.fields_title'))
+		->value($field->title)
+		->required()
+		}}
+	
+	{{ Former::text('name')
+		->label(Lang::get('avalon::messages.fields_name'))
+		->value($field->name)
+		->required()
+		}}
+	
+	{{ Former::select('type')
+		->options($types)
+		->value($field->type)
+		->label(Lang::get('avalon::messages.fields_type'))
+		->disabled()
+		}}
+	
+	{{ Former::select('visibility')
+		->options($visibility)
+		->value($field->visibility)
+		->label(Lang::get('avalon::messages.fields_visibility'))
+		}}
+	
+	@if ($field->required)
+	{{ Former::checkbox('required')
+		->checked()
+		->label(Lang::get('avalon::messages.fields_required'))
+		}}
+	@else
+	{{ Former::checkbox('required')
+		->label(Lang::get('avalon::messages.fields_required'))
+		}}
+	@endif
+	
+	{{ Former::actions()
+		->primary_submit(Lang::get('avalon::messages.site_save'))
+		->link(Lang::get('avalon::messages.site_cancel'), URL::action('FieldController@index', $object->id))
+		}}
+	
+	{{ Former::close() }}
 	
 @endsection
 

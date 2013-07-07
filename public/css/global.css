@@ -1218,6 +1218,7 @@ html{height:100%;}
 body{margin-top:24px;height:100%;}body.login{background:#d0d0d0;background:-moz-linear-gradient(top, #d0d0d0 0%, #e0e0e0 100%);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #d0d0d0), color-stop(100%, #e0e0e0));background:-webkit-linear-gradient(top, #d0d0d0 0%, #e0e0e0 100%);background:-o-linear-gradient(top, #d0d0d0 0%, #e0e0e0 100%);background:-ms-linear-gradient(top, #d0d0d0 0%, #e0e0e0 100%);background:linear-gradient(top, #d0d0d0 0%, #e0e0e0 100%);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#d0d0d0', endColorstr='#e0e0e0', GradientType=0);}body.login div.modal{border-radius:20px;border:0;}body.login div.modal div.modal-header{-webkit-border-top-left-radius:20px;-webkit-border-top-right-radius:20px;-moz-border-radius-topleft:20px;-moz-border-radius-topright:20px;border-top-left-radius:20px;border-top-right-radius:20px;}
 body.login div.modal div.modal-body{padding:24px 0;}
 body.login div.modal div.modal-footer{-webkit-border-bottom-left-radius:20px;-webkit-border-bottom-right-radius:20px;-moz-border-radius-bottomleft:20px;-moz-border-radius-bottomright:20px;border-bottom-left-radius:20px;border-bottom-right-radius:20px;}
+body form .control-group label sup{display:none;}
 body form .control-group:last-child{margin-bottom:0;}
 body form .control-group.error input{background-color:#FFADB9;}
 body form .control-group.error .help-inline{display:none !important;}

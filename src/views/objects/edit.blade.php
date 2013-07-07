@@ -12,42 +12,37 @@
 		Lang::get('avalon::messages.objects_edit'),
 		)) }}
 
-	{{ Form::open(array('action'=>array('ObjectController@update', $object->id), 'class'=>'form-horizontal', 'method'=>'put')) }}
-
-		<div class="control-group">
-			<label class="control-label" for="title">{{ Lang::get('avalon::messages.objects_title') }}</label>
-	    	<div class="controls">
-	    		<input type="text" id="title" name="title" class="required" value="{{ $object->title }}" autofocus="autofocus">
-	    	</div>
-		</div>
-
-		<div class="control-group">
-			<label class="control-label" for="name">{{ Lang::get('avalon::messages.objects_name') }}</label>
-	    	<div class="controls">
-	    		<input type="text" id="name" name="name" class="required" value="{{ $object->name }}">
-	    	</div>
-		</div>
-
-		<div class="control-group">
-			<label class="control-label" for="list_help">{{ Lang::get('avalon::messages.objects_list_help') }}</label>
-	    	<div class="controls">
-	    		<textarea id="list_help" name="list_help">{{ $object->list_help }}</textarea>
-	    	</div>
-		</div>
-
-		<div class="control-group">
-			<label class="control-label" for="form_help">{{ Lang::get('avalon::messages.objects_form_help') }}</label>
-	    	<div class="controls">
-	    		<textarea id="form_help" name="form_help">{{ $object->form_help }}</textarea>
-			</div>
-		</div>
-
-		<div class="form-actions">
-			<button type="submit" class="btn btn-primary">{{ Lang::get('avalon::messages.site_save') }}</button>
-			<a class="btn" href="{{ URL::action('ObjectController@show', $object->id) }}">{{ Lang::get('avalon::messages.site_cancel') }}</a>
-		</div>
-		
-	{{ Form::close() }}
+	{{ Former::horizontal_open()->action(URL::action('ObjectController@update', $object->id))->method('put') }}
+	
+	{{ Former::text('title')
+		->label(Lang::get('avalon::messages.objects_title'))
+		->value($object->title)
+		->required()
+		->inlineHelp(Lang::get('avalon::messages.objects_title_help'))
+		}}
+	
+	{{ Former::text('name')
+		->label(Lang::get('avalon::messages.objects_name'))
+		->value($object->name)
+		->required()
+		}}
+	
+	{{ Former::textarea('list_help')
+		->label(Lang::get('avalon::messages.objects_list_help'))
+		->value($object->list_help)
+		}}
+	
+	{{ Former::textarea('form_help')
+		->label(Lang::get('avalon::messages.objects_form_help'))
+		->value($object->form_help)
+		}}
+	
+	{{ Former::actions()
+		->primary_submit(Lang::get('avalon::messages.site_save'))
+		->link(Lang::get('avalon::messages.site_cancel'), URL::action('ObjectController@show', $object->id))
+		}}
+	
+	{{ Former::close() }}
 	
 @endsection
 

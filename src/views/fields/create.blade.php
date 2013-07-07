@@ -13,44 +13,33 @@
 		Lang::get('avalon::messages.fields_create'),
 		)) }}
 
-	{{ Form::open(array('action'=>array('FieldController@store', $object->id), 'class'=>'form-horizontal')) }}
-
-		<div class="control-group">
-			<label class="control-label" for="title">{{ Lang::get('avalon::messages.fields_title') }}</label>
-	    	<div class="controls">
-	    		<input type="text" id="title" name="title" class="required" autofocus="autofocus">
-	    	</div>
-		</div>
-
-		<div class="control-group">
-			<label class="control-label" for="type">{{ Lang::get('avalon::messages.fields_type') }}</label>
-	    	<div class="controls">
-	    		{{ Form::select('type', $types) }}
-	    	</div>
-		</div>
-
-		<div class="control-group">
-			<label class="control-label" for="visibility">{{ Lang::get('avalon::messages.fields_visibility') }}</label>
-	    	<div class="controls">
-	    		{{ Form::select('visibility', $visibility) }}
-	    	</div>
-		</div>
-
-		<div class="control-group">
-			<label class="control-label" for="required">{{ Lang::get('avalon::messages.fields_required') }}</label>
-	    	<div class="controls">
-				<label class="checkbox">
-					<input type="checkbox" id="required" name="required">
-				</label>
-	    	</div>
-		</div>
-
-		<div class="form-actions">
-			<button type="submit" class="btn btn-primary">{{ Lang::get('avalon::messages.site_save') }}</button>
-			<a class="btn" href="{{ URL::action('FieldController@index', $object->id) }}">{{ Lang::get('avalon::messages.site_cancel') }}</a>
-		</div>
-		
-	{{ Form::close() }}
+	{{ Former::horizontal_open()->action(URL::action('FieldController@store', $object->id)) }}
+	
+	{{ Former::text('title')
+		->label(Lang::get('avalon::messages.fields_title'))
+		->required()
+		}}
+	
+	{{ Former::select('type')
+		->options($types)
+		->label(Lang::get('avalon::messages.fields_type'))
+		}}
+	
+	{{ Former::select('visibility')
+		->options($visibility)
+		->label(Lang::get('avalon::messages.fields_visibility'))
+		}}
+	
+	{{ Former::checkbox('required')
+		->label(Lang::get('avalon::messages.fields_required'))
+		}}
+	
+	{{ Former::actions()
+		->primary_submit(Lang::get('avalon::messages.site_save'))
+		->link(Lang::get('avalon::messages.site_cancel'), URL::action('FieldController@index', $object->id))
+		}}
+	
+	{{ Former::close() }}
 	
 @endsection
 
