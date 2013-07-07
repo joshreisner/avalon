@@ -62,7 +62,7 @@ class ObjectController extends \BaseController {
 	//show list of instances for an object
 	public function show($object_id) {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
-		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->where('visibility', 'list')->get();
+		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->where('visibility', 'list')->orderBy('precedence')->get();
 		$instances = DB::table($object->name)->get(); //todo select only $fields
 		
 		foreach ($instances as &$instance) {

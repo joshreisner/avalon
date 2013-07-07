@@ -5,14 +5,12 @@
 @endsection
 
 @section('main')
-	<h1 class="breadcrumbs">
-		<a href="/"><i class="icon-home"></i></a>
-		<i class="icon-chevron-right"></i>
-		<a href="{{ URL::action('ObjectController@index') }}">{{ Lang::get('avalon::messages.objects') }}</a>
-		<i class="icon-chevron-right"></i>
-		{{ $object->title }}
-	</h1>
-	
+
+	{{ Breadcrumbs::leave(array(
+		URL::action('ObjectController@index')=>Lang::get('avalon::messages.objects'),
+		$object->title,
+		)) }}
+
 	<div class="btn-group">
 		<a class="btn" href="{{ URL::action('ObjectController@edit', $object->id) }}"><i class="icon-cog"></i> {{ Lang::get('avalon::messages.objects_edit', array('title'=>$object->title)) }}</a>
 		<a class="btn" href="{{ URL::action('FieldController@index', $object->id) }}"><i class="icon-list"></i> {{ Lang::get('avalon::messages.fields') }}</a>

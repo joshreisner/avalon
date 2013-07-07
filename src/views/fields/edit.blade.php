@@ -6,18 +6,13 @@
 
 @section('main')
 
-	<h1 class="breadcrumbs">
-		<a href="/"><i class="icon-home"></i></a>
-		<i class="icon-chevron-right"></i>
-		<a href="{{ URL::action('ObjectController@index') }}">{{ Lang::get('avalon::messages.objects') }}</a>
-		<i class="icon-chevron-right"></i>
-		<a href="{{ URL::action('ObjectController@show', $object->id) }}">{{ $object->title }}</a>
-		<i class="icon-chevron-right"></i>
-		<a href="{{ URL::action('FieldController@index', $object->id) }}">{{ Lang::get('avalon::messages.fields') }}</a>
-		<i class="icon-chevron-right"></i>
-		{{ Lang::get('avalon::messages.fields_edit') }}
-	</h1>
-	
+	{{ Breadcrumbs::leave(array(
+		URL::action('ObjectController@index')=>Lang::get('avalon::messages.objects'),
+		URL::action('ObjectController@show', $object->id)=>$object->title,
+		URL::action('FieldController@index', $object->id)=>Lang::get('avalon::messages.fields'),
+		Lang::get('avalon::messages.fields_edit'),
+		)) }}
+
 	{{ Form::open(array('action'=>array('FieldController@store', $object->id), 'class'=>'form-horizontal')) }}
 
 		<div class="control-group">

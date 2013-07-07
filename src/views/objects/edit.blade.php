@@ -5,16 +5,13 @@
 @endsection
 
 @section('main')
-	<h1 class="breadcrumbs">
-		<a href="/"><i class="icon-home"></i></a>
-		<i class="icon-chevron-right"></i>
-		<a href="{{ URL::action('ObjectController@index') }}">{{ Lang::get('avalon::messages.objects') }}</a>
-		<i class="icon-chevron-right"></i>
-		<a href="{{ URL::action('ObjectController@show', $object->id) }}">{{ $object->title }}</a>
-		<i class="icon-chevron-right"></i>
-		{{ Lang::get('avalon::messages.objects_edit') }}
-	</h1>
-	
+
+	{{ Breadcrumbs::leave(array(
+		URL::action('ObjectController@index')=>Lang::get('avalon::messages.objects'),
+		URL::action('ObjectController@show', $object->id)=>$object->title,
+		Lang::get('avalon::messages.objects_edit'),
+		)) }}
+
 	{{ Form::open(array('action'=>array('ObjectController@update', $object->id), 'class'=>'form-horizontal', 'method'=>'put')) }}
 
 		<div class="control-group">

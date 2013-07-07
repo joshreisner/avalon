@@ -5,12 +5,11 @@
 @endsection
 
 @section('main')
-	<h1 class="breadcrumbs">
-		<a href="/"><i class="icon-home"></i></a>
-		<i class="icon-chevron-right"></i>
-		{{ Lang::get('avalon::messages.objects') }}
-	</h1>
-	
+
+	{{ Breadcrumbs::leave(array(
+		Lang::get('avalon::messages.objects'),
+		)) }}
+
 	<div class="btn-group">
 		<!--<a class="btn" href="/login/settings"><i class="icon-cog"></i> {{ Lang::get('avalon::messages.site_settings') }}</a>-->
 		<a class="btn" href="{{ URL::action('UserController@index') }}"><i class="icon-group"></i> {{ Lang::get('avalon::messages.users') }}</a>
