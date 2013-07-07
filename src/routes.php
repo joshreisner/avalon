@@ -11,24 +11,21 @@
 |
 */
 
-//temp
+//unprotected routes
+Route::get('/' . Config::get('avalon::prefix'),		'LoginController@getIndex');
+Route::post('/' . Config::get('avalon::prefix'),	'LoginController@postIndex');
 
-Route::get('/' . Config::get('avalon::prefix'),		'LoginController@get_login');
-Route::post('/' . Config::get('avalon::prefix'),	'LoginController@post_login');
-
-//protect routes below
+//protected routes
 Route::group(array('before'=>'avalon_auth', 'prefix'=>Config::get('avalon::prefix')), function()
 {
-	Route::get('logout',				'LoginController@logout');
-
-	Route::resource('objects',			'ObjectController');
-	Route::resource('users',			'UserController');
-	
-	Route::get('/objects/{id}/create',	'InstanceController@create');
-	Route::post('/objects/{id}',		'InstanceController@store');
+	Route::get('logout',					'LoginController@getLogout');
+	Route::resource('objects',				'ObjectController');
+	Route::resource('objects.fields',		'FieldController');
+	Route::resource('objects.instances',	'InstanceController');
+	Route::resource('users',				'UserController');
 });
 
 Route::filter('avalon_auth', function()
 {
-    if (!Session::has('avalon_id')) return Redirect::to('/' . Config::get('avalon::prefix'), 303);
+    if (!Session::has('avalon_id')) return Redirect::action('LoginController@getIndex');
 });

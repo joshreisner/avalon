@@ -5,6 +5,7 @@
 @endsection
 
 @section('main')
+
 	<h1 class="breadcrumbs">
 		<a href="/"><i class="icon-home"></i></a>
 		<i class="icon-chevron-right"></i>
@@ -19,6 +20,8 @@
 			<label class="control-label" for="email">{{ Lang::get('avalon::messages.objects_title') }}</label>
 	    	<div class="controls">
 	    		<input type="text" name="title" class="required" autofocus="autofocus">
+				<span class="help-inline">{{ Lang::get('avalon::messages.objects_title_help') }}</span>
+
 	    	</div>
 		</div>
 

@@ -43,5 +43,5 @@
 
 @section('side')
 	<p>{{ Lang::get('avalon::messages.objects_help') }}</p>
-	<p><a href="{{ URL::action('LoginController@logout') }}" class="btn btn-mini">{{ Lang::get('avalon::messages.site_logout') }}</a>
+	<p><a href="{{ URL::action('LoginController@getLogout') }}" class="btn btn-mini">{{ Lang::get('avalon::messages.site_logout') }}</a>
 @endsection

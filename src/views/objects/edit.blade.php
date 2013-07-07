@@ -55,5 +55,8 @@
 @endsection
 
 @section('side')
-	<p>{{ Lang::get('avalon::messages.objects_create_help') }}</p>
+	<p>{{ Lang::get('avalon::messages.objects_edit_help', array('title'=>$object->title)) }}</p>
+	{{ Form::open(array('method'=>'delete', 'action'=>array('ObjectController@destroy', $object->id))) }}
+	<button type="submit" class="btn btn-mini">{{ Lang::get('avalon::messages.objects_destroy') }}</button>
+	{{ Form::close() }}
 @endsection

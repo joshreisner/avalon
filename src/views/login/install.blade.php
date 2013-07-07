@@ -5,7 +5,7 @@
 @endsection
 
 @section('main')
-	{{ Form::open(array('action'=>'LoginController@get_login', 'class'=>'form-horizontal')) }}
+	{{ Form::open(array('action'=>'LoginController@getIndex', 'class'=>'form-horizontal')) }}
 		
 		<div class="modal">
 		

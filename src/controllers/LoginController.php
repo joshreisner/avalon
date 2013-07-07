@@ -13,7 +13,7 @@ class LoginController extends \BaseController {
 	*/
 
 	//show login page if not logged in
-	public function get_login()
+	public function getIndex()
 	{
 		//show install form
 		if (!DB::table('avalon')->count()) return View::make('avalon::login.install');
@@ -26,7 +26,7 @@ class LoginController extends \BaseController {
 	}
 
 	//handle a post to the login or install form
-	public function post_login()
+	public function postIndex()
 	{
 		//regular login
 		if (DB::table('avalon')->count()) {
@@ -39,7 +39,7 @@ class LoginController extends \BaseController {
 					return Redirect::action('ObjectController@index');
 				}
 			}
-			return Redirect::action('LoginController@get_login');
+			return Redirect::action('LoginController@getIndex');
 		} 
 		
 		//make user
@@ -68,10 +68,10 @@ class LoginController extends \BaseController {
 
 	}
 	
-	public function logout()
+	public function getLogout()
 	{
 		Session::forget('avalon_id');
-		return Redirect::action('LoginController@get_login');
+		return Redirect::action('LoginController@getIndex');
 	}
 
 }
