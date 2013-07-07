@@ -49,11 +49,11 @@ class ObjectController extends \BaseController {
 			$table->increments('id');
 			$table->string('title');
 			$table->integer('updated_by')->nullable();
-			$table->timestamp('updated_at');
-			$table->boolean('active')->default(1);
-			$table->boolean('published')->default(1);
+			$table->dateTime('updated_at');
+			//$table->boolean('published')->default(1);
 			$table->integer('precedence');
 			$table->integer('subsequence')->nullable();
+			$table->boolean('active')->default(1);
 		});
 		
 		return Redirect::action('ObjectController@show', $object_id);

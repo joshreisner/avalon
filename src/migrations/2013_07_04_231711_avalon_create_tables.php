@@ -35,6 +35,7 @@ class AvalonCreateTables extends Migration {
 			$table->integer('updated_by');
 			$table->integer('precedence');
 			$table->dateTime('updated_at');
+			$table->boolean('active')->default(1);
 		});
 		
 		Schema::create('avalon_object_links', function($table){
@@ -59,8 +60,8 @@ class AvalonCreateTables extends Migration {
 			$table->integer('instance_updated_by')->nullable();
 			$table->text('list_help')->nullable();
 			$table->text('form_help')->nullable();
-			$table->boolean('show_published')->default(0);
-			$table->string('web_page')->nullable();
+			//$table->boolean('show_published')->default(0);
+			//$table->string('web_page')->nullable();
 			$table->string('list_grouping')->nullable();
 			$table->integer('updated_by');
 			$table->dateTime('updated_at');
@@ -74,10 +75,10 @@ class AvalonCreateTables extends Migration {
 			$table->string('password');
 			//$table->string('token')->unique();
 			$table->integer('role');
-			$table->boolean('active')->default(1);
 			$table->dateTime('last_login')->nullable();
 			$table->integer('updated_by')->nullable(); //for first user
 			$table->dateTime('updated_at');
+			$table->boolean('active')->default(1);
 		});
 		
 	}
@@ -89,6 +90,10 @@ class AvalonCreateTables extends Migration {
 	 */
 	public function down()
 	{
+		//clear out user-defined object tables
+		$objects = DB::table('avalon_objects')->get();
+		foreach ($objects as $object) Schema::dropIfExists($object->name);
+		
 		Schema::dropIfExists('avalon');
 		Schema::dropIfExists('avalon_fields');
 		Schema::dropIfExists('avalon_object_links');

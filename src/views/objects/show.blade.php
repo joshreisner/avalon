@@ -36,7 +36,7 @@
 		</tr>
 		</thead>
 		@foreach ($instances as $instance)
-		<tr id="{{ $instance->id }}">
+		<tr id="{{ $instance->id }}" @if (!$instance->active) class="inactive"@endif>
 			@if (($object->order_by == 'precedence') && (count($instances) > 1))
 			<td class="draggy"><i class="icon-reorder"></i></td>
 			@endif
@@ -44,6 +44,15 @@
 			<td><a href="{{ URL::action('InstanceController@edit', array($object->id, $instance->id)) }}">{{ $instance->{$field->name} }}</a></td>
 			@endforeach
 			<td class="right">{{ $instance->updated_at }}</td>
+			<td class="active">
+				<a href="{{ URL::action('InstanceController@getActivate', array($object->id, $instance->id)) }}">
+				@if (!$instance->active)
+					<i class="icon-check-empty"></i>
+				@else
+					<i class="icon-check"></i>
+				@endif
+				</a>
+			</td>
 		</tr>
 		@endforeach
 	</table>

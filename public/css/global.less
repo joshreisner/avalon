@@ -1,8 +1,10 @@
 @import "bootstrap.less";
 @import "font-awesome.less";
 
-@gray : #bbb;
-@margin : 24px;
+@gray 			: #bbb;
+@gray_dark:		darken(@gray, 30%);
+@gray_light:	lighten(@gray, 30%);
+@margin			: 24px;
 
 html { height: 100%; }
 body {
@@ -67,24 +69,34 @@ body {
 		}
 		
 		table {
-			table-layout: fixed;
-			th, td {
-				&.draggy { width: 18px; text-align: center; color: @gray; 
-				/* cursor: move;  */
-				cursor: url(https://mail.google.com/mail/images/2/openhand.cur), default !important;
-				}
-				&.center { text-align: center; }
-				&.right { text-align: right; }
-			}
-			tr.dragging {
-				td.draggy {
-					cursor: url(https://mail.google.com/mail/images/2/closedhand.cur), default !important;
-				}
-				td { 
-					border-color: darken(@gray, 20%); border-bottom-width: 1px; border-bottom-style: solid; 
-					background-color: lighten(@gray, 20%);
+			/* table-layout: fixed; */
+			tr {
+				th, td {
+					&.draggy, &.active { width: 18px; text-align: center; color: @gray; }
+					&.draggy { cursor: url(https://mail.google.com/mail/images/2/openhand.cur), default !important; }
+					&.active a {
+						color: @gray;
+						&:hover { color: @gray_dark; text-decoration: none; }
+					}
+					&.center { text-align: center; }
+					&.right { text-align: right; }
 				}
 				
+				&.dragging {
+					td.draggy {
+						cursor: url(https://mail.google.com/mail/images/2/closedhand.cur), default !important;
+					}
+					td { 
+						border-color: @gray_dark; border-bottom-width: 1px; border-bottom-style: solid; 
+						background-color: @gray_light;
+					}
+					
+				}
+				
+				&.inactive {
+					text-decoration: line-through; color: @gray;
+					a { color: @gray; }
+				}
 			}
 		}
 		

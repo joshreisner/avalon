@@ -37,7 +37,32 @@ $(function(){
 		onDrop: function(table, row) {
 			$.post($(table).attr('data-draggable-url'), { order: $(table).tableDnDSerialize() }, function(data){
 				//window.console.log('sent post and data was ' + data);
-			}).fail(function() { alert("error"); });
+			}).fail(function() { 
+				//window.console.log('error');
+			});
 		}
+	});
+	
+	//toggle instance, field, or user active or inactive
+	$('table').on('click', 'td.active a', function(e) {
+		e.preventDefault();
+		
+		//toggle row class
+		var parent = $(this).closest('tr');
+		parent.toggleClass('inactive');
+		if (parent.hasClass('inactive')) {
+			var active = 0;
+			$(this).find('i').removeClass('icon-check').addClass('icon-check-empty');
+		} else {
+			var active = 1;
+			$(this).find('i').removeClass('icon-check-empty').addClass('icon-check');
+		}
+		
+		//send ajax update
+		$.get($(this).attr('href'), { active: active }, function(data){
+			window.console.log('sent post and data was ' + data);
+		}).fail(function() { 
+			window.console.log('error');
+		});
 	});
 });

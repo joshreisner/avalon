@@ -1226,9 +1226,12 @@ body form .control-group textarea{width:676px;height:176px;max-width:100%;}
 body .header{margin-bottom:24px;}
 body .main h1{font-weight:normal;font-size:24px;line-height:24px;margin:0 0 24px 0;}body .main h1 i{color:#bbbbbb;}
 body .main .btn-group{margin-bottom:24px;}
-body .main table{table-layout:fixed;}body .main table th.draggy,body .main table td.draggy{width:18px;text-align:center;color:#bbbbbb;cursor:url(https://mail.google.com/mail/images/2/openhand.cur),default !important;}
-body .main table th.center,body .main table td.center{text-align:center;}
-body .main table th.right,body .main table td.right{text-align:right;}
+body .main table{}body .main table tr th.draggy,body .main table tr td.draggy,body .main table tr th.active,body .main table tr td.active{width:18px;text-align:center;color:#bbbbbb;}
+body .main table tr th.draggy,body .main table tr td.draggy{cursor:url(https://mail.google.com/mail/images/2/openhand.cur),default !important;}
+body .main table tr th.active a,body .main table tr td.active a{color:#bbbbbb;}body .main table tr th.active a:hover,body .main table tr td.active a:hover{color:#6e6e6e;text-decoration:none;}
+body .main table tr th.center,body .main table tr td.center{text-align:center;}
+body .main table tr th.right,body .main table tr td.right{text-align:right;}
 body .main table tr.dragging td.draggy{cursor:url(https://mail.google.com/mail/images/2/closedhand.cur),default !important;}
-body .main table tr.dragging td{border-color:#888888;border-bottom-width:1px;border-bottom-style:solid;background-color:#eeeeee;}
+body .main table tr.dragging td{border-color:#6e6e6e;border-bottom-width:1px;border-bottom-style:solid;background-color:#ffffff;}
+body .main table tr.inactive{text-decoration:line-through;color:#bbbbbb;}body .main table tr.inactive a{color:#bbbbbb;}
 body .side .inner{border-left:2px dashed #bbbbbb;padding:24px;color:#bbbbbb;margin-top:38px;}body .side .inner p{margin:0 0 24px 0;}
