@@ -5,7 +5,7 @@ class InstanceController extends \BaseController {
 	//show create form for an object instance
 	public function create($object_id) {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
-		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->get();
+		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->orderBy('precedence')->get();
 		return View::make('avalon::instances.create', array(
 			'object'=>$object, 
 			'fields'=>$fields
@@ -42,5 +42,20 @@ class InstanceController extends \BaseController {
 		));
 		
 		return Redirect::action('ObjectController@show', $object_id);
+	}
+	
+	//show edit form
+	public function edit($object_id, $instance_id) {
+		
+	}
+	
+	//save edits to database
+	public function update($object_id, $instance_id) {
+		
+	}
+	
+	//deactivate instance
+	public function destroy($object_id, $instance_id) {
+		
 	}
 }

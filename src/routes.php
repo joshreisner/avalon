@@ -23,6 +23,7 @@ Route::group(array('before'=>'avalon_auth', 'prefix'=>Config::get('avalon::prefi
 	Route::resource('objects.fields',		'FieldController');
 	Route::resource('objects.instances',	'InstanceController');
 	Route::resource('users',				'UserController');
+	Route::post('/objects/{id}/fields/reorder', 'FieldController@postReorder');
 });
 
 Route::filter('avalon_auth', function()

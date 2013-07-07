@@ -19,23 +19,9 @@
 	
 		@foreach ($fields as $field)
 		<div class="control-group">
-			<label class="control-label" for="{{ $field->name }}">{{ $field->title }}</label>
+			<label class="control-label" for="email">{{ $field->title }}</label>
 	    	<div class="controls">
-	    		@if ($field->type == 'string')
-	    		<input type="text" 
-	    			id="{{ $field->name }}" 
-	    			name="{{ $field->name }}"
-					@if ($field->required) class="required"@endif
-	    			@if ($field->precedence == 1) autofocus="autofocus"@endif
-	    			>
-	    		@elseif ($field->type == 'text')
-	    		<textarea
-	    			id="{{ $field->name }}" 
-	    			name="{{ $field->name }}"
-					@if ($field->required) class="required"@endif
-	    			@if ($field->precedence == 1) autofocus="autofocus"@endif
-	    			></textarea>
-	    		@endif
+	    		<input type="text" name="{{ $field->name }}" class="required title"@if ($field->precedence == 1) autofocus="autofocus"@endif>
 	    	</div>
 		</div>
 		@endforeach

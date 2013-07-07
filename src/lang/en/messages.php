@@ -21,6 +21,9 @@ return array(
 
 	'fields'				=> 'Fields',
 	'fields_create'			=> 'Create',
+	'fields_edit'			=> 'Edit',
+	'fields_edit_help'		=> 'You may edit all the field properties, except not the type.',
+	'fields_destroy'		=> 'Destroy Field',
 	'fields_help'			=> 'Help',
 	'fields_list_help'		=> 'A list of fields for the :title object.',
 	'fields_title'			=> 'Title',

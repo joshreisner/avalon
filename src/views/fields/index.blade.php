@@ -19,9 +19,10 @@
 		<a class="btn" href="{{ URL::action('FieldController@create', $object->id) }}"><i class="icon-plus"></i> {{ Lang::get('avalon::messages.fields_create') }}</a>
 	</div>
 
-	<table class="table table-condensed">
+	<table class="table table-condensed draggable" data-draggable-url="{{ URL::action('FieldController@postReorder', $object->id) }}">
 		<thead>
 		<tr>
+			<th class="draggy"></th>
 			<th>Title</th>
 			<th>Type</th>
 			<th>Name</th>
@@ -29,8 +30,9 @@
 		</tr>
 		</thead>
 		@foreach ($fields as $field)
-		<tr>
-			<td><a href="{{ URL::action('FieldController@show', array($object->id, $field->id)) }}">{{ $field->title }}</a></td>
+		<tr id="{{ $field->id }}">
+			<td class="draggy"><i class="icon-reorder"></i></td>
+			<td><a href="{{ URL::action('FieldController@edit', array($object->id, $field->id)) }}">{{ $field->title }}</a></td>
 			<td>{{ $field->type }}</td>
 			<td>{{ $object->name }}.{{ $field->name }}</td>
 			<td class="right">{{ $field->updated_at }}</td>

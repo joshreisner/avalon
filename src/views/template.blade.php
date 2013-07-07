@@ -23,5 +23,7 @@
 				</div>
 			</div>
 		</div>
+
+		{{ HTML::script('/packages/joshreisner/avalon/js/global.min.js') }}
 	</body>
 </html>

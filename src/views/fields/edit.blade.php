@@ -1,7 +1,7 @@
 @extends('avalon::template')
 
 @section('title')
-	{{ Lang::get('avalon::messages.fields_create') }}
+	{{ Lang::get('avalon::messages.fields_edit') }}
 @endsection
 
 @section('main')
@@ -15,7 +15,7 @@
 		<i class="icon-chevron-right"></i>
 		<a href="{{ URL::action('FieldController@index', $object->id) }}">{{ Lang::get('avalon::messages.fields') }}</a>
 		<i class="icon-chevron-right"></i>
-		{{ Lang::get('avalon::messages.fields_create') }}
+		{{ Lang::get('avalon::messages.fields_edit') }}
 	</h1>
 	
 	{{ Form::open(array('action'=>array('FieldController@store', $object->id), 'class'=>'form-horizontal')) }}
@@ -23,14 +23,21 @@
 		<div class="control-group">
 			<label class="control-label" for="title">{{ Lang::get('avalon::messages.fields_title') }}</label>
 	    	<div class="controls">
-	    		<input type="text" id="title" name="title" class="required" autofocus="autofocus">
+	    		<input type="text" id="title" name="title" class="required" autofocus="autofocus" value="{{ $field->title }}">
+	    	</div>
+		</div>
+
+		<div class="control-group">
+			<label class="control-label" for="name">{{ Lang::get('avalon::messages.fields_title') }}</label>
+	    	<div class="controls">
+	    		<input type="text" id="name" name="name" class="required" value="{{ $field->name }}">
 	    	</div>
 		</div>
 
 		<div class="control-group">
 			<label class="control-label" for="type">{{ Lang::get('avalon::messages.fields_type') }}</label>
 	    	<div class="controls">
-	    		{{ Form::select('type', $types) }}
+	    		{{ Form::select('type', $types, $field->type, array('disabled'=>'disabled')) }}
 	    	</div>
 		</div>
 
@@ -45,7 +52,7 @@
 			<label class="control-label" for="required">{{ Lang::get('avalon::messages.fields_required') }}</label>
 	    	<div class="controls">
 				<label class="checkbox">
-					<input type="checkbox" id="required" name="required">
+					<input type="checkbox" name="required">
 				</label>
 	    	</div>
 		</div>
@@ -60,5 +67,8 @@
 @endsection
 
 @section('side')
-	<p>{{ Lang::get('avalon::messages.fields_create_help') }}</p>
+	<p>{{ Lang::get('avalon::messages.fields_edit_help') }}</p>
+	{{ Form::open(array('method'=>'delete', 'action'=>array('FieldController@destroy', $object->id, $field->id))) }}
+	<button type="submit" class="btn btn-mini">{{ Lang::get('avalon::messages.fields_destroy') }}</button>
+	{{ Form::close() }}	
 @endsection
