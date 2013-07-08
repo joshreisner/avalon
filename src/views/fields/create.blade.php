@@ -21,7 +21,7 @@
 		}}
 	
 	{{ Former::select('type')
-		->options($types)
+		->options($types, 'string')
 		->label(Lang::get('avalon::messages.fields_type'))
 		}}
 	

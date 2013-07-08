@@ -32,7 +32,7 @@
 			@foreach($fields as $field)
 			<th>{{ $field->title }}</th>
 			@endforeach
-			<th class="right">Updated</th>
+			<th class="right">{{ Lang::get('avalon::messages.site_updated') }}</th>
 		</tr>
 		</thead>
 		@foreach ($instances as $instance)
@@ -64,5 +64,5 @@
 @endsection
 
 @section('side')
-	<p>{{ $object->list_help }}</p>
+	<p>{{ nl2br($object->list_help) }}</p>
 @endsection

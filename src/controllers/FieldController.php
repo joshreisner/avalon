@@ -3,9 +3,11 @@
 class FieldController extends \BaseController {
 
 	private static $types = array(
+		'html'=>'HTML',
 		'string'=>'String',
 		'text'=>'Text',
 	);
+	
 	private static $visibility = array(
 		'normal'=>'Normal',
 		'list'=>'Show in List',
@@ -51,6 +53,7 @@ class FieldController extends \BaseController {
 						$table->string($field_name)->nullable();
 					}
 					break;
+				case 'html':
 				case 'text':
 					if ($required) {
 						$table->text($field_name);

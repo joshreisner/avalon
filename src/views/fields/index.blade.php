@@ -20,10 +20,10 @@
 		<thead>
 		<tr>
 			<th class="draggy"></th>
-			<th>Title</th>
-			<th>Type</th>
-			<th>Name</th>
-			<th class="right">Updated</th>
+			<th>{{ Lang::get('avalon::messages.fields_title') }}</th>
+			<th>{{ Lang::get('avalon::messages.fields_type') }}</th>
+			<th>{{ Lang::get('avalon::messages.fields_name') }}</th>
+			<th class="right">{{ Lang::get('avalon::messages.site_updated') }}</th>
 		</tr>
 		</thead>
 		@foreach ($fields as $field)

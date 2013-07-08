@@ -2,6 +2,7 @@
 //@codekit-prepend "jquery.validate.min.js"
 //@codekit-prepend "bootstrap.js"
 //@codekit-prepend "jquery.tablednd.0.8.min.js"
+//@codekit-prepend "redactor.js"
 
 $(function(){
 
@@ -64,5 +65,24 @@ $(function(){
 		}).fail(function() { 
 			window.console.log('error');
 		});
+	});
+	
+	//redactor fields
+	$('textarea.redactor').redactor({
+		minHeight: 200,
+		buttonsAdd: ['|', 'button1'],
+        buttonsCustom: {
+            button1: {
+                title: 'Lorem Ipsum',
+                callback: function(buttonName, buttonDOM, buttonObject) {
+                	editor = this;
+			        $.getJSON('http://hipsterjesus.com/api/', function(data) {
+			            editor.set(data.text);
+						$('.redactor_act').removeClass('redactor_act');
+			        });
+                }
+            }
+        }
+		
 	});
 });

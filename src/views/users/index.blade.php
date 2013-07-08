@@ -18,9 +18,9 @@
 	<table class="table table-condensed">
 		<thead>
 		<tr>
-			<th>Name</th>
-			<th>Role</th>
-			<th class="right">Last Login</th>
+			<th>{{ Lang::get('avalon::messages.users_name') }}</th>
+			<th>{{ Lang::get('avalon::messages.users_role') }}</th>
+			<th class="right">{{ Lang::get('avalon::messages.users_last_login') }}</th>
 			<th class="active"></th>
 		</tr>
 		</thead>

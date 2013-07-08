@@ -27,6 +27,12 @@
 				->class($field->required ? 'required' : '')
 				->inlineHelp($field->help)
 				}}
+		@elseif ($field->type == 'html')
+			{{ Former::textarea($field->name)
+				->label($field->title)
+				->class('redactor')
+				->inlineHelp($field->help)
+				}}
 		@endif
 	@endforeach
 	
@@ -40,5 +46,5 @@
 @endsection
 
 @section('side')
-	<p>{{ $object->form_help }}</p>
+	<p>{{ nl2br($object->form_help) }}</p>
 @endsection

@@ -29,6 +29,13 @@
 				->value($instance->{$field->name})
 				->inlineHelp($field->help)
 				}}
+		@elseif ($field->type == 'html')
+			{{ Former::textarea($field->name)
+				->label($field->title)
+				->class('redactor')
+				->value($instance->{$field->name})
+				->inlineHelp($field->help)
+				}}
 		@endif
 	@endforeach
 	
@@ -42,5 +49,9 @@
 @endsection
 
 @section('side')
-	<p>{{ $object->form_help }}</p>
+	<p>{{ nl2br($object->form_help) }}</p>
+	{{ Form::open(array('method'=>'delete', 'action'=>array('InstanceController@destroy', $object->id, $instance->id))) }}
+	<button type="submit" class="btn btn-mini">{{ Lang::get('avalon::messages.instances_destroy') }}</button>
+	{{ Form::close() }}	
+
 @endsection

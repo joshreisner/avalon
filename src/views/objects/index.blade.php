@@ -20,9 +20,9 @@
 	<table class="table table-condensed">
 		<thead>
 		<tr>
-			<th>Object</th>
-			<th class="center">Count</th>
-			<th class="right">Updated</th>
+			<th>{{ Lang::get('avalon::messages.object') }}</th>
+			<th class="center">{{ Lang::get('avalon::messages.objects_count') }}</th>
+			<th class="right">{{ Lang::get('avalon::messages.site_updated') }}</th>
 		</tr>
 		</thead>
 		@foreach ($objects as $object)

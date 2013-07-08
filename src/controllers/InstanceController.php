@@ -78,9 +78,9 @@ class InstanceController extends \BaseController {
 		
 		DB::table($object->name)->where('id', $instance_id)->update($updates);
 		
-		//update objects table with latest counts
+		//update object meta
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
-			'instance_count'=>DB::table($object->name)->where('active', 1)->count(), //shouldn't actually be necessary
+			'instance_count'=>DB::table($object->name)->where('active', 1)->count(),
 			'instance_updated_at'=>new DateTime,
 			'instance_updated_by'=>Session::get('avalon_id')
 		));
@@ -88,9 +88,17 @@ class InstanceController extends \BaseController {
 		return Redirect::action('ObjectController@show', $object_id);
 	}
 	
-	//deactivate instance
+	//remove object from db - todo check key/constraints
 	public function destroy($object_id, $instance_id) {
-		
+		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
+		DB::table($object->name)->where('id', $instance_id)->delete();
+
+		//update object meta
+		DB::table('avalon_objects')->where('id', $object_id)->update(array(
+			'instance_count'=>DB::table($object->name)->where('active', 1)->count()
+		));
+
+		return Redirect::action('ObjectController@show', $object_id);
 	}
 	
 	//reorder fields by drag-and-drop

@@ -95,8 +95,8 @@ class ObjectController extends \BaseController {
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
 			'title'=>Input::get('title'),
 			'name'=>$new_name,
-			'list_help'=>Input::get('list_help'),
-			'form_help'=>Input::get('form_help'),
+			'list_help'=>trim(Input::get('list_help')),
+			'form_help'=>trim(Input::get('form_help')),
 		));
 		
 		return Redirect::action('ObjectController@show', $object_id);
