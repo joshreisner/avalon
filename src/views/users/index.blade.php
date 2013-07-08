@@ -21,13 +21,23 @@
 			<th>Name</th>
 			<th>Role</th>
 			<th class="right">Last Login</th>
+			<th class="active"></th>
 		</tr>
 		</thead>
 		@foreach ($users as $user)
-		<tr>
+		<tr @if (!$user->active) class="inactive"@endif>
 			<td><a href="{{ URL::action('UserController@edit', $user->id) }}">{{ $user->firstname }} {{ $user->lastname }}</a></td>
 			<td>{{ $user->role }}</td>
 			<td class="right">{{ $user->last_login }}</td>
+			<td class="active">
+				<a href="{{ URL::action('UserController@getActivate', array($user->id)) }}">
+				@if (!$user->active)
+					<i class="icon-check-empty"></i>
+				@else
+					<i class="icon-check"></i>
+				@endif
+				</a>
+			</td>
 		</tr>
 		@endforeach
 	</table>

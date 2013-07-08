@@ -13,8 +13,7 @@ class LoginController extends \BaseController {
 	*/
 
 	//show login page if not logged in
-	public function getIndex()
-	{
+	public function getIndex() {
 		//show install form
 		if (!DB::table('avalon')->count()) return View::make('avalon::login.install');
 
@@ -26,16 +25,17 @@ class LoginController extends \BaseController {
 	}
 
 	//handle a post to the login or install form
-	public function postIndex()
-	{
+	public function postIndex() {
 		//regular login
 		if (DB::table('avalon')->count()) {
 			//attempt auth
-			if ($user = DB::table('avalon_users')->where('email', Input::get('email'))->select('id', 'password')->first()) {
+			if ($user = DB::table('avalon_users')->where('active', 1)->where('email', Input::get('email'))->select('id', 'password')->first()) {
 				if (Hash::check(Input::get('password'), $user->password)) {
 					//log in with supplied credentials
 					Session::put('avalon_id', $user->id);
-					DB::table('avalon_users')->where('id', $user->id)->update(array('last_login' => new DateTime));
+					DB::table('avalon_users')->where('id', $user->id)->update(array(
+						'last_login'=>new DateTime
+					));
 					return Redirect::action('ObjectController@index');
 				}
 			}
@@ -68,8 +68,7 @@ class LoginController extends \BaseController {
 
 	}
 	
-	public function getLogout()
-	{
+	public function getLogout() {
 		Session::forget('avalon_id');
 		return Redirect::action('LoginController@getIndex');
 	}

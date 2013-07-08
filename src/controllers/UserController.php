@@ -53,4 +53,7 @@ class UserController extends \BaseController {
 		return 'edit screen for user ' . $user_id;
 	}
 
+	public function getActivate($user_id) {
+		DB::table('avalon_users')->where('id', $user_id)->update(array('active'=>Input::get('active')));
+	}
 }
