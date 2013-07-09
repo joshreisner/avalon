@@ -20,7 +20,8 @@
 		<tr>
 			<th>{{ Lang::get('avalon::messages.users_name') }}</th>
 			<th>{{ Lang::get('avalon::messages.users_role') }}</th>
-			<th class="right">{{ Lang::get('avalon::messages.users_last_login') }}</th>
+			<th class="date">{{ Lang::get('avalon::messages.users_last_login') }}</th>
+			<th class="date">{{ Lang::get('avalon::messages.site_updated') }}</th>
 			<th class="active"></th>
 		</tr>
 		</thead>
@@ -28,7 +29,8 @@
 		<tr @if (!$user->active) class="inactive"@endif>
 			<td><a href="{{ URL::action('UserController@edit', $user->id) }}">{{ $user->firstname }} {{ $user->lastname }}</a></td>
 			<td>{{ $roles[$user->role] }}</td>
-			<td class="right">{{ Dates::relative($user->last_login) }}</td>
+			<td class="date">{{ Dates::relative($user->last_login) }}</td>
+			<td class="date">{{ Dates::relative($user->updated_at) }}</td>
 			<td class="active">
 				<a href="{{ URL::action('UserController@getActivate', array($user->id)) }}">
 				@if (!$user->active)

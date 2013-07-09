@@ -15,7 +15,27 @@
 	{{ Former::horizontal_open()->action(URL::action('InstanceController@store', $object->id)) }}
 	
 	@foreach ($fields as $field)
-		@if ($field->type == 'string')
+		@if ($field->type == 'date')
+			{{ Former::input($field->name)
+				->type('date')
+				->label($field->title)
+				->value($field->required ? date('Y-m-d') : false)
+				->inlineHelp($field->help)
+				}}
+		@elseif ($field->type == 'datetime')
+			{{ Former::input($field->name)
+				->type('datetime-local')
+				->label($field->title)
+				->value($field->required ? date('Y-m-d\TH:i:s') : false)
+				->inlineHelp($field->help)
+				}}
+		@elseif ($field->type == 'html')
+			{{ Former::textarea($field->name)
+				->label($field->title)
+				->class('redactor')
+				->inlineHelp($field->help)
+				}}
+		@elseif ($field->type == 'string')
 			{{ Former::text($field->name)
 				->label($field->title)
 				->class($field->required ? 'required' : '')
@@ -25,19 +45,6 @@
 			{{ Former::textarea($field->name)
 				->label($field->title)
 				->class($field->required ? 'required' : '')
-				->inlineHelp($field->help)
-				}}
-		@elseif ($field->type == 'html')
-			{{ Former::textarea($field->name)
-				->label($field->title)
-				->class('redactor')
-				->inlineHelp($field->help)
-				}}
-		@elseif ($field->type == 'datetime')
-			{{ Former::input($field->name)
-				->type('datetime-local')
-				->label($field->title)
-				->value(date('Y-m-d\TH:i:s'))
 				->inlineHelp($field->help)
 				}}
 		@endif

@@ -23,7 +23,7 @@
 			<th>{{ Lang::get('avalon::messages.fields_title') }}</th>
 			<th>{{ Lang::get('avalon::messages.fields_type') }}</th>
 			<th>{{ Lang::get('avalon::messages.fields_name') }}</th>
-			<th class="right">{{ Lang::get('avalon::messages.site_updated') }}</th>
+			<th class="date">{{ Lang::get('avalon::messages.site_updated') }}</th>
 		</tr>
 		</thead>
 		@foreach ($fields as $field)
@@ -32,7 +32,7 @@
 			<td><a href="{{ URL::action('FieldController@edit', array($object->id, $field->id)) }}">{{ $field->title }}</a></td>
 			<td>{{ $types[$field->type] }}</td>
 			<td>{{ $object->name }}.{{ $field->name }}</td>
-			<td class="right">{{ Dates::relative($field->updated_at) }}</td>
+			<td class="date">{{ Dates::relative($field->updated_at) }}</td>
 		</tr>
 		@endforeach
 	</table>

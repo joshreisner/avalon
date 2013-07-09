@@ -26,10 +26,9 @@ class InstanceController extends \BaseController {
 		
 		//add each field if present
 		foreach ($fields as $field) {
-			if ($value = Input::get($field->name)) {
-				//do any per-field type processing here, eg dates
-				$inserts[$field->name] = $value;
-			}
+			$value = Input::get($field->name);
+			if (empty($value) && !$field->required) $value = null;
+			$inserts[$field->name] = $value;
 		}
 		
 		DB::table($object->name)->insert($inserts);
@@ -77,10 +76,9 @@ class InstanceController extends \BaseController {
 		
 		//add each field if present
 		foreach ($fields as $field) {
-			if ($value = Input::get($field->name)) {
-				//do any per-field type processing here, eg dates
-				$updates[$field->name] = $value;
-			}
+			$value = Input::get($field->name);
+			if (empty($value) && !$field->required) $value = null;
+			$updates[$field->name] = $value;
 		}
 		
 		DB::table($object->name)->where('id', $instance_id)->update($updates);

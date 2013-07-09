@@ -15,17 +15,17 @@
 	{{ Former::horizontal_open()->action(URL::action('InstanceController@update', array($object->id, $instance->id)))->method('put') }}
 	
 	@foreach ($fields as $field)
-		@if ($field->type == 'string')
-			{{ Former::text($field->name)
+		@if ($field->type == 'date')
+			{{ Former::input($field->name)
+				->type('date')
 				->label($field->title)
-				->class($field->required ? 'required' : '')
 				->value($instance->{$field->name})
 				->inlineHelp($field->help)
 				}}
-		@elseif ($field->type == 'text')
-			{{ Former::textarea($field->name)
+		@elseif ($field->type == 'datetime')
+			{{ Former::input($field->name)
+				->type('datetime-local')
 				->label($field->title)
-				->class($field->required ? 'required' : '')
 				->value($instance->{$field->name})
 				->inlineHelp($field->help)
 				}}
@@ -36,10 +36,17 @@
 				->value($instance->{$field->name})
 				->inlineHelp($field->help)
 				}}
-		@elseif ($field->type == 'datetime')
-			{{ Former::input($field->name)
-				->type('datetime-local')
+		@elseif ($field->type == 'string')
+			{{ Former::text($field->name)
 				->label($field->title)
+				->class($field->required ? 'required' : '')
+				->value($instance->{$field->name})
+				->inlineHelp($field->help)
+				}}
+		@elseif ($field->type == 'text')
+			{{ Former::textarea($field->name)
+				->label($field->title)
+				->class($field->required ? 'required' : '')
 				->value($instance->{$field->name})
 				->inlineHelp($field->help)
 				}}

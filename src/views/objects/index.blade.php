@@ -21,15 +21,15 @@
 		<thead>
 		<tr>
 			<th>{{ Lang::get('avalon::messages.object') }}</th>
-			<th class="center">{{ Lang::get('avalon::messages.objects_count') }}</th>
-			<th class="right">{{ Lang::get('avalon::messages.site_updated') }}</th>
+			<th class="integer">{{ Lang::get('avalon::messages.objects_count') }}</th>
+			<th class="date">{{ Lang::get('avalon::messages.site_updated') }}</th>
 		</tr>
 		</thead>
 		@foreach ($objects as $object)
 		<tr>
 			<td><a href="{{ URL::action('ObjectController@show', $object->id) }}">{{ $object->title }}</a></td>
-			<td class="center">{{ $object->instance_count }}</td>
-			<td class="right">{{ Dates::relative($object->instance_updated_at) }}</td>
+			<td class="integer">{{ $object->instance_count }}</td>
+			<td class="date">{{ Dates::relative($object->instance_updated_at) }}</td>
 		</tr>
 		@endforeach
 	</table>

@@ -87,7 +87,7 @@ class ObjectController extends \BaseController {
 		//per-type modifications to table output
 		foreach ($instances as &$instance) {
 			foreach ($fields as $field) {
-				if ($field->type == 'datetime') {
+				if (in_array($field->type, array('date', 'datetime'))) {
 					$instance->{$field->name} = Dates::absolute($instance->{$field->name});
 				}
 			}

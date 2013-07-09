@@ -44,9 +44,29 @@ class UserController extends \BaseController {
 		
 		return Redirect::action('UserController@index');
 	}
-	
+
+	//show edit screen
 	public function edit($user_id) {
-		return 'edit screen for user ' . $user_id;
+		$objects = DB::table('avalon_objects')->get();
+		$user = DB::table('avalon_users')->where('id', $user_id)->first();
+		return View::make('avalon::users.edit', array(
+			'user'=>$user,
+			'roles'=>self::$roles,
+			'objects'=>$objects,
+		));
+	}
+
+	//save edit to database
+	public function update($user_id) {
+		DB::table('avalon_users')->where('id', $user_id)->update(array(
+			'firstname'=>Input::get('firstname'),
+			'lastname'=>Input::get('lastname'),
+			'email'=>Input::get('email'),
+			'role'=>Input::get('role'),
+			'updated_by'=>Session::get('avalon_id'),
+			'updated_at'=>new DateTime,
+		));
+		return Redirect::action('UserController@index');
 	}
 
 	public function getActivate($user_id) {

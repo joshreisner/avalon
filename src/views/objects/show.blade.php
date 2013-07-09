@@ -30,7 +30,7 @@
 			<th class="draggy"></th>
 			@endif
 			@foreach($fields as $field)
-			<th>
+			<th class="{{ $field->name }}">
 				{{ $field->title }}
 				@if ($field->name == $object->order_by)
 					@if ($object->direction == 'desc')
@@ -41,7 +41,7 @@
 				@endif
 			</th>
 			@endforeach
-			<th class="right">{{ Lang::get('avalon::messages.site_updated') }}</th>
+			<th class="date">{{ Lang::get('avalon::messages.site_updated') }}</th>
 		</tr>
 		</thead>
 		@foreach ($instances as $instance)
@@ -50,9 +50,9 @@
 			<td class="draggy"><i class="icon-reorder"></i></td>
 			@endif
 			@foreach($fields as $field)
-			<td><a href="{{ URL::action('InstanceController@edit', array($object->id, $instance->id)) }}">{{ $instance->{$field->name} }}</a></td>
+			<td class="{{ $field->name }}"><a href="{{ URL::action('InstanceController@edit', array($object->id, $instance->id)) }}">{{ $instance->{$field->name} }}</a></td>
 			@endforeach
-			<td class="right">{{ Dates::relative($instance->updated_at) }}</td>
+			<td class="date">{{ Dates::relative($instance->updated_at) }}</td>
 			<td class="active">
 				<a href="{{ URL::action('InstanceController@getActivate', array($object->id, $instance->id)) }}">
 				@if (!$instance->active)
