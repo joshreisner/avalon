@@ -34,6 +34,15 @@
 		->disabled()
 		}}
 	
+	@if (count($related_fields))
+	{{ Former::select('related_field_id')
+		->addOption('', '')
+		->fromQuery($related_fields, 'title')
+		->value($field->related_field_id)
+		->label(Lang::get('avalon::messages.fields_related'))
+		}}
+	@endif
+	
 	{{ Former::select('visibility')
 		->options($visibility)
 		->value($field->visibility)

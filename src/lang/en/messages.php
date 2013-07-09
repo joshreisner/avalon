@@ -28,8 +28,8 @@ return array(
 
 	'fields'				=> 'Fields',
 	'fields_create'			=> 'Create',
-	'fields_create_help'	=> 'Create',
-	'fields_edit'			=> 'This will add a new column to the database.',
+	'fields_create_help'	=> 'There are bunch of rules that will eventually be implemented in JS.  For the time being, a related field must be selected when adding a slug field.',
+	'fields_edit'			=> 'Edit',
 	'fields_edit_help'		=> 'You may edit all the field properties, except not the type.',
 	'fields_destroy'		=> 'Destroy Field',
 	'fields_help'			=> 'Help',
@@ -38,6 +38,7 @@ return array(
 	'fields_name'			=> 'Column Name',
 	'fields_precedence'		=> 'Precedence',
 	'fields_title'			=> 'Title',
+	'fields_related'		=> 'Related Field',
 	'fields_required'		=> 'Required',
 	'fields_system'			=> 'System Fields',
 	'fields_type'			=> 'Type',

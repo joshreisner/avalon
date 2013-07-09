@@ -46,7 +46,7 @@ class InstanceController extends \BaseController {
 	//show edit form
 	public function edit($object_id, $instance_id) {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
-		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->get();
+		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->orderBy('precedence')->get();
 		$instance = DB::table($object->name)->where('id', $instance_id)->first();
 		
 		//format instance values for form

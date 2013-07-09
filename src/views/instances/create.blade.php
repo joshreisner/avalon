@@ -35,6 +35,12 @@
 				->class('redactor')
 				->inlineHelp($field->help)
 				}}
+		@elseif ($field->type == 'slug')
+			{{ Former::text($field->name)
+				->label($field->title)
+				->class($field->required ? 'required' : '')
+				->inlineHelp($field->help)
+				}}
 		@elseif ($field->type == 'string')
 			{{ Former::text($field->name)
 				->label($field->title)

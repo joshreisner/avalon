@@ -25,6 +25,14 @@
 		->label(Lang::get('avalon::messages.fields_type'))
 		}}
 	
+	@if (count($related_fields))
+	{{ Former::select('related_field_id')
+		->addOption('', '')
+		->fromQuery($related_fields, 'title')
+		->label(Lang::get('avalon::messages.fields_related'))
+		}}
+	@endif
+	
 	{{ Former::select('visibility')
 		->options($visibility)
 		->label(Lang::get('avalon::messages.fields_visibility'))

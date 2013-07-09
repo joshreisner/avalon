@@ -6,6 +6,7 @@ class FieldController extends \BaseController {
 		'date'=>'Date',
 		'datetime'=>'Date + Time',
 		'html'=>'HTML',
+		'slug'=>'Slug',
 		'string'=>'String',
 		'text'=>'Text',
 	);
@@ -30,9 +31,17 @@ class FieldController extends \BaseController {
 	//show create form
 	public function create($object_id) {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
+
+		$related_fields = DB::table('avalon_fields')
+				->where('object_id', $object->id)
+				->where('type', 'string')
+				->orderBy('precedence')
+				->get();
+
 		return View::make('avalon::fields.create', array(
 			'object'=>$object,
 			'types'=>self::$types,
+			'related_fields'=>$related_fields,
 			'visibility'=>self::$visibility,
 		));
 	}
@@ -46,13 +55,6 @@ class FieldController extends \BaseController {
 		
 		Schema::table($table_name, function($table) use ($type, $field_name, $required) {
 			switch ($type) {
-				case 'string':
-					if ($required) {
-						$table->string($field_name);
-					} else {
-						$table->string($field_name)->nullable();
-					}
-					break;
 				case 'date':
 					if ($required) {
 						$table->date($field_name);
@@ -65,6 +67,14 @@ class FieldController extends \BaseController {
 						$table->dateTime($field_name);
 					} else {
 						$table->dateTime($field_name)->nullable();
+					}
+					break;
+				case 'slug':
+				case 'string':
+					if ($required) {
+						$table->string($field_name);
+					} else {
+						$table->string($field_name)->nullable();
 					}
 					break;
 				case 'html':
@@ -83,16 +93,22 @@ class FieldController extends \BaseController {
 			DB::table($table_name)->update(array($field_name=>new DateTime)); 
 		}
 
+		//related field
+		$related_field_id = Input::get('related_field_id');
+		if (empty($related_field_id)) $related_field_id = null;
+
+
 		DB::table('avalon_fields')->insert(array(
-			'title'		=>Input::get('title'),
-			'name'		=>$field_name,
-			'type'		=>$type,
-			'object_id'	=>$object_id,
-			'visibility'=>Input::get('visibility'),
-			'required'	=>$required,
-			'precedence'=>DB::table('avalon_fields')->where('object_id', $object_id)->max('precedence') + 1,
-			'updated_by'=>Session::get('avalon_id'),
-			'updated_at'=>new DateTime,
+			'title'				=>Input::get('title'),
+			'name'				=>$field_name,
+			'type'				=>$type,
+			'object_id'			=>$object_id,
+			'visibility'		=>Input::get('visibility'),
+			'related_field_id'	=>$related_field_id,
+			'required'			=>$required,
+			'precedence'		=>DB::table('avalon_fields')->where('object_id', $object_id)->max('precedence') + 1,
+			'updated_by'		=>Session::get('avalon_id'),
+			'updated_at'		=>new DateTime,
 		));
 		
 		return Redirect::action('FieldController@index', $object_id);
@@ -102,9 +118,18 @@ class FieldController extends \BaseController {
 	public function edit($object_id, $field_id) {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		$field = DB::table('avalon_fields')->where('id', $field_id)->first();
+
+		$related_fields = DB::table('avalon_fields')
+				->where('object_id', $field->object_id)
+				->where('id', '<>', $field->id)
+				->where('type', 'string')
+				->orderBy('precedence')
+				->get();
+
 		return View::make('avalon::fields.edit', array(
 			'object'=>$object,
 			'field'=>$field,
+			'related_fields'=>$related_fields,
 			'visibility'=>self::$visibility,
 			'types'=>self::$types,
 		));
@@ -125,13 +150,17 @@ class FieldController extends \BaseController {
 			});
 		}
 
+		$related_field_id = Input::get('related_field_id');
+		if (empty($related_field_id)) $related_field_id = null;
+
 		DB::table('avalon_fields')->where('id', $field_id)->update(array(
-			'title'		=>Input::get('title'),
-			//'name'		=>$new_field_name,
-			'visibility'=>Input::get('visibility'),
-			'required'	=>$required,
-			'updated_by'=>Session::get('avalon_id'),
-			'updated_at'=>new DateTime,
+			'title'				=>Input::get('title'),
+			//'name'			=>$new_field_name,
+			'visibility'		=>Input::get('visibility'),
+			'related_field_id'	=>$related_field_id,
+			'required'			=>$required,
+			'updated_by'		=>Session::get('avalon_id'),
+			'updated_at'		=>new DateTime,
 		));
 		
 		return Redirect::action('FieldController@index', $object_id);
