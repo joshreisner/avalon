@@ -52,8 +52,8 @@ class AvalonCreateTables extends Migration {
 			$table->increments('id');
 			$table->string('title');
 			$table->string('name');
-			$table->string('order_by')->default('precedence');
-			$table->string('direction')->default('ASC');
+			$table->string('order_by');
+			$table->string('direction');
 			$table->integer('group_by_field')->nullable();
 			$table->integer('instance_count')->default(0);
 			$table->dateTime('instance_updated_at')->nullable();

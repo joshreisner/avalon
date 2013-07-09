@@ -16,6 +16,7 @@
     "autoload": {
         "classmap": [
             "src/controllers",
+            "src/libraries",
             "src/migrations"
         ],
         "psr-0": {

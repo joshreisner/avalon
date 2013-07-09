@@ -2,11 +2,15 @@
 
 class ObjectController extends \BaseController {
 
+	private static $direction = array(
+		'asc'=>'Ascending',
+		'desc'=>'Descending',
+	);
+	
 	//display list for home page
 	public function index() {
 		$objects = DB::table('avalon_objects')->orderby('title')->get();
 		foreach ($objects as &$object) {
-			if (!empty($object->instance_updated_at)) $object->instance_updated_at = \Carbon\Carbon::createFromTimeStamp(strtotime($object->instance_updated_at))->diffForHumans();
 			if ($object->instance_count == 0) $object->instance_count = '';
 		}
 		return View::make('avalon::objects.index', array('objects'=>$objects));
@@ -14,7 +18,15 @@ class ObjectController extends \BaseController {
 	
 	//display create object form
 	public function create() {
-		return View::make('avalon::objects.create');
+		$order_by = array(
+			'id'=>Lang::get('avalon::messages.fields_id'),
+			'precedence'=>Lang::get('avalon::messages.fields_precedence'),
+			'created_at'=>Lang::get('avalon::messages.fields_updated_at'),
+		);
+		return View::make('avalon::objects.create', array(
+			'order_by'=>$order_by,
+			'direction'=>self::$direction,
+		));
 	}
 	
 	//store create object form post data
@@ -23,10 +35,17 @@ class ObjectController extends \BaseController {
 		//determine table name, todo check if unique
 		$name = Str::slug(Input::get('title'), '_');
 		
+		//enforce predence always ascending
+		$order_by = Input::get('order_by');
+		$direction = Input::get('direction');
+		if ($order_by == 'precedence') $direction = 'asc';
+
 		//create entry in objects table for new object
 		$object_id = DB::table('avalon_objects')->insertGetId(array(
 			'title'=>Input::get('title'),
 			'name'=>$name,
+			'order_by'=>$order_by,
+			'direction'=>$direction,
 			'updated_by'=>Session::get('avalon_id'),
 			'updated_at'=>new DateTime,
 		));
@@ -65,8 +84,13 @@ class ObjectController extends \BaseController {
 		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->where('visibility', 'list')->orderBy('precedence')->get();
 		$instances = DB::table($object->name)->orderBy($object->order_by, $object->direction)->get(); //todo select only $fields
 		
+		//per-type modifications to table output
 		foreach ($instances as &$instance) {
-			$instance->updated_at = \Carbon\Carbon::createFromTimeStamp(strtotime($instance->updated_at))->diffForHumans();
+			foreach ($fields as $field) {
+				if ($field->type == 'datetime') {
+					$instance->{$field->name} = Dates::absolute($instance->{$field->name});
+				}
+			}
 		}
 		
 		return View::make('avalon::objects.show', array(
@@ -78,9 +102,22 @@ class ObjectController extends \BaseController {
 	
 	//edit object settings
 	public function edit($object_id) {
+		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->orderBy('precedence')->get();
+		$order_by = array();
+		foreach ($fields as $field) $order_by[$field->name] = $field->title;
+		$order_by = array(
+			Lang::get('avalon::messages.fields_system')=>array(
+				'id'=>Lang::get('avalon::messages.fields_id'),
+				'precedence'=>Lang::get('avalon::messages.fields_precedence'),
+				'created_at'=>Lang::get('avalon::messages.fields_updated_at'),
+			),
+			Lang::get('avalon::messages.fields_user')=>$order_by,
+		);
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		return View::make('avalon::objects.edit', array(
 			'object'=>$object, 
+			'order_by'=>$order_by,
+			'direction'=>self::$direction,
 		));
 	}
 	
@@ -91,10 +128,17 @@ class ObjectController extends \BaseController {
 		$new_name = Str::slug(Input::get('name'), '_');
 		if ($old_name != $new_name) Schema::rename($old_name, $new_name);
 		
+		//enforce predence always ascending
+		$order_by = Input::get('order_by');
+		$direction = Input::get('direction');
+		if ($order_by == 'precedence') $direction = 'asc';
+
 		//update objects table
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
 			'title'=>Input::get('title'),
 			'name'=>$new_name,
+			'order_by'=>$order_by,
+			'direction'=>$direction,
 			'list_help'=>trim(Input::get('list_help')),
 			'form_help'=>trim(Input::get('form_help')),
 		));

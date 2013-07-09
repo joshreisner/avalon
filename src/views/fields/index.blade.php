@@ -30,9 +30,9 @@
 		<tr id="{{ $field->id }}">
 			<td class="draggy"><i class="icon-reorder"></i></td>
 			<td><a href="{{ URL::action('FieldController@edit', array($object->id, $field->id)) }}">{{ $field->title }}</a></td>
-			<td>{{ $field->type }}</td>
+			<td>{{ $types[$field->type] }}</td>
 			<td>{{ $object->name }}.{{ $field->name }}</td>
-			<td class="right">{{ $field->updated_at }}</td>
+			<td class="right">{{ Dates::relative($field->updated_at) }}</td>
 		</tr>
 		@endforeach
 	</table>

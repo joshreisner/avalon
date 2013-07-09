@@ -1364,7 +1364,8 @@ body form .control-group .redactor_box div.redactor_editor{border-radius:0 0 4px
 body .header{margin-bottom:24px;}
 body .main h1{font-weight:normal;font-size:24px;line-height:24px;margin:0 0 24px 0;}body .main h1 i{color:#cccccc;}
 body .main .btn-group{margin-bottom:24px;}
-body .main table{}body .main table tr th.draggy,body .main table tr td.draggy,body .main table tr th.active,body .main table tr td.active{width:18px;text-align:center;color:#cccccc;}
+body .main table{}body .main table tr th{font-weight:normal;color:#cccccc;}
+body .main table tr th.draggy,body .main table tr td.draggy,body .main table tr th.active,body .main table tr td.active{width:18px;text-align:center;color:#cccccc;}
 body .main table tr th.draggy,body .main table tr td.draggy{cursor:url(https://mail.google.com/mail/images/2/openhand.cur),default !important;}
 body .main table tr th.active a,body .main table tr td.active a{color:#cccccc;}body .main table tr th.active a:hover,body .main table tr td.active a:hover{color:#555555;text-decoration:none;}
 body .main table tr th.center,body .main table tr td.center{text-align:center;}
@@ -1372,4 +1373,4 @@ body .main table tr th.right,body .main table tr td.right{text-align:right;}
 body .main table tr.dragging td.draggy{cursor:url(https://mail.google.com/mail/images/2/closedhand.cur),default !important;}
 body .main table tr.dragging td{border-color:#555555;border-bottom-width:1px;border-bottom-style:solid;background-color:#f5f5f5;}
 body .main table tr.inactive{text-decoration:line-through;color:#cccccc;}body .main table tr.inactive a{color:#cccccc;}
-body .side .inner{border-left:2px dashed #cccccc;padding:24px;color:#cccccc;margin-top:38px;}body .side .inner p{margin:0 0 24px 0;}
+body .side .inner{border-left:2px dashed #cccccc;padding:24px;color:#555555;margin-top:38px;font-size:1.1em;}body .side .inner p{margin:0 0 24px 0;}

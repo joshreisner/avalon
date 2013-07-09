@@ -87,6 +87,7 @@ body {
 		table {
 			/* table-layout: fixed; */
 			tr {
+				th { font-weight: normal; color: @gray; }
 				th, td {
 					&.draggy, &.active { width: 18px; text-align: center; color: @gray; }
 					&.draggy { cursor: url(https://mail.google.com/mail/images/2/openhand.cur), default !important; }
@@ -120,7 +121,8 @@ body {
 	
 	.side {
 		.inner {
-			border-left: 2px dashed @gray; padding: @margin; color: @gray; margin-top: 38px;
+			border-left: 2px dashed @gray; padding: @margin; color: @gray_dark; margin-top: 38px;
+			font-size: 1.1em;
 			p { margin: 0 0 @margin 0; }
 		}
 	}

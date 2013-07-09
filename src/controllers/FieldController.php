@@ -3,6 +3,8 @@
 class FieldController extends \BaseController {
 
 	private static $types = array(
+		'date'=>'Date',
+		'datetime'=>'Date + Time',
 		'html'=>'HTML',
 		'string'=>'String',
 		'text'=>'Text',
@@ -18,12 +20,10 @@ class FieldController extends \BaseController {
 	public function index($object_id) {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->orderBy('precedence')->get();
-		foreach ($fields as &$field) {
-			if (!empty($field->updated_at)) $field->updated_at = \Carbon\Carbon::createFromTimeStamp(strtotime($field->updated_at))->diffForHumans();
-		}
 		return View::make('avalon::fields.index', array(
 			'object'=>$object,
-			'fields'=>$fields
+			'fields'=>$fields,
+			'types'=>self::$types,
 		));
 	}
 	
@@ -53,6 +53,20 @@ class FieldController extends \BaseController {
 						$table->string($field_name)->nullable();
 					}
 					break;
+				case 'date':
+					if ($required) {
+						$table->date($field_name);
+					} else {
+						$table->date($field_name)->nullable();
+					}
+					break;
+				case 'datetime':
+					if ($required) {
+						$table->dateTime($field_name);
+					} else {
+						$table->dateTime($field_name)->nullable();
+					}
+					break;
 				case 'html':
 				case 'text':
 					if ($required) {
@@ -63,6 +77,11 @@ class FieldController extends \BaseController {
 					break;
 			}
 		});
+
+		//set existing default values for required dates to today, better than 0000-00-00
+		if (in_array($type, array('date', 'datetime')) && $required) {
+			DB::table($table_name)->update(array($field_name=>new DateTime)); 
+		}
 
 		DB::table('avalon_fields')->insert(array(
 			'title'		=>Input::get('title'),

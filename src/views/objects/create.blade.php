@@ -19,6 +19,18 @@
 		->inlineHelp(Lang::get('avalon::messages.objects_title_help'))
 		}}
 	
+	{{ Former::select('order_by')
+		->options($order_by)
+		->label(Lang::get('avalon::messages.objects_order_by'))
+		->value('precedence')
+		}}
+	
+	{{ Former::select('direction')
+		->options($direction)
+		->label(Lang::get('avalon::messages.objects_direction'))
+		->value('asc')
+		}}
+	
 	{{ Former::actions()
 		->primary_submit(Lang::get('avalon::messages.site_save'))
 		->link(Lang::get('avalon::messages.site_cancel'), URL::action('ObjectController@index'))

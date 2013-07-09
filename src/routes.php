@@ -1,16 +1,5 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register all of the routes for an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the Closure to execute when that URI is requested.
-|
-*/
-
 //unprotected routes
 Route::get('/' . Config::get('avalon::prefix'),		'LoginController@getIndex');
 Route::post('/' . Config::get('avalon::prefix'),	'LoginController@postIndex');
@@ -29,26 +18,8 @@ Route::group(array('before'=>'avalon_auth', 'prefix'=>Config::get('avalon::prefi
 	Route::get('/objects/{object_id}/instances/{instance_id}/activate',	'InstanceController@getActivate');
 });
 
+//filters
 Route::filter('avalon_auth', function()
 {
     if (!Session::has('avalon_id')) return Redirect::action('LoginController@getIndex');
 });
-
-//todo move this to an appropriate place
-class Breadcrumbs {
-
-	public static function leave($breadcrumbs) {
-		$return = array();
-		
-		//prepend home
-		$breadcrumbs = array_merge(array('/'=>'<i class="icon-home"></i>'), $breadcrumbs);
-		
-		//build breadcrumbs
-		foreach ($breadcrumbs as $link=>$text) {
-			$return[] = (is_string($link)) ? '<a href="' . $link . '">' . $text . '</a>' : $text;
-		}
-		
-		return '<h1>' . implode(Config::get('avalon::breadcrumbs_separator'), $return) . '</h1>';
-	}
-	
-}

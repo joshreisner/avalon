@@ -36,6 +36,13 @@
 				->value($instance->{$field->name})
 				->inlineHelp($field->help)
 				}}
+		@elseif ($field->type == 'datetime')
+			{{ Former::input($field->name)
+				->type('datetime-local')
+				->label($field->title)
+				->value($instance->{$field->name})
+				->inlineHelp($field->help)
+				}}
 		@endif
 	@endforeach
 	

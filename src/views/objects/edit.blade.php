@@ -27,6 +27,26 @@
 		->class('required')
 		}}
 	
+	<!-- doesn't work yet
+	{{ Former::select('order_by')
+		->options($order_by)
+		->label(Lang::get('avalon::messages.objects_order_by'))
+		->value($object->order_by)
+		}} -->
+
+	<div class="control-group">
+		<label for="title" class="control-label">{{ Lang::get('avalon::messages.objects_order_by') }}</label>
+		<div class="controls">
+			{{ Form::select('order_by', $order_by, $object->order_by) }}			
+		</div>
+	</div>
+	
+	{{ Former::select('direction')
+		->options($direction)
+		->label(Lang::get('avalon::messages.objects_direction'))
+		->value($object->direction)
+		}}
+	
 	{{ Former::textarea('list_help')
 		->label(Lang::get('avalon::messages.objects_list_help'))
 		->value($object->list_help)

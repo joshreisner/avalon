@@ -33,6 +33,13 @@
 				->class('redactor')
 				->inlineHelp($field->help)
 				}}
+		@elseif ($field->type == 'datetime')
+			{{ Former::input($field->name)
+				->type('datetime-local')
+				->label($field->title)
+				->value(date('Y-m-d\TH:i:s'))
+				->inlineHelp($field->help)
+				}}
 		@endif
 	@endforeach
 	

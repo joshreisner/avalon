@@ -29,7 +29,7 @@
 		<tr>
 			<td><a href="{{ URL::action('ObjectController@show', $object->id) }}">{{ $object->title }}</a></td>
 			<td class="center">{{ $object->instance_count }}</td>
-			<td class="right">{{ $object->instance_updated_at }}</td>
+			<td class="right">{{ Dates::relative($object->instance_updated_at) }}</td>
 		</tr>
 		@endforeach
 	</table>

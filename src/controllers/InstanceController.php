@@ -50,6 +50,13 @@ class InstanceController extends \BaseController {
 		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->get();
 		$instance = DB::table($object->name)->where('id', $instance_id)->first();
 		
+		//format instance values for form
+		foreach ($fields as $field) {
+			if ($field->type == 'datetime') {
+				if (!empty($instance->{$field->name})) $instance->{$field->name} = date('Y-m-d\TH:i:s', strtotime($instance->{$field->name}));
+			}
+		}
+		
 		return View::make('avalon::instances.edit', array(
 			'object'=>$object,
 			'fields'=>$fields,

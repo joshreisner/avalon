@@ -27,8 +27,8 @@
 		@foreach ($users as $user)
 		<tr @if (!$user->active) class="inactive"@endif>
 			<td><a href="{{ URL::action('UserController@edit', $user->id) }}">{{ $user->firstname }} {{ $user->lastname }}</a></td>
-			<td>{{ $user->role }}</td>
-			<td class="right">{{ $user->last_login }}</td>
+			<td>{{ $roles[$user->role] }}</td>
+			<td class="right">{{ Dates::relative($user->last_login) }}</td>
 			<td class="active">
 				<a href="{{ URL::action('UserController@getActivate', array($user->id)) }}">
 				@if (!$user->active)
