@@ -4,7 +4,7 @@
 //@codekit-prepend "jquery.tablednd.0.8.min.js"
 //@codekit-prepend "redactor.js"
 
-$(function(){
+$(function() {
 
 	//generic form validator
 	$('form').validate({
@@ -68,7 +68,7 @@ $(function(){
 	});
 	
 	//redactor fields
-	$('textarea.redactor').redactor({
+	$('textarea.html').redactor({
 		minHeight: 200,
 		buttonsAdd: ['|', 'button1'],
         buttonsCustom: {
@@ -83,6 +83,15 @@ $(function(){
                 }
             }
         }
-		
 	});
+
+	//slug fields
+	$("input.slug").each(function() {
+		$(this).on('keyup', function() {
+			var val = $(this).val();
+			val = val.toLowerCase().replace(/ /g, '-').replace(/\-\-/g, '-').replace(/[^a-z\-]/g, '');
+			$(this).val(val);
+		});	
+	});
+
 });

@@ -20,6 +20,7 @@
 				->type('date')
 				->label($field->title)
 				->value($field->required ? date('Y-m-d') : false)
+				->class($field->required ? 'date required' : 'date')
 				->inlineHelp($field->help)
 				}}
 		@elseif ($field->type == 'datetime')
@@ -27,30 +28,31 @@
 				->type('datetime-local')
 				->label($field->title)
 				->value($field->required ? date('Y-m-d\TH:i:s') : false)
+				->class($field->required ? 'datetime required' : 'datetime')
 				->inlineHelp($field->help)
 				}}
 		@elseif ($field->type == 'html')
 			{{ Former::textarea($field->name)
 				->label($field->title)
-				->class('redactor')
+				->class($field->required ? 'html required' : 'html')
 				->inlineHelp($field->help)
 				}}
 		@elseif ($field->type == 'slug')
 			{{ Former::text($field->name)
 				->label($field->title)
-				->class($field->required ? 'required' : '')
+				->class($field->required ? 'slug required' : 'slug')
 				->inlineHelp($field->help)
 				}}
 		@elseif ($field->type == 'string')
 			{{ Former::text($field->name)
 				->label($field->title)
-				->class($field->required ? 'required' : '')
+				->class($field->required ? 'string required' : 'string')
 				->inlineHelp($field->help)
 				}}
 		@elseif ($field->type == 'text')
 			{{ Former::textarea($field->name)
 				->label($field->title)
-				->class($field->required ? 'required' : '')
+				->class($field->required ? 'text required' : 'text')
 				->inlineHelp($field->help)
 				}}
 		@endif

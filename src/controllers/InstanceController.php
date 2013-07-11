@@ -24,13 +24,12 @@ class InstanceController extends \BaseController {
 			'precedence'=>DB::table($object->name)->max('precedence') + 1
 		);
 		
-		//add each field if present
+		//run various cleanup processes on the fields
 		foreach ($fields as $field) {
-			$value = Input::get($field->name);
-			if (empty($value) && !$field->required) $value = null;
-			$inserts[$field->name] = $value;
+			$inserts[$field->name] = self::sanitize($field);
 		}
-		
+
+
 		DB::table($object->name)->insert($inserts);
 		
 		//update objects table with latest counts
@@ -53,6 +52,8 @@ class InstanceController extends \BaseController {
 		foreach ($fields as $field) {
 			if ($field->type == 'datetime') {
 				if (!empty($instance->{$field->name})) $instance->{$field->name} = date('Y-m-d\TH:i:s', strtotime($instance->{$field->name}));
+			} elseif ($field->type == 'slug') {
+				if (empty($field->help)) $field->help = Lang::get('avalon::messages.fields_slug_help');
 			}
 		}
 		
@@ -74,11 +75,9 @@ class InstanceController extends \BaseController {
 			'updated_by'=>Session::get('avalon_id'),
 		);
 		
-		//add each field if present
+		//run various cleanup processes on the fields
 		foreach ($fields as $field) {
-			$value = Input::get($field->name);
-			if (empty($value) && !$field->required) $value = null;
-			$updates[$field->name] = $value;
+			$updates[$field->name] = self::sanitize($field);
 		}
 		
 		DB::table($object->name)->where('id', $instance_id)->update($updates);
@@ -138,5 +137,18 @@ class InstanceController extends \BaseController {
 			'instance_updated_at'=>new DateTime,
 			'instance_updated_by'=>Session::get('avalon_id'),
 		));
+	}
+
+	//sanitize field values before inserting
+	private function sanitize($field) {
+		$value = Input::get($field->name);
+
+		//format slug fields
+		if ($field->type == 'slug') $value = Str::slug($value);
+
+		//add each field if not present
+		if (empty($value) && !$field->required) $value = null;
+
+		return $value;
 	}
 }

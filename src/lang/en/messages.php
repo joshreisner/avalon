@@ -39,6 +39,7 @@ return array(
 	'fields_precedence'		=> 'Precedence',
 	'fields_title'			=> 'Title',
 	'fields_related'		=> 'Related Field',
+	'fields_slug_help'		=> 'eg about-us',
 	'fields_required'		=> 'Required',
 	'fields_system'			=> 'System Fields',
 	'fields_type'			=> 'Type',
