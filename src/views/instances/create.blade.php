@@ -37,6 +37,21 @@
 				->class($field->required ? 'html required' : 'html')
 				->inlineHelp($field->help)
 				}}
+		@elseif ($field->type == 'select')
+			@if ($field->required)
+			{{ Former::select($field->name)
+				->label($field->title)
+				->fromQuery($selects[$field->name]['options'], $selects[$field->name]['column_name'])
+				->inlineHelp($field->help)
+				}}
+			@else
+			{{ Former::select($field->name)
+				->label($field->title)
+				->addOption('', '')
+				->fromQuery($selects[$field->name]['options'], $selects[$field->name]['column_name'])
+				->inlineHelp($field->help)
+				}}
+			@endif
 		@elseif ($field->type == 'slug')
 			{{ Former::text($field->name)
 				->label($field->title)

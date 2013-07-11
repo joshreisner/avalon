@@ -34,12 +34,21 @@
 		->disabled()
 		}}
 	
+	@if (count($related_objects))
+	{{ Former::select('related_object_id')
+		->addOption('', '')
+		->fromQuery($related_objects, 'title')
+		->value($field->related_object_id)
+		->label(Lang::get('avalon::messages.fields_related_object'))
+		}}
+	@endif
+	
 	@if (count($related_fields))
 	{{ Former::select('related_field_id')
 		->addOption('', '')
 		->fromQuery($related_fields, 'title')
 		->value($field->related_field_id)
-		->label(Lang::get('avalon::messages.fields_related'))
+		->label(Lang::get('avalon::messages.fields_related_field'))
 		}}
 	@endif
 	

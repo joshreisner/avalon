@@ -89,7 +89,7 @@ $(function() {
 	$("input.slug").each(function() {
 		$(this).on('keyup', function() {
 			var val = $(this).val();
-			val = val.toLowerCase().replace(/ /g, '-').replace(/\-\-/g, '-').replace(/[^a-z\-]/g, '');
+			val = val.toLowerCase().replace(/ /g, '-').replace(/\-\-/g, '-').replace(/[^a-z0-9\-]/g, '');
 			$(this).val(val);
 		});	
 	});

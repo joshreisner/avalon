@@ -3,12 +3,13 @@
 class FieldController extends \BaseController {
 
 	private static $types = array(
-		'date'=>'Date',
-		'datetime'=>'Date + Time',
-		'html'=>'HTML',
-		'slug'=>'Slug',
-		'string'=>'String',
-		'text'=>'Text',
+		'date'		=>'Date',
+		'datetime'	=>'Date + Time',
+		'html'		=>'HTML',
+		'select'	=>'Select',
+		'slug'		=>'Slug',
+		'string'	=>'String',
+		'text'		=>'Text',
 	);
 	
 	private static $visibility = array(
@@ -38,10 +39,16 @@ class FieldController extends \BaseController {
 				->orderBy('precedence')
 				->get();
 
+		$related_objects = DB::table('avalon_objects')
+				->where('id', '<>', $object_id)
+				->orderBy('title')
+				->get();
+
 		return View::make('avalon::fields.create', array(
 			'object'=>$object,
 			'types'=>self::$types,
 			'related_fields'=>$related_fields,
+			'related_objects'=>$related_objects,
 			'visibility'=>self::$visibility,
 		));
 	}
@@ -51,10 +58,12 @@ class FieldController extends \BaseController {
 		$table_name = DB::table('avalon_objects')->where('id', $object_id)->pluck('name');
 		$field_name = Str::slug(Input::get('title'), '_');
 		$type		= Input::get('type');
+		if ($type == 'select' && !Str::endsWith($field_name, '_id')) $field_name .= '_id';
 		$required	= Input::has('required') ? 1 : 0;
 		
 		Schema::table($table_name, function($table) use ($type, $field_name, $required) {
 			switch ($type) {
+
 				case 'date':
 					if ($required) {
 						$table->date($field_name);
@@ -62,6 +71,7 @@ class FieldController extends \BaseController {
 						$table->date($field_name)->nullable();
 					}
 					break;
+				
 				case 'datetime':
 					if ($required) {
 						$table->dateTime($field_name);
@@ -69,6 +79,17 @@ class FieldController extends \BaseController {
 						$table->dateTime($field_name)->nullable();
 					}
 					break;
+				
+					break;
+
+				case 'select':
+					if ($required) {
+						$table->integer($field_name);
+					} else {
+						$table->integer($field_name)->nullable();
+					}
+					break;
+
 				case 'slug':
 				case 'string':
 					if ($required) {
@@ -77,6 +98,7 @@ class FieldController extends \BaseController {
 						$table->string($field_name)->nullable();
 					}
 					break;
+				
 				case 'html':
 				case 'text':
 					if ($required) {
@@ -84,7 +106,6 @@ class FieldController extends \BaseController {
 					} else {
 						$table->text($field_name)->nullable();
 					}
-					break;
 			}
 		});
 
@@ -93,9 +114,13 @@ class FieldController extends \BaseController {
 			DB::table($table_name)->update(array($field_name=>new DateTime)); 
 		}
 
-		//related field
+		//related field and object
+		//todo be sure laravel doesn't do this automatically
 		$related_field_id = Input::get('related_field_id');
 		if (empty($related_field_id)) $related_field_id = null;
+
+		$related_object_id = Input::get('related_object_id');
+		if (empty($related_object_id)) $related_object_id = null;
 
 
 		DB::table('avalon_fields')->insert(array(
@@ -105,6 +130,7 @@ class FieldController extends \BaseController {
 			'object_id'			=>$object_id,
 			'visibility'		=>Input::get('visibility'),
 			'related_field_id'	=>$related_field_id,
+			'related_object_id'	=>$related_object_id,
 			'required'			=>$required,
 			'precedence'		=>DB::table('avalon_fields')->where('object_id', $object_id)->max('precedence') + 1,
 			'updated_by'		=>Session::get('avalon_id'),
@@ -126,10 +152,16 @@ class FieldController extends \BaseController {
 				->orderBy('precedence')
 				->get();
 
+		$related_objects = DB::table('avalon_objects')
+				->where('id', '<>', $object_id)
+				->orderBy('title')
+				->get();
+
 		return View::make('avalon::fields.edit', array(
 			'object'=>$object,
 			'field'=>$field,
 			'related_fields'=>$related_fields,
+			'related_objects'=>$related_objects,
 			'visibility'=>self::$visibility,
 			'types'=>self::$types,
 		));
@@ -150,14 +182,20 @@ class FieldController extends \BaseController {
 			});
 		}
 
+		//related field and object
+		//todo be sure laravel doesn't do this automatically
 		$related_field_id = Input::get('related_field_id');
 		if (empty($related_field_id)) $related_field_id = null;
+
+		$related_object_id = Input::get('related_object_id');
+		if (empty($related_object_id)) $related_object_id = null;
 
 		DB::table('avalon_fields')->where('id', $field_id)->update(array(
 			'title'				=>Input::get('title'),
 			//'name'			=>$new_field_name,
 			'visibility'		=>Input::get('visibility'),
 			'related_field_id'	=>$related_field_id,
+			'related_object_id'	=>$related_object_id,
 			'required'			=>$required,
 			'updated_by'		=>Session::get('avalon_id'),
 			'updated_at'		=>new DateTime,

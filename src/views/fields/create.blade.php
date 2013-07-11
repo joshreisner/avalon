@@ -25,11 +25,19 @@
 		->label(Lang::get('avalon::messages.fields_type'))
 		}}
 	
+	@if (count($related_objects))
+	{{ Former::select('related_object_id')
+		->addOption('', '')
+		->fromQuery($related_objects, 'title')
+		->label(Lang::get('avalon::messages.fields_related_object'))
+		}}
+	@endif
+	
 	@if (count($related_fields))
 	{{ Former::select('related_field_id')
 		->addOption('', '')
 		->fromQuery($related_fields, 'title')
-		->label(Lang::get('avalon::messages.fields_related'))
+		->label(Lang::get('avalon::messages.fields_related_field'))
 		}}
 	@endif
 	
