@@ -6,22 +6,24 @@ class InstanceController extends \BaseController {
 	public function create($object_id) {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->orderBy('precedence')->get();
-
+		$options = array();
+		
+		//load options for checkboxes or selects
 		foreach ($fields as $field) {
-			if ($field->type == 'select') {
+			if (($field->type == 'checkboxes') || ($field->type == 'select')) {
 				$related_table = DB::table('avalon_objects')->where('id', $field->related_object_id)->first();
 				$related_column = DB::table('avalon_fields')->where('object_id', $field->related_object_id)->where('type', 'string')->first();
-				$selects[$field->name] = array(
+				$options[$field->name] = array(
 					'options'=>DB::table($related_table->name)->where('active', 1)->select('id', $related_column->name)->orderBy($related_table->order_by, $related_table->direction)->get(),
 					'column_name'=>$related_column->name,
 				);
 			}
 		}
-		
+
 		return View::make('avalon::instances.create', array(
 			'object'=>$object, 
 			'fields'=>$fields,
-			'selects'=>$selects,
+			'options'=>$options,
 		));
 	}
 
@@ -60,16 +62,16 @@ class InstanceController extends \BaseController {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->orderBy('precedence')->get();
 		$instance = DB::table($object->name)->where('id', $instance_id)->first();
-		$selects = array();
+		$options = array();
 
 		//format instance values for form
 		foreach ($fields as $field) {
 			if ($field->type == 'datetime') {
 				if (!empty($instance->{$field->name})) $instance->{$field->name} = date('Y-m-d\TH:i:s', strtotime($instance->{$field->name}));
-			} elseif ($field->type == 'select') {
+			} elseif (($field->type == 'checkboxes') || ($field->type == 'select')) {
 				$related_table = DB::table('avalon_objects')->where('id', $field->related_object_id)->first();
 				$related_column = DB::table('avalon_fields')->where('object_id', $field->related_object_id)->where('type', 'string')->first();
-				$selects[$field->name] = array(
+				$options[$field->name] = array(
 					'options'=>DB::table($related_table->name)->where('active', 1)->select('id', $related_column->name)->orderBy($related_table->order_by, $related_table->direction)->get(),
 					'column_name'=>$related_column->name,
 				);
@@ -91,7 +93,7 @@ class InstanceController extends \BaseController {
 			'object'=>$object,
 			'fields'=>$fields,
 			'instance'=>$instance,
-			'selects'=>$selects,
+			'options'=>$options,
 		));
 	}
 	

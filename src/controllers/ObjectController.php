@@ -31,36 +31,39 @@ class ObjectController extends \BaseController {
 	
 	//store create object form post data
 	public function store() {
-		
+
+		//make plural, title case
+		$title		= mb_convert_case(Str::plural(Input::get('title')), MB_CASE_TITLE, 'UTF-8');
+
 		//determine table name, todo check if unique
-		$name = Str::slug(Input::get('title'), '_');
+		$name		= Str::slug($title, '_');
 		
 		//enforce predence always ascending
-		$order_by = Input::get('order_by');
-		$direction = Input::get('direction');
+		$order_by	= Input::get('order_by');
+		$direction 	= Input::get('direction');
 		if ($order_by == 'precedence') $direction = 'asc';
 
 		//create entry in objects table for new object
 		$object_id = DB::table('avalon_objects')->insertGetId(array(
-			'title'=>Input::get('title'),
-			'name'=>$name,
-			'order_by'=>$order_by,
-			'direction'=>$direction,
-			'updated_by'=>Session::get('avalon_id'),
-			'updated_at'=>new DateTime,
+			'title'			=>$title,
+			'name'			=>$name,
+			'order_by'		=>$order_by,
+			'direction'		=>$direction,
+			'updated_by'	=>Session::get('avalon_id'),
+			'updated_at'	=>new DateTime,
 		));
 		
 		//create title field for table by default
 		DB::table('avalon_fields')->insert(array(
-			'title'=>'Title',
-			'name'=>'title',
-			'type'=>'string',
-			'visibility'=>'list',
-			'required'=>1,
-			'object_id'=>$object_id,
-			'updated_by'=>Session::get('avalon_id'),
-			'updated_at'=>new DateTime,
-			'precedence'=>1
+			'title'			=>'Title',
+			'name'			=>'title',
+			'type'			=>'string',
+			'visibility'	=>'list',
+			'required'		=>1,
+			'object_id'		=>$object_id,
+			'updated_by'	=>Session::get('avalon_id'),
+			'updated_at'	=>new DateTime,
+			'precedence'	=>1
 		));
 		
 		//create table with boilerplate fields
@@ -69,7 +72,6 @@ class ObjectController extends \BaseController {
 			$table->string('title');
 			$table->integer('updated_by')->nullable();
 			$table->dateTime('updated_at');
-			//$table->boolean('published')->default(1);
 			$table->integer('precedence');
 			$table->integer('subsequence')->nullable();
 			$table->boolean('active')->default(1);
@@ -123,6 +125,9 @@ class ObjectController extends \BaseController {
 	
 	//edit object settings
 	public function update($object_id) {
+		//make plural, title case
+		$title		= mb_convert_case(Str::plural(Input::get('title')), MB_CASE_TITLE, 'UTF-8');
+
 		//rename table if necessary
 		$old_name = DB::table('avalon_objects')->where('id', $object_id)->pluck('name');
 		$new_name = Str::slug(Input::get('name'), '_');
@@ -135,12 +140,12 @@ class ObjectController extends \BaseController {
 
 		//update objects table
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
-			'title'=>Input::get('title'),
-			'name'=>$new_name,
-			'order_by'=>$order_by,
-			'direction'=>$direction,
-			'list_help'=>trim(Input::get('list_help')),
-			'form_help'=>trim(Input::get('form_help')),
+			'title'		=>$title,
+			'name'		=>$new_name,
+			'order_by'	=>$order_by,
+			'direction'	=>$direction,
+			'list_help'	=>trim(Input::get('list_help')),
+			'form_help'	=>trim(Input::get('form_help')),
 		));
 		
 		return Redirect::action('ObjectController@show', $object_id);

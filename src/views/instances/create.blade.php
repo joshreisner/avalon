@@ -15,7 +15,18 @@
 	{{ Former::horizontal_open()->action(URL::action('InstanceController@store', $object->id)) }}
 	
 	@foreach ($fields as $field)
-		@if ($field->type == 'date')
+		@if ($field->type == 'checkboxes')
+			<div class="control-group">
+			    <label class="control-label">{{ $field->title }}</label>
+			    <div class="controls">
+			    	@foreach ($options[$field->name]['options'] as $checkbox)
+					<label class="checkbox">
+						<input type="checkbox" name="{{ $checkbox->id }}[]"> {{ $checkbox->{$options[$field->name]['column_name']} }}
+					</label>
+					@endforeach
+				</div>
+			</div>
+		@elseif ($field->type == 'date')
 			{{ Former::input($field->name)
 				->type('date')
 				->label($field->title)
@@ -41,14 +52,14 @@
 			@if ($field->required)
 			{{ Former::select($field->name)
 				->label($field->title)
-				->fromQuery($selects[$field->name]['options'], $selects[$field->name]['column_name'])
+				->fromQuery($options[$field->name]['options'], $options[$field->name]['column_name'])
 				->inlineHelp($field->help)
 				}}
 			@else
 			{{ Former::select($field->name)
 				->label($field->title)
 				->addOption('', '')
-				->fromQuery($selects[$field->name]['options'], $selects[$field->name]['column_name'])
+				->fromQuery($options[$field->name]['options'], $options[$field->name]['column_name'])
 				->inlineHelp($field->help)
 				}}
 			@endif

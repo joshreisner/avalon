@@ -3,13 +3,14 @@
 class FieldController extends \BaseController {
 
 	private static $types = array(
-		'date'		=>'Date',
-		'datetime'	=>'Date + Time',
-		'html'		=>'HTML',
-		'select'	=>'Select',
-		'slug'		=>'Slug',
-		'string'	=>'String',
-		'text'		=>'Text',
+		'checkboxes'	=>'Checkboxes',
+		'date'			=>'Date',
+		'datetime'		=>'Date + Time',
+		'html'			=>'HTML',
+		'select'		=>'Select',
+		'slug'			=>'Slug',
+		'string'		=>'String',
+		'text'			=>'Text',
 	);
 	
 	private static $visibility = array(
@@ -55,74 +56,94 @@ class FieldController extends \BaseController {
 	
 	//save form data to fields, add new column to object
 	public function store($object_id) {
-		$table_name = DB::table('avalon_objects')->where('id', $object_id)->pluck('name');
-		$field_name = Str::slug(Input::get('title'), '_');
 		$type		= Input::get('type');
-		if ($type == 'select' && !Str::endsWith($field_name, '_id')) $field_name .= '_id';
 		$required	= Input::has('required') ? 1 : 0;
 		
-		Schema::table($table_name, function($table) use ($type, $field_name, $required) {
-			switch ($type) {
+		$table_name = DB::table('avalon_objects')->where('id', $object_id)->pluck('name');
 
-				case 'date':
-					if ($required) {
-						$table->date($field_name);
-					} else {
-						$table->date($field_name)->nullable();
-					}
-					break;
-				
-				case 'datetime':
-					if ($required) {
-						$table->dateTime($field_name);
-					} else {
-						$table->dateTime($field_name)->nullable();
-					}
-					break;
-				
-					break;
+		if ($type == 'checkboxes') {
+			//use field_name to store joining table
+			$columns = array(
+				Str::singular(DB::table('avalon_objects')->where('id', Input::get('related_object_id'))->pluck('name')), 
+				Str::singular($table_name)
+			);
+			sort($columns);
+			$field_name = implode('_', $columns);
 
-				case 'select':
-					if ($required) {
-						$table->integer($field_name);
-					} else {
-						$table->integer($field_name)->nullable();
-					}
-					break;
+			//create joining table
+			Schema::create($field_name, function ($table) use ($columns) {
+				foreach ($columns as $column) {
+					$table->integer($column . '_id');
+				}
+			});
+		} else {
+			$field_name = Str::slug(Input::get('title'), '_');
+			if ($type == 'select' && !Str::endsWith($field_name, '_id')) $field_name .= '_id';
 
-				case 'slug':
-				case 'string':
-					if ($required) {
-						$table->string($field_name);
-					} else {
-						$table->string($field_name)->nullable();
-					}
-					break;
-				
-				case 'html':
-				case 'text':
-					if ($required) {
-						$table->text($field_name);
-					} else {
-						$table->text($field_name)->nullable();
-					}
+			//add new column
+			Schema::table($table_name, function($table) use ($type, $field_name, $required) {
+				switch ($type) {
+
+					case 'date':
+						if ($required) {
+							$table->date($field_name);
+						} else {
+							$table->date($field_name)->nullable();
+						}
+						break;
+					
+					case 'datetime':
+						if ($required) {
+							$table->dateTime($field_name);
+						} else {
+							$table->dateTime($field_name)->nullable();
+						}
+						break;
+					
+						break;
+
+					case 'select':
+						if ($required) {
+							$table->integer($field_name);
+						} else {
+							$table->integer($field_name)->nullable();
+						}
+						break;
+
+					case 'slug':
+					case 'string':
+						if ($required) {
+							$table->string($field_name);
+						} else {
+							$table->string($field_name)->nullable();
+						}
+						break;
+					
+					case 'html':
+					case 'text':
+						if ($required) {
+							$table->text($field_name);
+						} else {
+							$table->text($field_name)->nullable();
+						}
+				}
+			});
+
+			//set existing default values for required dates to today, better than 0000-00-00
+			if (in_array($type, array('date', 'datetime')) && $required) {
+				DB::table($table_name)->update(array($field_name=>new DateTime)); 
 			}
-		});
-
-		//set existing default values for required dates to today, better than 0000-00-00
-		if (in_array($type, array('date', 'datetime')) && $required) {
-			DB::table($table_name)->update(array($field_name=>new DateTime)); 
 		}
 
 		//related field and object
-		//todo be sure laravel doesn't do this automatically
+		//laravel doesn't seem to have a conventient way to handle nullable incoming integers
 		$related_field_id = Input::get('related_field_id');
 		if (empty($related_field_id)) $related_field_id = null;
 
 		$related_object_id = Input::get('related_object_id');
 		if (empty($related_object_id)) $related_object_id = null;
 
-
+		//save field info to fields table
 		DB::table('avalon_fields')->insert(array(
 			'title'				=>Input::get('title'),
 			'name'				=>$field_name,

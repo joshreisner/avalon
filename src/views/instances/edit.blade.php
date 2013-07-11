@@ -15,7 +15,18 @@
 	{{ Former::horizontal_open()->action(URL::action('InstanceController@update', array($object->id, $instance->id)))->method('put') }}
 	
 	@foreach ($fields as $field)
-		@if ($field->type == 'date')
+		@if ($field->type == 'checkboxes')
+			<div class="control-group">
+			    <label class="control-label">{{ $field->title }}</label>
+			    <div class="controls">
+			    	@foreach ($options[$field->name]['options'] as $checkbox)
+					<label class="checkbox">
+						<input type="checkbox" name="{{ $checkbox->id }}[]"> {{ $checkbox->{$options[$field->name]['column_name']} }}
+					</label>
+					@endforeach
+				</div>
+			</div>
+		@elseif ($field->type == 'date')
 			{{ Former::input($field->name)
 				->type('date')
 				->class($field->required ? 'date required' : 'date')
@@ -42,7 +53,7 @@
 			@if ($field->required)
 			{{ Former::select($field->name)
 				->label($field->title)
-				->fromQuery($selects[$field->name]['options'], $selects[$field->name]['column_name'])
+				->fromQuery($options[$field->name]['options'], $options[$field->name]['column_name'])
 				->value($instance->{$field->name})
 				->inlineHelp($field->help)
 				}}
@@ -50,7 +61,7 @@
 			{{ Former::select($field->name)
 				->label($field->title)
 				->addOption('', '')
-				->fromQuery($selects[$field->name]['options'], $selects[$field->name]['column_name'])
+				->fromQuery($options[$field->name]['options'], $options[$field->name]['column_name'])
 				->value($instance->{$field->name})
 				->inlineHelp($field->help)
 				}}
