@@ -21,7 +21,7 @@
 			    <div class="controls">
 			    	@foreach ($options[$field->name]['options'] as $checkbox)
 					<label class="checkbox">
-						<input type="checkbox" name="{{ $checkbox->id }}[]"> {{ $checkbox->{$options[$field->name]['column_name']} }}
+						<input type="checkbox" name="{{ $field->name }}[]" value="{{ $checkbox->id }}"> {{ $checkbox->{$options[$field->name]['column_name']} }}
 					</label>
 					@endforeach
 				</div>

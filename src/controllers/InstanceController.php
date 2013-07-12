@@ -41,11 +41,12 @@ class InstanceController extends \BaseController {
 		
 		//run various cleanup processes on the fields
 		foreach ($fields as $field) {
-			$inserts[$field->name] = self::sanitize($field);
+			if ($field->type != 'checkboxes') {
+				$inserts[$field->name] = self::sanitize($field);
+			}
 		}
 
-
-		DB::table($object->name)->insert($inserts);
+		$instance_id = DB::table($object->name)->insertGetId($inserts);
 		
 		//update objects table with latest counts
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
@@ -53,6 +54,21 @@ class InstanceController extends \BaseController {
 			'instance_updated_at'=>new DateTime,
 			'instance_updated_by'=>Session::get('avalon_id')
 		));
+
+		//handle any checkboxes, had to wait for instance_id
+		foreach ($fields as $field) {
+			if ($field->type == 'checkboxes') {
+				//figure out schema, loop through and save all the checkboxes
+				$object_column = self::getKey($object->name);
+				$remote_column = self::getKey($field->related_object_id);
+				foreach (Input::get($field->name) as $related_id) {
+					DB::table($field->name)->insert(array(
+						$object_column=>$instance_id,
+						$remote_column=>$related_id,
+					));
+				}
+			}
+		}
 		
 		return Redirect::action('ObjectController@show', $object_id);
 	}
@@ -75,6 +91,13 @@ class InstanceController extends \BaseController {
 					'options'=>DB::table($related_table->name)->where('active', 1)->select('id', $related_column->name)->orderBy($related_table->order_by, $related_table->direction)->get(),
 					'column_name'=>$related_column->name,
 				);
+
+				if ($field->type == 'checkboxes') { //get values
+					$key = self::getKey($field->related_object_id);
+					$values = DB::table($field->name)->where(self::getKey($object->name), $instance_id)->get();
+					foreach ($values as &$value) $value = $value->{$key};
+					$options[$field->name]['values'] = $values;
+				}
 			} elseif ($field->type == 'slug') {
 				if (empty($field->help)) $field->help = Lang::get('avalon::messages.fields_slug_help');
 
@@ -108,9 +131,22 @@ class InstanceController extends \BaseController {
 			'updated_by'=>Session::get('avalon_id'),
 		);
 		
-		//run various cleanup processes on the fields
+		//run loop through the fields
 		foreach ($fields as $field) {
-			$updates[$field->name] = self::sanitize($field);
+			if ($field->type == 'checkboxes') {
+				//figure out schema, loop through and save all the checkboxes
+				$object_column = self::getKey($object->name);
+				$remote_column = self::getKey($field->related_object_id);
+				DB::table($field->name)->where($object_column, $object_id)->delete();
+				foreach (Input::get($field->name) as $related_id) {
+					DB::table($field->name)->insert(array(
+						$object_column=>$instance_id,
+						$remote_column=>$related_id,
+					));
+				}
+			} else {
+				$updates[$field->name] = self::sanitize($field);
+			}
 		}
 		
 		DB::table($object->name)->where('id', $instance_id)->update($updates);
@@ -184,4 +220,10 @@ class InstanceController extends \BaseController {
 
 		return $value;
 	}
+
+	//return a foreign key column name for a given table name or object_id
+	private function getKey($table_name) {
+		if (is_integer($table_name)) $table_name = DB::table('avalon_objects')->where('id', $table_name)->pluck('name');
+		return Str::singular($table_name) . '_id';
+	}	
 }
