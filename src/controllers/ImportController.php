@@ -53,27 +53,63 @@ class ImportController extends \BaseController {
 
 				//get category id
 				$category_id = 0;
-
 				foreach ($item->category as $category) {
 					if (($category['domain'] == 'category') && isset($categories[(string)$category['nicename']])) {
 						$category_id = $categories[(string)$category['nicename']];
 					}
 				}
 
-				DB::table('posts')->insert(array(
+				$post_id = DB::table('posts')->insertGetId(array(
 					'title'			=>$item->title,
 					'slug'			=>$item->post_name,
-					'content'		=>$item->content,
+					'content'		=>self::nl2p($item->content),
 					'published'		=>$item->post_date_gmt,
 					'category_id'	=>$category_id,
 					'updated_at'	=>new DateTime,
 					'updated_by'	=>Session::get('avalon_id'),
 					'precedence'	=>$precedence++,
 				));
+
+				//save tags
+				foreach ($item->category as $category) {
+					if (($category['domain'] == 'post_tag') && isset($tags[(string)$category['nicename']])) {
+						$tag_id = $tags[(string)$category['nicename']];
+
+						DB::table('post_tag')->insert(array(
+							'post_id'=>$post_id,
+							'tag_id'=>$tag_id,
+						));
+					}
+				}
+
 			}
 		
 		}
 
+		//update post meta
+		$objects = DB::table('avalon_objects')->get();
+		foreach ($objects as $object) {
+			DB::table('avalon_objects')->where('id', $object->id)->update(array(
+				'instance_count'=>DB::table($object->name)->where('active', 1)->count(),
+				'instance_updated_by'=>Session::get('avalon_id'),
+				'instance_updated_at'=>new DateTime,
+			));
+		}
+
 	}
+
+
+private static function nl2p($string, $line_breaks = true, $xml = true)
+{
+    // Remove existing HTML formatting to avoid double-wrapping things
+    $string = str_replace(array('<p>', '</p>', '<br>', '<br />'), '', $string);
+    
+    // It is conceivable that people might still want single line-breaks
+    // without breaking into a new paragraph.
+    if ($line_breaks == true)
+        return '<p>'.preg_replace(array("/([\n]{2,})/i", "/([^>])\n([^<])/i"), array("</p>\n<p>", '<br'.($xml == true ? ' /' : '').'>'), trim($string)).'</p>';
+    else 
+        return '<p>'.preg_replace("/([\n]{1,})/i", "</p>\n<p>", trim($string)).'</p>';
+}  
 
 }
