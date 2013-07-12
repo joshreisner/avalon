@@ -16,6 +16,10 @@ Route::group(array('before'=>'avalon_auth', 'prefix'=>Config::get('avalon::prefi
 	Route::post('/objects/{object_id}/fields/reorder', 					'FieldController@postReorder');
 	Route::post('/objects/{object_id}/instances/reorder',				'InstanceController@postReorder');
 	Route::get('/objects/{object_id}/instances/{instance_id}/activate',	'InstanceController@getActivate');
+
+
+	Route::get('/import/wordpress', 'ImportController@wordpress');
+
 });
 
 //filters
