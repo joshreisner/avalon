@@ -46,6 +46,7 @@ return array(
 	'fields_system'			=> 'System Fields',
 	'fields_type'			=> 'Type',
 	'fields_updated_at'		=> 'Updated',
+	'fields_url_placeholder'=> 'https://example.com',
 	'fields_user'			=> 'User Fields',
 	'fields_visibility'		=> 'Visibility',
 

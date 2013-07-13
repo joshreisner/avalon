@@ -87,6 +87,14 @@
 				->value($instance->{$field->name})
 				->inlineHelp($field->help)
 				}}
+		@elseif ($field->type == 'url')
+			{{ Former::url($field->name)
+				->label($field->title)
+				->class($field->required ? 'url required' : 'url')
+				->placeholder(Lang::get('avalon::messages.fields_url_placeholder'))
+				->value($instance->{$field->name})
+				->inlineHelp($field->help)
+				}}
 		@endif
 	@endforeach
 	
@@ -105,4 +113,22 @@
 	<button type="submit" class="btn btn-mini">{{ Lang::get('avalon::messages.instances_destroy') }}</button>
 	{{ Form::close() }}	
 
+	<div class="well">
+		<h3>Images: 830 &times; &infin;</h3>
+		<ul class="thumbnails">
+		  <li>
+		    <div class="thumbnail">
+		      <img src="http://joshreisner.com/wp-content/uploads/2013/07/wemblers25-830x553.jpg" alt="">
+		      <h3>Thumbnail label</h3>
+		    </div>
+		  </li>
+		  <li>
+		    <div class="thumbnail">
+		      <img src="http://joshreisner.com/wp-content/uploads/2013/07/wemblers25-830x553.jpg" alt="">
+		      <h3>Thumbnail label</h3>
+		    </div>
+		  </li>
+		</ul>
+
+	</div>
 @endsection

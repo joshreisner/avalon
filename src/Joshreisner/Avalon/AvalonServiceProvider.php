@@ -21,6 +21,14 @@ class AvalonServiceProvider extends ServiceProvider {
 		$this->package('joshreisner/avalon');
 		
 		include __DIR__.'/../../routes.php';
+
+		//otherwise URL placeholder is Http://
+		\Config::set('former::translatable', array(
+			'help', 'inlineHelp', 'blockHelp', 'label'
+		));
+
+		\Config::set('former::required_text', '');
+
     
 	}
 

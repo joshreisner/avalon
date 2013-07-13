@@ -11,6 +11,7 @@ class FieldController extends \BaseController {
 		'slug'			=>'Slug',
 		'string'		=>'String',
 		'text'			=>'Text',
+		'url'			=>'URL',
 	);
 	
 	private static $visibility = array(
@@ -112,6 +113,7 @@ class FieldController extends \BaseController {
 
 					case 'slug':
 					case 'string':
+					case 'url':
 						if ($required) {
 							$table->string($field_name);
 						} else {
