@@ -16,7 +16,7 @@
 	
 	@foreach ($fields as $field)
 		@if ($field->type == 'checkboxes')
-			<div class="control-group">
+			<div class="control-group checkboxes">
 			    <label class="control-label">{{ $field->title }}</label>
 			    <div class="controls">
 			    	@foreach ($options[$field->name]['options'] as $checkbox)

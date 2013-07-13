@@ -13,6 +13,7 @@ return array(
 	'objects_count'			=> 'Count',
 	'objects_create'		=> 'Create Object',
 	'objects_create_help'	=> 'This action will create a new table in the database.',
+	'objects_dependencies'	=> 'This object can\'t be deleted because it has dependencies.',
 	'objects_destroy'		=> 'Destroy Object',
 	'objects_edit'			=> 'Settings',
 	'objects_edit_help'		=> 'Use this page to edit the properties of the :title object.',

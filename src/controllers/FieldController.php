@@ -227,11 +227,17 @@ class FieldController extends \BaseController {
 	
 	//delete field & remove from database
 	public function destroy($object_id, $field_id) {
-		$table_name = DB::table('avalon_objects')->where('id', $object_id)->pluck('name');
-		$field_name = DB::table('avalon_fields')->where('id', $field_id)->pluck('name');
-		Schema::table($table_name, function($table) use ($field_name) {
-			$table->dropColumn($field_name);
-		});
+		$table = DB::table('avalon_objects')->where('id', $object_id)->first();
+		$field = DB::table('avalon_fields')->where('id', $field_id)->first();
+
+		if ($field->type == 'checkboxes') {
+			Schema::dropIfExists($field->name);
+		} else {
+			Schema::table($table->name, function($table) use ($field) {
+				$table->dropColumn($field->name);
+			});
+		}
+		
 		DB::table('avalon_fields')->where('id', $field_id)->delete();
 		return Redirect::action('FieldController@index', $object_id);
 	}

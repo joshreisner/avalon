@@ -104,6 +104,8 @@ class ObjectController extends \BaseController {
 	
 	//edit object settings
 	public function edit($object_id) {
+
+		//get order by select data
 		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->orderBy('precedence')->get();
 		$order_by = array();
 		foreach ($fields as $field) $order_by[$field->name] = $field->title;
@@ -115,11 +117,12 @@ class ObjectController extends \BaseController {
 			),
 			Lang::get('avalon::messages.fields_user')=>$order_by,
 		);
-		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
+
 		return View::make('avalon::objects.edit', array(
-			'object'=>$object, 
+			'object'=>DB::table('avalon_objects')->where('id', $object_id)->first(), 
 			'order_by'=>$order_by,
 			'direction'=>self::$direction,
+			'dependencies'=>DB::table('avalon_fields')->where('related_object_id', $object_id)->count(),
 		));
 	}
 	
