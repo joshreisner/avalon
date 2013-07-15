@@ -12,9 +12,15 @@ class UserController extends \BaseController {
 	public function index() {
 		$users = DB::table('avalon_users')->orderBy('lastname')->get();
 		
+		foreach ($users as &$user) {
+			$user->name = $user->firstname . ' ' . $user->lastname;
+			$user->role = self::$roles[$user->role];
+			$user->link = URL::action('UserController@edit', $user->id);
+			$user->delete = URL::action('UserController@delete', $user->id);
+		}
+
 		return View::make('avalon::users.index', array(
 			'users'=>$users,
-			'roles'=>self::$roles
 		));
 	}
 	
@@ -69,7 +75,8 @@ class UserController extends \BaseController {
 		return Redirect::action('UserController@index');
 	}
 
-	public function getActivate($user_id) {
+	//toggle active flag
+	public function delete($user_id) {
 		DB::table('avalon_users')->where('id', $user_id)->update(array('active'=>Input::get('active')));
 	}
 }

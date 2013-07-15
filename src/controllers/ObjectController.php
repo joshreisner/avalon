@@ -9,8 +9,9 @@ class ObjectController extends \BaseController {
 	
 	//display list for home page
 	public function index() {
-		$objects = DB::table('avalon_objects')->orderby('title')->get();
+		$objects = DB::table('avalon_objects')->orderBy('list_grouping')->orderBy('title')->get();
 		foreach ($objects as &$object) {
+			$object->link = URL::action('InstanceController@index', $object->id);
 			if ($object->instance_count == 0) $object->instance_count = '';
 		}
 		return View::make('avalon::objects.index', array('objects'=>$objects));
@@ -23,9 +24,16 @@ class ObjectController extends \BaseController {
 			'precedence'=>Lang::get('avalon::messages.fields_precedence'),
 			'created_at'=>Lang::get('avalon::messages.fields_updated_at'),
 		);
+
+		//typehead
+		$typeahead = DB::table('avalon_objects')->select('list_grouping')->distinct()->orderBy('list_grouping')->get();
+		foreach ($typeahead as &$list_grouping) $list_grouping = '"' . $list_grouping->list_grouping . '"';
+		$typeahead = '[' . implode(',', $typeahead) . ']';
+
 		return View::make('avalon::objects.create', array(
-			'order_by'=>$order_by,
-			'direction'=>self::$direction,
+			'order_by'	=>$order_by,
+			'direction'	=>self::$direction,
+			'typeahead'	=>$typeahead,
 		));
 	}
 	
@@ -49,6 +57,7 @@ class ObjectController extends \BaseController {
 			'name'			=>$name,
 			'order_by'		=>$order_by,
 			'direction'		=>$direction,
+			'list_grouping'	=>Input::get('list_grouping'),
 			'updated_by'	=>Session::get('avalon_id'),
 			'updated_at'	=>new DateTime,
 		));
@@ -79,28 +88,6 @@ class ObjectController extends \BaseController {
 		
 		return Redirect::action('ObjectController@show', $object_id);
 	}
-
-	//show list of instances for an object
-	public function show($object_id) {
-		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
-		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->where('visibility', 'list')->orderBy('precedence')->get();
-		$instances = DB::table($object->name)->orderBy($object->order_by, $object->direction)->get(); //todo select only $fields
-		
-		//per-type modifications to table output
-		foreach ($instances as &$instance) {
-			foreach ($fields as $field) {
-				if (in_array($field->type, array('date', 'datetime'))) {
-					$instance->{$field->name} = Dates::absolute($instance->{$field->name});
-				}
-			}
-		}
-		
-		return View::make('avalon::objects.show', array(
-			'object'=>$object, 
-			'fields'=>$fields, 
-			'instances'=>$instances
-		));
-	}
 	
 	//edit object settings
 	public function edit($object_id) {
@@ -118,11 +105,18 @@ class ObjectController extends \BaseController {
 			Lang::get('avalon::messages.fields_user')=>$order_by,
 		);
 
+		//get typeahead info
+		//$typeahead = '["foo","bar", "baz"]';
+		$typeahead = DB::table('avalon_objects')->select('list_grouping')->distinct()->orderBy('list_grouping')->get();
+		foreach ($typeahead as &$list_grouping) $list_grouping = '"' . $list_grouping->list_grouping . '"';
+		$typeahead = '[' . implode(',', $typeahead) . ']';
+
 		return View::make('avalon::objects.edit', array(
 			'object'=>DB::table('avalon_objects')->where('id', $object_id)->first(), 
 			'order_by'=>$order_by,
 			'direction'=>self::$direction,
 			'dependencies'=>DB::table('avalon_fields')->where('related_object_id', $object_id)->count(),
+			'typeahead'=>$typeahead,
 		));
 	}
 	
@@ -143,12 +137,13 @@ class ObjectController extends \BaseController {
 
 		//update objects table
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
-			'title'		=>$title,
-			'name'		=>$new_name,
-			'order_by'	=>$order_by,
-			'direction'	=>$direction,
-			'list_help'	=>trim(Input::get('list_help')),
-			'form_help'	=>trim(Input::get('form_help')),
+			'title'			=>$title,
+			'name'			=>$new_name,
+			'order_by'		=>$order_by,
+			'direction'		=>$direction,
+			'list_grouping'	=>Input::get('list_grouping'),
+			'list_help'		=>trim(Input::get('list_help')),
+			'form_help'		=>trim(Input::get('form_help')),
 		));
 		
 		return Redirect::action('ObjectController@show', $object_id);

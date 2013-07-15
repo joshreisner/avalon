@@ -114,7 +114,7 @@
 	{{ Form::close() }}	
 
 	<div class="well">
-		<h3>Images: 830 &times; &infin;</h3>
+		<button class="btn"><i class="icon-file-alt"></i> Upload Files</button>
 		<ul class="thumbnails">
 		  <li>
 		    <div class="thumbnail">

@@ -47,6 +47,13 @@
 		->value($object->direction)
 		}}
 	
+	{{ Former::text('list_grouping')
+		->label(Lang::get('avalon::messages.objects_list_grouping'))
+		->value($object->list_grouping)
+		->data_provide('typeahead')
+		->data_source($typeahead)
+		}}
+	
 	{{ Former::textarea('list_help')
 		->label(Lang::get('avalon::messages.objects_list_help'))
 		->value($object->list_help)

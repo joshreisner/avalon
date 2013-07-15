@@ -45,7 +45,7 @@ $(function() {
 	});
 	
 	//toggle instance, field, or user active or inactive
-	$('table').on('click', 'td.active a', function(e) {
+	$('table').on('click', 'td.delete a', function(e) {
 		e.preventDefault();
 		
 		//toggle row class

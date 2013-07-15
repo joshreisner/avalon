@@ -2,6 +2,30 @@
 
 class InstanceController extends \BaseController {
 
+	//show list of instances for an object
+	public function index($object_id) {
+		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
+		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->where('visibility', 'list')->orderBy('precedence')->get();
+		$instances = DB::table($object->name)->orderBy($object->order_by, $object->direction)->get(); //todo select only $fields
+		
+		//per-type modifications to table output
+		foreach ($instances as &$instance) {
+			// foreach ($fields as $field) {
+			// 	if (in_array($field->type, array('date', 'datetime'))) {
+			// 		$instance->{$field->name} = Dates::absolute($instance->{$field->name});
+			// 	}
+			// }
+			$instance->link = URL::action('InstanceController@edit', array($object->id, $instance->id));
+			$instance->delete = URL::action('InstanceController@delete', array($object->id, $instance->id));
+		}
+		
+		return View::make('avalon::instances.index', array(
+			'object'=>$object, 
+			'fields'=>$fields, 
+			'instances'=>$instances
+		));
+	}
+
 	//show create form for an object instance
 	public function create($object_id) {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
@@ -175,7 +199,7 @@ class InstanceController extends \BaseController {
 	}
 	
 	//reorder fields by drag-and-drop
-	public function postReorder($object_id) {
+	public function reorder($object_id) {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		$instances = explode('&', Input::get('order'));
 		$precedence = 1;
@@ -190,7 +214,7 @@ class InstanceController extends \BaseController {
 	}
 	
 	//toggle active
-	public function getActivate($object_id, $instance_id) {
+	public function delete($object_id, $instance_id) {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		
 		//toggle instance with active or inactive

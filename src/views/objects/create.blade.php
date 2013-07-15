@@ -31,6 +31,12 @@
 		->value('asc')
 		}}
 	
+	{{ Former::text('list_grouping')
+		->label(Lang::get('avalon::messages.objects_list_grouping'))
+		->data_provide('typeahead')
+		->data_source($typeahead)
+		}}
+	
 	{{ Former::actions()
 		->primary_submit(Lang::get('avalon::messages.site_save'))
 		->link(Lang::get('avalon::messages.site_cancel'), URL::action('ObjectController@index'))

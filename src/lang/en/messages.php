@@ -20,6 +20,7 @@ return array(
 	'objects_empty'			=> 'No objects have been added yet.',
 	'objects_form_help'		=> 'Form Help',
 	'objects_help'			=> 'This is the home page, an index of editable web objects.',
+	'objects_list_grouping'	=> 'List Grouping',
 	'objects_list_help'		=> 'List Help',
 	'objects_name'			=> 'Table Name',
 	'objects_order_by'		=> 'Order By',
