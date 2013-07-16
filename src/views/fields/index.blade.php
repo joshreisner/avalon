@@ -8,7 +8,7 @@
 
 	{{ Breadcrumbs::leave(array(
 		URL::action('ObjectController@index')=>Lang::get('avalon::messages.objects'),
-		URL::action('ObjectController@show', $object->id)=>$object->title,
+		URL::action('InstanceController@index', $object->id)=>$object->title,
 		Lang::get('avalon::messages.fields'),
 		)) }}
 
@@ -16,7 +16,7 @@
 		<a class="btn" href="{{ URL::action('FieldController@create', $object->id) }}"><i class="icon-plus"></i> {{ Lang::get('avalon::messages.fields_create') }}</a>
 	</div>
 
-	<table class="table table-condensed draggable" data-draggable-url="{{ URL::action('FieldController@postReorder', $object->id) }}">
+	<table class="table table-condensed draggable" data-draggable-url="{{ URL::action('FieldController@reorder', $object->id) }}">
 		<thead>
 		<tr>
 			<th class="draggy"></th>

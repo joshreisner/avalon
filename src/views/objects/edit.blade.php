@@ -8,7 +8,7 @@
 
 	{{ Breadcrumbs::leave(array(
 		URL::action('ObjectController@index')=>Lang::get('avalon::messages.objects'),
-		URL::action('ObjectController@show', $object->id)=>$object->title,
+		URL::action('InstanceController@index', $object->id)=>$object->title,
 		Lang::get('avalon::messages.objects_edit'),
 		)) }}
 
@@ -19,6 +19,13 @@
 		->value($object->title)
 		->class('required')
 		->inlineHelp(Lang::get('avalon::messages.objects_title_help'))
+		}}
+	
+	{{ Former::text('list_grouping')
+		->label(Lang::get('avalon::messages.objects_list_grouping'))
+		->value($object->list_grouping)
+		->data_provide('typeahead')
+		->data_source($typeahead)
 		}}
 	
 	{{ Former::text('name')
@@ -47,12 +54,14 @@
 		->value($object->direction)
 		}}
 	
-	{{ Former::text('list_grouping')
-		->label(Lang::get('avalon::messages.objects_list_grouping'))
-		->value($object->list_grouping)
-		->data_provide('typeahead')
-		->data_source($typeahead)
+	@if (count($group_by_field))
+	{{ Former::select('group_by_field')
+		->options(array(''=>''))
+		->fromQuery($group_by_field, 'title')
+		->value($object->group_by_field)
+		->label(Lang::get('avalon::messages.objects_group_by'))
 		}}
+	@endif
 	
 	{{ Former::textarea('list_help')
 		->label(Lang::get('avalon::messages.objects_list_help'))
@@ -66,7 +75,7 @@
 	
 	{{ Former::actions()
 		->primary_submit(Lang::get('avalon::messages.site_save'))
-		->link(Lang::get('avalon::messages.site_cancel'), URL::action('ObjectController@show', $object->id))
+		->link(Lang::get('avalon::messages.site_cancel'), URL::action('InstanceController@index', $object->id))
 		}}
 	
 	{{ Former::close() }}

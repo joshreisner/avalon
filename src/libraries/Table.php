@@ -47,7 +47,7 @@ class Table {
 		$head = '<thead><tr>' . $columns . '</tr></thead>';
 
 		//build rows
-		$rows = array();
+		$bodies = $rows = array();
 		foreach (self::$rows as $row) {
 			$columns = array();
 			foreach (self::$columns as $column) {
@@ -55,7 +55,9 @@ class Table {
 				//handle groupings
 				if (self::$grouped && ($last_group != $row->{self::$grouped})) {
 					$last_group = $row->{self::$grouped};
-					$rows[] = '<tr class="group"><td colspan=' . $colspan . '">' . $last_group . '</td></tr>';
+					$bodies[] = '<tbody>' . implode($rows) . '</tbody>';
+					$bodies[] = '<tr class="group"><td colspan=' . $colspan . '">' . $last_group . '</td></tr>';
+					$rows = array();
 				}
 
 				//process value if necessary
@@ -69,6 +71,8 @@ class Table {
 						$value = Dates::relative($value);
 					} else {
 						if ($column['type'] == 'date') {
+							$value = Dates::absolute($value);
+						} elseif ($column['type'] == 'datetime') {
 							$value = Dates::absolute($value);
 						}
 						if (isset($row->link)) {
@@ -85,10 +89,12 @@ class Table {
 			$rows[] = '<tr id="' . $row->id . '"' . (self::$deletable && !$row->active ? ' class="inactive"' : '') . '>' . implode($columns) . '</tr>';
 		}
 
+		$bodies[] = '<tbody>' . implode($rows) . '</tbody>';
+
 		//output
 		return '<table class="table table-condensed' . (self::$draggable ? ' draggable" data-draggable-url="' . self::$draggable: '') . '">' .
 					$head . 
-					implode($rows) . 
+					implode($bodies) . 
 				'</table>';
 
 	}

@@ -86,7 +86,7 @@ class ObjectController extends \BaseController {
 			$table->boolean('active')->default(1);
 		});
 		
-		return Redirect::action('ObjectController@show', $object_id);
+		return Redirect::action('InstanceController@index', $object_id);
 	}
 	
 	//edit object settings
@@ -116,6 +116,7 @@ class ObjectController extends \BaseController {
 			'order_by'=>$order_by,
 			'direction'=>self::$direction,
 			'dependencies'=>DB::table('avalon_fields')->where('related_object_id', $object_id)->count(),
+			'group_by_field'=>DB::table('avalon_fields')->where('object_id', $object_id)->where('type', 'select')->get(),
 			'typeahead'=>$typeahead,
 		));
 	}
@@ -137,16 +138,17 @@ class ObjectController extends \BaseController {
 
 		//update objects table
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
-			'title'			=>$title,
-			'name'			=>$new_name,
-			'order_by'		=>$order_by,
-			'direction'		=>$direction,
-			'list_grouping'	=>Input::get('list_grouping'),
-			'list_help'		=>trim(Input::get('list_help')),
-			'form_help'		=>trim(Input::get('form_help')),
+			'title'				=>$title,
+			'name'				=>$new_name,
+			'order_by'			=>$order_by,
+			'direction'			=>$direction,
+			'list_grouping'		=>Input::get('list_grouping'),
+			'group_by_field'	=>Input::get('group_by_field'),
+			'list_help'			=>trim(Input::get('list_help')),
+			'form_help'			=>trim(Input::get('form_help')),
 		));
 		
-		return Redirect::action('ObjectController@show', $object_id);
+		return Redirect::action('InstanceController@index', $object_id);
 	}
 	
 	//destroy object

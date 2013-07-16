@@ -25,6 +25,7 @@
 		foreach ($fields as $field) $table->column($field->name, $field->type, $field->title);
 		$table->column('updated_at', 'updated', Lang::get('avalon::messages.site_updated'));
 		$table->deletable();
+		if (!empty($object->group_by_field)) $table->groupBy('group');
 		if (($object->order_by == 'precedence') && (count($instances) > 1)) $table->draggable(URL::action('InstanceController@reorder', $object->id));
 		echo $table->draw();
 		?>

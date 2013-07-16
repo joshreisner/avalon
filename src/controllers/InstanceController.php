@@ -6,15 +6,24 @@ class InstanceController extends \BaseController {
 	public function index($object_id) {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->where('visibility', 'list')->orderBy('precedence')->get();
-		$instances = DB::table($object->name)->orderBy($object->order_by, $object->direction)->get(); //todo select only $fields
+		$selects = array($object->name . '.id', $object->name . '.updated_at', $object->name . '.active');
+		foreach ($fields as $field) $selects[] = $object->name . '.' . $field->name;
+		$instances = DB::table($object->name)->select($selects);
+
+		//group by field?
+		if (!empty($object->group_by_field)) {
+			$grouped_field = DB::table('avalon_fields')->where('id', $object->group_by_field)->first();
+			$grouped_object = DB::table('avalon_objects')->where('id', $grouped_field->related_object_id)->first();
+			$instances = $instances->
+				join($grouped_object->name, $object->name . '.' . $grouped_field->name, '=', $grouped_object->name . '.id')
+				->orderBy($grouped_object->name . '.' . $grouped_object->order_by, $grouped_object->direction)
+				->addSelect($grouped_object->name . '.title as group');
+		}
+
+		$instances = $instances->orderBy($object->name . '.' . $object->order_by, $object->direction)->get(); //todo select only $fields
 		
 		//per-type modifications to table output
 		foreach ($instances as &$instance) {
-			// foreach ($fields as $field) {
-			// 	if (in_array($field->type, array('date', 'datetime'))) {
-			// 		$instance->{$field->name} = Dates::absolute($instance->{$field->name});
-			// 	}
-			// }
 			$instance->link = URL::action('InstanceController@edit', array($object->id, $instance->id));
 			$instance->delete = URL::action('InstanceController@delete', array($object->id, $instance->id));
 		}
@@ -94,7 +103,7 @@ class InstanceController extends \BaseController {
 			}
 		}
 		
-		return Redirect::action('ObjectController@show', $object_id);
+		return Redirect::action('InstanceController@index', $object_id);
 	}
 	
 	//show edit form
@@ -182,7 +191,7 @@ class InstanceController extends \BaseController {
 			'instance_updated_by'=>Session::get('avalon_id')
 		));
 		
-		return Redirect::action('ObjectController@show', $object_id);
+		return Redirect::action('InstanceController@index', $object_id);
 	}
 	
 	//remove object from db - todo check key/constraints
@@ -195,7 +204,7 @@ class InstanceController extends \BaseController {
 			'instance_count'=>DB::table($object->name)->where('active', 1)->count()
 		));
 
-		return Redirect::action('ObjectController@show', $object_id);
+		return Redirect::action('InstanceController@index', $object_id);
 	}
 	
 	//reorder fields by drag-and-drop

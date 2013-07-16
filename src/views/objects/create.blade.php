@@ -19,6 +19,12 @@
 		->inlineHelp(Lang::get('avalon::messages.objects_title_help'))
 		}}
 	
+	{{ Former::text('list_grouping')
+		->label(Lang::get('avalon::messages.objects_list_grouping'))
+		->data_provide('typeahead')
+		->data_source($typeahead)
+		}}
+	
 	{{ Former::select('order_by')
 		->options($order_by)
 		->label(Lang::get('avalon::messages.objects_order_by'))
@@ -29,12 +35,6 @@
 		->options($direction)
 		->label(Lang::get('avalon::messages.objects_direction'))
 		->value('asc')
-		}}
-	
-	{{ Former::text('list_grouping')
-		->label(Lang::get('avalon::messages.objects_list_grouping'))
-		->data_provide('typeahead')
-		->data_source($typeahead)
 		}}
 	
 	{{ Former::actions()

@@ -8,7 +8,7 @@
 
 	{{ Breadcrumbs::leave(array(
 		URL::action('ObjectController@index')=>Lang::get('avalon::messages.objects'),
-		URL::action('ObjectController@show', $object->id)=>$object->title,
+		URL::action('InstanceController@index', $object->id)=>$object->title,
 		Lang::get('avalon::messages.instances_create'),
 		)) }}
 
@@ -94,7 +94,7 @@
 	
 	{{ Former::actions()
 		->primary_submit(Lang::get('avalon::messages.site_save'))
-		->link(Lang::get('avalon::messages.site_cancel'), URL::action('ObjectController@show', $object->id))
+		->link(Lang::get('avalon::messages.site_cancel'), URL::action('InstanceController@index', $object->id))
 		}}
 	
 	{{ Former::close() }}

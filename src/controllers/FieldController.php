@@ -245,7 +245,7 @@ class FieldController extends \BaseController {
 	}
 	
 	//reorder fields by drag-and-drop
-	public function postReorder($object_id) {
+	public function reorder($object_id) {
 		$fields = explode('&', Input::get('order'));
 		$precedence = 1;
 		foreach ($fields as $field) {

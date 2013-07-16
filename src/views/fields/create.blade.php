@@ -8,7 +8,7 @@
 
 	{{ Breadcrumbs::leave(array(
 		URL::action('ObjectController@index')=>Lang::get('avalon::messages.objects'),
-		URL::action('ObjectController@show', $object->id)=>$object->title,
+		URL::action('InstanceController@index', $object->id)=>$object->title,
 		URL::action('FieldController@index', $object->id)=>Lang::get('avalon::messages.fields'),
 		Lang::get('avalon::messages.fields_create'),
 		)) }}

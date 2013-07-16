@@ -19,6 +19,7 @@ return array(
 	'objects_edit_help'		=> 'Use this page to edit the properties of the :title object.',
 	'objects_empty'			=> 'No objects have been added yet.',
 	'objects_form_help'		=> 'Form Help',
+	'objects_group_by'		=> 'Group By',
 	'objects_help'			=> 'This is the home page, an index of editable web objects.',
 	'objects_list_grouping'	=> 'List Grouping',
 	'objects_list_help'		=> 'List Help',
