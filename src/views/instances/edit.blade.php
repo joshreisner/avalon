@@ -114,6 +114,14 @@
 	{{ Form::close() }}	
 
 	<div class="well">
+		<div class="dropzone">
+			<i class="icon-plus"></i>
+			Click or drop files here.
+		</div>
+	</div>
+
+	<!--
+	<div class="well">
 		<button class="btn"><i class="icon-file-alt"></i> Upload Files</button>
 		<ul class="thumbnails">
 		  <li>
@@ -129,6 +137,6 @@
 		    </div>
 		  </li>
 		</ul>
-
 	</div>
+	-->
 @endsection

@@ -94,11 +94,13 @@ class InstanceController extends \BaseController {
 				//figure out schema, loop through and save all the checkboxes
 				$object_column = self::getKey($object->name);
 				$remote_column = self::getKey($field->related_object_id);
-				foreach (Input::get($field->name) as $related_id) {
-					DB::table($field->name)->insert(array(
-						$object_column=>$instance_id,
-						$remote_column=>$related_id,
-					));
+				if (Input::has($field->name)) {
+					foreach (Input::get($field->name) as $related_id) {
+						DB::table($field->name)->insert(array(
+							$object_column=>$instance_id,
+							$remote_column=>$related_id,
+						));
+					}
 				}
 			}
 		}
@@ -171,11 +173,14 @@ class InstanceController extends \BaseController {
 				$object_column = self::getKey($object->name);
 				$remote_column = self::getKey($field->related_object_id);
 				DB::table($field->name)->where($object_column, $object_id)->delete();
-				foreach (Input::get($field->name) as $related_id) {
-					DB::table($field->name)->insert(array(
-						$object_column=>$instance_id,
-						$remote_column=>$related_id,
-					));
+
+				if (Input::has($field->name)) {
+					foreach (Input::get($field->name) as $related_id) {
+						DB::table($field->name)->insert(array(
+							$object_column=>$instance_id,
+							$remote_column=>$related_id,
+						));
+					}
 				}
 			} else {
 				$updates[$field->name] = self::sanitize($field);
@@ -259,4 +264,25 @@ class InstanceController extends \BaseController {
 		if (is_integer($table_name)) $table_name = DB::table('avalon_objects')->where('id', $table_name)->pluck('name');
 		return Str::singular($table_name) . '_id';
 	}	
+
+	public function redactor_s3() {
+
+		$S3_KEY		= Config::get('aws.key');
+		$S3_SECRET	= Config::get('aws.secret');
+		$S3_BUCKET	= Config::get('aws.bucket');
+		$S3_URL		= 'http://s3.amazonaws.com';
+		$EXPIRE_TIME = (60 * 5); // 5 minutes
+		$objectName = '/' . $_GET['name'];
+		$mimeType	= $_GET['type'];
+		$Expires 	= time() + $EXPIRE_TIME;
+		$amzHeaders	= "x-amz-acl:public-read";
+		$stringToSign = "PUT\n\n$mimeType\n$expires\n$amzHeaders\n$S3_BUCKET$objectName";
+
+		$sig = urlencode(base64_encode(hash_hmac('sha1', $stringToSign, $S3_SECRET, true)));
+		$url = urlencode("$S3_URL$S3_BUCKET$objectName?AWSAccessKeyId=$S3_KEY&Expires=$expires&Signature=$sig");
+
+		echo $url;
+
+	}
 }
+

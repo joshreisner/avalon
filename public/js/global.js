@@ -82,7 +82,8 @@ $(function() {
 			        });
                 }
             }
-        }
+        },
+        s3: '/login/upload/file/to/s3'
 	});
 
 	//slug fields
