@@ -52,6 +52,7 @@ class AvalonCreateTables extends Migration {
 			$table->increments('id');
 			$table->string('title');
 			$table->string('name');
+			$table->string('model');
 			$table->string('order_by');
 			$table->string('direction');
 			$table->integer('group_by_field')->nullable();

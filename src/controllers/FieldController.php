@@ -201,7 +201,7 @@ class FieldController extends \BaseController {
 		if ($old_field_name != $new_field_name) {
 			Schema::table($table_name, function($table) use ($old_field_name, $new_field_name) {
 				//todo check in a bit to see if this is working -- mysterious error "Call to undefined method"
-				//$table->renameColumn($old_field_name, $new_field_name);
+				$table->renameColumn($old_field_name, $new_field_name);
 			});
 		}
 

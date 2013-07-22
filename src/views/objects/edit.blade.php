@@ -34,6 +34,12 @@
 		->class('required')
 		}}
 	
+	{{ Former::text('model')
+		->label(Lang::get('avalon::messages.objects_model'))
+		->value($object->model)
+		->class('required')
+		}}
+	
 	<!-- doesn't work yet
 	{{ Former::select('order_by')
 		->options($order_by)
