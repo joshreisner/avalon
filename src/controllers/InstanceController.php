@@ -172,7 +172,7 @@ class InstanceController extends \BaseController {
 				//figure out schema, loop through and save all the checkboxes
 				$object_column = self::getKey($object->name);
 				$remote_column = self::getKey($field->related_object_id);
-				DB::table($field->name)->where($object_column, $object_id)->delete();
+				DB::table($field->name)->where($object_column, $instance_id)->delete();
 
 				if (Input::has($field->name)) {
 					foreach (Input::get($field->name) as $related_id) {
