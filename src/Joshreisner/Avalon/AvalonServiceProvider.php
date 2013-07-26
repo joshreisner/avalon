@@ -43,23 +43,53 @@ class AvalonServiceProvider extends ServiceProvider {
 		//register avalon objects as models for yr application
 		foreach (\DB::table('avalon_objects')->get() as $object) {
 
-			//hasMany relationships
-			$hasMany = '';
+			//relationships
+			$relationships = array();
+
+			//from the related object
 			$related_fields = \DB::table('avalon_fields')
 					->where('related_object_id', $object->id)
 					->join('avalon_objects', 'avalon_fields.object_id', '=', 'avalon_objects.id')
 					->select(
+						'avalon_fields.type as type',
+						'avalon_fields.name as field_name',
 						'avalon_objects.name as object_name', 
 						'avalon_objects.model', 
-						'avalon_fields.name as field_name',
 						'avalon_objects.order_by',
 						'avalon_objects.direction'
 					)->get();
 			foreach ($related_fields as $field) {
-				$hasMany .= 'public function ' . $field->object_name . '() {
-					return $this->hasMany("' . $field->model . '", "' . $field->field_name . '")->active()->orderBy("' . $field->order_by . '", "' . $field->direction . '");
+				if ($field->type == 'select') {
+					$relationships[] = 'public function ' . $field->object_name . '() {
+						return $this->hasMany("' . $field->model . '", "' . $field->field_name . '")->active()->orderBy("' . $field->order_by . '", "' . $field->direction . '");
+					}';
+				} elseif ($field->type == 'checkboxes') {
+					$relationships[] = 'public function ' . $field->object_name . '() {
+						return $this->belongsToMany("' . $field->model . '", "' . $field->field_name . '", "' . \InstanceController::getKey($object->name) . '", "' . \InstanceController::getKey($field->object_name) . '")->active()->orderBy("' . $field->order_by . '", "' . $field->direction . '");
+					}';
+				}
+			}
+
+			//also need many-to-many from the object
+			$related_fields = \DB::table('avalon_fields')
+					->where('object_id', $object->id)
+					->whereIn('type', array('checkboxes'))
+					->join('avalon_objects', 'avalon_fields.related_object_id', '=', 'avalon_objects.id')
+					->select(
+						'avalon_fields.type as type',
+						'avalon_fields.name as field_name',
+						'avalon_objects.name as object_name', 
+						'avalon_objects.model', 
+						'avalon_objects.order_by',
+						'avalon_objects.direction'
+					)->get();
+			foreach ($related_fields as $field) {
+				$relationships[] = 'public function ' . $field->object_name . '() {
+					return $this->belongsToMany("' . $field->model . '", "' . $field->field_name . '", "' . \InstanceController::getKey($object->name) . '", "' . \InstanceController::getKey($field->object_name) . '")->active()->orderBy("' . $field->order_by . '", "' . $field->direction . '");
 				}';
 			}
+
+
 
 			//define model
 			eval('class ' . $object->model . ' extends Eloquent {
@@ -67,7 +97,7 @@ class AvalonServiceProvider extends ServiceProvider {
 				public function scopeActive($query) {
 					return $query->where("active", 1);
 				}
-				' . $hasMany . '
+				' . implode(' ', $relationships) . '
 			}');
 
 		}

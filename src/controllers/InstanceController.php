@@ -260,7 +260,8 @@ class InstanceController extends \BaseController {
 	}
 
 	//return a foreign key column name for a given table name or object_id
-	private function getKey($table_name) {
+	//needs to be public because called from AvalonServiceProvider::boot
+	public static function getKey($table_name) {
 		if (is_integer($table_name)) $table_name = DB::table('avalon_objects')->where('id', $table_name)->pluck('name');
 		return Str::singular($table_name) . '_id';
 	}	
