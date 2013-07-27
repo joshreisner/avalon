@@ -7,6 +7,7 @@ class FieldController extends \BaseController {
 		'date'			=>'Date',
 		'datetime'		=>'Date + Time',
 		'html'			=>'HTML',
+		'images'		=>'Images',
 		'select'		=>'Select',
 		'slug'			=>'Slug',
 		'string'		=>'String',
@@ -137,14 +138,6 @@ class FieldController extends \BaseController {
 			}
 		}
 
-		//related field and object
-		//laravel doesn't seem to have a conventient way to handle nullable incoming integers
-		$related_field_id = Input::get('related_field_id');
-		if (empty($related_field_id)) $related_field_id = null;
-
-		$related_object_id = Input::get('related_object_id');
-		if (empty($related_object_id)) $related_object_id = null;
-
 		//save field info to fields table
 		DB::table('avalon_fields')->insert(array(
 			'title'				=>Input::get('title'),
@@ -152,8 +145,10 @@ class FieldController extends \BaseController {
 			'type'				=>$type,
 			'object_id'			=>$object_id,
 			'visibility'		=>Input::get('visibility'),
-			'related_field_id'	=>$related_field_id,
-			'related_object_id'	=>$related_object_id,
+			'width'				=>Input::has('width') ? Input::get('width') : null,
+			'height'			=>Input::has('height') ? Input::get('height') : null,
+			'related_field_id'	=>Input::has('related_field_id') ? Input::get('related_field_id') : null,
+			'related_object_id'	=>Input::has('related_object_id') ? Input::get('related_object_id') : null,
 			'required'			=>$required,
 			'precedence'		=>DB::table('avalon_fields')->where('object_id', $object_id)->max('precedence') + 1,
 			'updated_by'		=>Session::get('avalon_id'),
@@ -206,19 +201,14 @@ class FieldController extends \BaseController {
 		}
 
 		//related field and object
-		//todo be sure laravel doesn't do this automatically
-		$related_field_id = Input::get('related_field_id');
-		if (empty($related_field_id)) $related_field_id = null;
-
-		$related_object_id = Input::get('related_object_id');
-		if (empty($related_object_id)) $related_object_id = null;
-
 		DB::table('avalon_fields')->where('id', $field_id)->update(array(
 			'title'				=>Input::get('title'),
 			//'name'			=>$new_field_name,
 			'visibility'		=>Input::get('visibility'),
-			'related_field_id'	=>$related_field_id,
-			'related_object_id'	=>$related_object_id,
+			'width'				=>Input::has('width') ? Input::get('width') : null,
+			'height'			=>Input::has('height') ? Input::get('height') : null,
+			'related_field_id'	=>Input::has('related_field_id') ? Input::get('related_field_id') : null,
+			'related_object_id'	=>Input::has('related_object_id') ? Input::get('related_object_id') : null,
 			'required'			=>$required,
 			'updated_by'		=>Session::get('avalon_id'),
 			'updated_at'		=>new DateTime,

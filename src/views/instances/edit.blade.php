@@ -49,6 +49,17 @@
 				->value($instance->{$field->name})
 				->inlineHelp($field->help)
 				}}
+		@elseif ($field->type == 'images')
+			<div class="control-group images">
+			    <label class="control-label">{{ $field->title }}</label>
+			    <div class="controls well">
+			    	<a class="add">
+			    		<i class="icon-picture"></i>
+			    		<div class="dimension width">830</div>
+			    		<div class="dimension height">&infin;</div>
+			    	</a>
+				</div>
+			</div>
 		@elseif ($field->type == 'select')
 			@if ($field->required)
 			{{ Former::select($field->name)

@@ -58,6 +58,16 @@
 		->label(Lang::get('avalon::messages.fields_visibility'))
 		}}
 	
+	{{ Former::text('width')
+		->label(Lang::get('avalon::messages.fields_width'))
+		->value($field->width)
+		}}
+	
+	{{ Former::text('height')
+		->label(Lang::get('avalon::messages.fields_height'))
+		->value($field->height)
+		}}
+	
 	@if ($field->required)
 	{{ Former::checkbox('required')
 		->checked()
