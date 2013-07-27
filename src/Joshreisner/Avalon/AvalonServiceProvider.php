@@ -2,6 +2,11 @@
 
 use Illuminate\Support\ServiceProvider;
 
+class AvalonUpload extends \Eloquent {
+	protected $table = 'avalon_uploads';
+}
+
+
 class AvalonServiceProvider extends ServiceProvider {
 
 	/**
@@ -89,13 +94,14 @@ class AvalonServiceProvider extends ServiceProvider {
 				}';
 			}
 
-
-
 			//define model
 			eval('class ' . $object->model . ' extends Eloquent {
 				protected $table = "' . $object->name . '";
 				public function scopeActive($query) {
 					return $query->where("active", 1);
+				}
+				public function uploads() {
+					return $this->hasMany("AvalonUpload", "instance_id")->where("table", "' . $object->name . '");
 				}
 				' . implode(' ', $relationships) . '
 			}');

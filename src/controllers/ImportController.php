@@ -5,18 +5,19 @@ class ImportController extends \BaseController {
 	public static function wordpress() {
 
 		//set up
-		$categories = $tags = array();
+		$categories = $tags = $posts = array();
 
 		//clear out database
 		DB::table('posts')->truncate();
 		DB::table('post_tag')->truncate();
 		DB::table('tags')->truncate();
 		DB::table('categories')->truncate();
+		DB::table('avalon_uploads')->truncate();
 
-		//load XML array
-		$file = file_get_contents('/Users/joshreisner/Desktop/joshreisner.wordpress.2013-07-12.xml');
+		//load XML array & deal with invalid xml characters
+		$file = file_get_contents('/Users/joshreisner/Sites/joshreisner.wordpress.2013-07-08.xml');
 		$file = str_replace('wp:', '', $file);
-		$file = str_replace('content:encoded', 'content', $file);
+		$file = str_replace(':encoded>', '>', $file);
 		$file = new SimpleXMLElement($file);
 
 		//loop through categories and add them
@@ -52,13 +53,16 @@ class ImportController extends \BaseController {
 			if (($item->post_type == 'post') && ($item->status == 'publish')) {
 
 				//get category id
-				$category_id = 0;
+				$category_id = null;
 				foreach ($item->category as $category) {
 					if (($category['domain'] == 'category') && isset($categories[(string)$category['nicename']])) {
 						$category_id = $categories[(string)$category['nicename']];
 					}
 				}
 
+				$item->content = self::strip_shortcodes($item->content);
+
+				//save post
 				$post_id = DB::table('posts')->insertGetId(array(
 					'title'			=>$item->title,
 					'slug'			=>$item->post_name,
@@ -82,8 +86,36 @@ class ImportController extends \BaseController {
 					}
 				}
 
+				//remember wp post id
+				$posts['post' . $item->post_id] = $post_id;
+
 			}
 		
+		}
+
+		//loop through attachments
+		foreach ($file->channel->item as $item) {
+			
+			if (($item->post_type == 'attachment') && (!empty($posts['post' . $item->post_parent]))) {
+
+				$meta = @unserialize($item->postmeta[1]->meta_value);
+				if (!isset($meta['width'])) $meta['width'] = null;
+				if (!isset($meta['height'])) $meta['height'] = null;
+
+				DB::table('avalon_uploads')->insert(array(
+					'table'			=>'posts',
+					'instance_id'	=>$posts['post' . $item->post_parent],
+					'title'			=>$item->excerpt,
+					'url'			=>$item->attachment_url,
+					'extension'		=>pathinfo($item->attachment_url, PATHINFO_EXTENSION),
+					'width'			=>$meta['width'],
+					'height'		=>$meta['height'],
+					'updated_at'	=>new DateTime,
+					'updated_by'	=>Session::get('avalon_id'),
+					'precedence'	=>$item->menu_order,
+				));
+
+			}
 		}
 
 		//update post meta
@@ -96,20 +128,75 @@ class ImportController extends \BaseController {
 			));
 		}
 
+		echo 'done';
+
 	}
 
 
-private static function nl2p($string, $line_breaks = true, $xml = true)
-{
-    // Remove existing HTML formatting to avoid double-wrapping things
-    $string = str_replace(array('<p>', '</p>', '<br>', '<br />'), '', $string);
-    
-    // It is conceivable that people might still want single line-breaks
-    // without breaking into a new paragraph.
-    if ($line_breaks == true)
-        return '<p>'.preg_replace(array("/([\n]{2,})/i", "/([^>])\n([^<])/i"), array("</p>\n<p>", '<br'.($xml == true ? ' /' : '').'>'), trim($string)).'</p>';
-    else 
-        return '<p>'.preg_replace("/([\n]{1,})/i", "</p>\n<p>", trim($string)).'</p>';
-}  
+	private static function nl2p($string) {
+	    //remove existing HTML formatting to avoid double-wrapping things
+	    $nl = "\n";
+
+	    $string = str_replace(array('<p>', '</p>', '<br>', '<br/>', '<br />'), '', trim($string));
+	    
+        $string = preg_replace(array('/([' . $nl . ']{2,})/i', '/([^>])' . $nl . '([^<])/i'), array('</p>' . $nl . '<p>', '<br>'), $string);
+
+        return '<p>' . $string . '</p>';
+	} 
+
+	private static function get_shortcode_regex() {
+
+		$tagregexp = join( '|', array_map('preg_quote', array('caption', 'audio', 'gallery')) );
+
+		// WARNING! Do not change this regex without changing do_shortcode_tag() and strip_shortcode_tag()
+		// Also, see shortcode_unautop() and shortcode.js.
+		return
+			  '\\['                              // Opening bracket
+			. '(\\[?)'                           // 1: Optional second opening bracket for escaping shortcodes: [[tag]]
+			. "($tagregexp)"                     // 2: Shortcode name
+			. '(?![\\w-])'                       // Not followed by word character or hyphen
+			. '('                                // 3: Unroll the loop: Inside the opening shortcode tag
+			.     '[^\\]\\/]*'                   // Not a closing bracket or forward slash
+			.     '(?:'
+			.         '\\/(?!\\])'               // A forward slash not followed by a closing bracket
+			.         '[^\\]\\/]*'               // Not a closing bracket or forward slash
+			.     ')*?'
+			. ')'
+			. '(?:'
+			.     '(\\/)'                        // 4: Self closing tag ...
+			.     '\\]'                          // ... and closing bracket
+			. '|'
+			.     '\\]'                          // Closing bracket
+			.     '(?:'
+			.         '('                        // 5: Unroll the loop: Optionally, anything between the opening and closing shortcode tags
+			.             '[^\\[]*+'             // Not an opening bracket
+			.             '(?:'
+			.                 '\\[(?!\\/\\2\\])' // An opening bracket not followed by the closing shortcode tag
+			.                 '[^\\[]*+'         // Not an opening bracket
+			.             ')*+'
+			.         ')'
+			.         '\\[\\/\\2\\]'             // Closing shortcode tag
+			.     ')?'
+			. ')'
+			. '(\\]?)';                          // 6: Optional second closing brocket for escaping shortcodes: [[tag]]
+	}
+
+	private static function strip_shortcodes( $content ) {
+
+		$pattern = self::get_shortcode_regex();
+
+		return preg_replace_callback( "/$pattern/s", array('self', 'strip_shortcode_tag'), $content );
+	}
+
+	private static function strip_shortcode_tag( $m ) {
+		// allow [[foo]] syntax for escaping a tag
+		if ( $m[1] == '[' && $m[6] == ']' ) {
+			return substr($m[0], 1, -1);
+		}
+
+		return $m[1] . $m[6];
+	}
+
+
 
 }

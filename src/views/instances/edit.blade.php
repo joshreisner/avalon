@@ -109,16 +109,18 @@
 
 @section('side')
 	<p>{{ nl2br($object->form_help) }}</p>
+
+	<div class="well">
+		@foreach ($uploads as $upload)
+			@if (in_array($upload->extension, array('jpg', 'png', 'gif')))
+				<img src="{{ $upload->url }}" width="{{ $upload->width }}" height="{{ $upload->height }}">
+			@endif
+		@endforeach
+	</div>
+
 	{{ Form::open(array('method'=>'delete', 'action'=>array('InstanceController@destroy', $object->id, $instance->id))) }}
 	<button type="submit" class="btn btn-mini">{{ Lang::get('avalon::messages.instances_destroy') }}</button>
 	{{ Form::close() }}	
-
-	<div class="well">
-		<div class="dropzone">
-			<i class="icon-plus"></i>
-			Click or drop files here.
-		</div>
-	</div>
 
 	<!--
 	<div class="well">

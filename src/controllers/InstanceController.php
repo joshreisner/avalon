@@ -113,6 +113,7 @@ class InstanceController extends \BaseController {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->orderBy('precedence')->get();
 		$instance = DB::table($object->name)->where('id', $instance_id)->first();
+		$uploads = DB::table('avalon_uploads')->where('instance_id', $instance_id)->orderBy('precedence')->get();
 		$options = array();
 
 		//format instance values for form
@@ -152,6 +153,7 @@ class InstanceController extends \BaseController {
 			'fields'=>$fields,
 			'instance'=>$instance,
 			'options'=>$options,
+			'uploads'=>$uploads,
 		));
 	}
 	
@@ -273,16 +275,15 @@ class InstanceController extends \BaseController {
 		$S3_BUCKET	= Config::get('aws.bucket');
 		$S3_URL		= 'http://s3.amazonaws.com';
 		$EXPIRE_TIME = (60 * 5); // 5 minutes
+
 		$objectName = '/' . $_GET['name'];
 		$mimeType	= $_GET['type'];
-		$Expires 	= time() + $EXPIRE_TIME;
+		$expires 	= time() + $EXPIRE_TIME;
 		$amzHeaders	= "x-amz-acl:public-read";
 		$stringToSign = "PUT\n\n$mimeType\n$expires\n$amzHeaders\n$S3_BUCKET$objectName";
 
 		$sig = urlencode(base64_encode(hash_hmac('sha1', $stringToSign, $S3_SECRET, true)));
 		$url = urlencode("$S3_URL$S3_BUCKET$objectName?AWSAccessKeyId=$S3_KEY&Expires=$expires&Signature=$sig");
-
-		echo $url;
 
 	}
 }
