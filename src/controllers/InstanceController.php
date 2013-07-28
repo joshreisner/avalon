@@ -293,36 +293,26 @@ class InstanceController extends \BaseController {
 
 	public static function upload_image($object_id, $instance_id) {
 
-		$temp_file = 'foo.jpg';
+		$temp_file = 'temp.dat';
 
 		//resize and save - todo learn how to do facades in a package
-		\Intervention\Image\Facades\Image::make(Input::file('photo')
-				->getRealPath())
+		Image::make(Input::file('image_upload')->getRealPath())
 				->resize(830, null, true)
 				->save($temp_file);
 
-		//s3 init
-		$app = new Application;
-		$app->register(new AwsServiceProvider($app), array(
-		    'config' => array(
-		        'aws' => array(
-		            'key'    => '<your-aws-access-key-id>',
-		            'secret' => '<your-aws-secret-access-key>',
-		            'region' => Region::US_WEST_2,
-		        ),
-		    ),
-		));
-
-		//send the image
-		$s3 = App::make('aws')->get('s3');
-		$s3->putObject(array(
-		    'Bucket'     => '<your-bucket>',
-		    'Key'        => '<the-name-of-your-object>',
-		    'SourceFile' => $temp_file,
-		));
+		//send the image to s3
+		$s3 = App::make('aws')
+			->get('s3')
+			->putObject(array(
+			    'Bucket'     => Config::get('aws.bucket'),
+			    'Key'        => Input::get('filename'),
+			    'SourceFile' => $temp_file,
+			));
 
 		//delete the image
+		unlink(base_path() . '/public/' . $temp_file);
 
+		//send a response
 		
 	}
 }

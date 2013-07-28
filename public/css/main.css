@@ -1365,6 +1365,7 @@ body form .control-group.images .controls.well{margin-bottom:0;overflow:auto;pad
 body form .control-group.images .controls.well div.image.add{font-size:30px;position:relative;text-align:center;line-height:100px;color:#ccc}body form .control-group.images .controls.well div.image.add .dimension{font-size:12px;position:absolute;line-height:1;background-color:#f5f5f5;padding:0 10px}body form .control-group.images .controls.well div.image.add .dimension.width{left:31px;bottom:-7px}
 body form .control-group.images .controls.well div.image.add .dimension.height{right:-15px;top:44px}
 body form .control-group.images .controls.well div.image.add:hover{color:#555}
+body form.upload{display:none}
 body .header{margin-bottom:24px}
 body .main h1{font-weight:normal;font-size:24px;line-height:24px;margin:0 0 24px 0}body .main h1 i{color:#ccc}
 body .main .btn-group{margin-bottom:24px}

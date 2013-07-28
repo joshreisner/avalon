@@ -128,6 +128,7 @@
 	<!-- hidden image upload form -->
 	{{ Form::open(array('method'=>'post', 'class'=>'upload', 'files'=>true, 'action'=>array('InstanceController@upload_image', $object->id, $instance->id))) }}
 	<input type="hidden" name="field_id" value="41">
+	<input type="hidden" name="filename">
 	<input type="file" name="image_upload" id="image_upload">
 	{{ Form::close() }}
 

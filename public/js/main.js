@@ -97,11 +97,34 @@ $(function() {
 		});	
 	});
 
+	function make_slug(str, len) {
+		str = str.trim().toLowerCase();
+		str = str.replace(/[^a-z0-9]+/g, '-');
+		str = str.replace(/^-|-$/g, '');
+		
+		if (len && (str.length > len)) str = str.substr(0, len);
+		
+		if (str.substr(str.length - 1) == '-') str = str.substr(0, (str.length - 1));
+
+		return str;
+	}
+
 	function random_string(len) {
 		var str = '';
 		var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 		for (var i = 0; i < len; i++) str += characters.charAt(Math.floor(Math.random() * characters.length));
 		return str;
+	}
+
+	function file_name(str) {
+		if (str.indexOf('.') == -1) return false;
+		var fileparts = str.split('.');
+		var extension = fileparts.pop();
+		if (extension == 'jpeg') extension = 'jpg'; //hate jpeg
+		var okfiletypes = new Array('jpg', 'png', 'gif');
+		if (!$.inArray(extension, okfiletypes)) return false; //throw error?
+		var filename = make_slug(fileparts.join('.'), 20) + '-' + random_string(5) + '.' + extension;
+		return filename;
 	}
 	
 	//image upload
@@ -114,11 +137,11 @@ $(function() {
 		autoUpload: 		true,
 		dropZone: 			well,
 		add: function(e, data) {
-			window.console.log('added!');
-			//window.console.log(data);
-        	data.context = $('<div class="image"/>').html('<div class="progress progress-striped active"><div class="bar"></div></div>').appendTo(well);
-        	data.filename = random_string(20) + "/" + data.files[0].name;
-			data.submit();
+        	if (data.filename = file_name(data.files[0].name)) {
+	        	data.context = $('<div class="image"/>').html('<div class="progress progress-striped active"><div class="bar"></div></div>').appendTo(well);
+				$(this).closest("form").find("input[name=filename]").val(data.filename);
+				data.submit();
+        	}
 		},
 		fail: function(e, data) {
 			window.console.log('fail');
