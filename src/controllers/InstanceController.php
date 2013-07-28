@@ -1,4 +1,7 @@
 <?php
+use Aws\Common\Enum\Region;
+use Aws\Laravel\AwsServiceProvider;
+use Illuminate\Foundation\Application;
 
 class InstanceController extends \BaseController {
 
@@ -184,6 +187,8 @@ class InstanceController extends \BaseController {
 						));
 					}
 				}
+			} elseif ($field->type == 'images') {
+
 			} else {
 				$updates[$field->name] = self::sanitize($field);
 			}
@@ -268,7 +273,7 @@ class InstanceController extends \BaseController {
 		return Str::singular($table_name) . '_id';
 	}	
 
-	public function redactor_s3() {
+	/* public function redactor_s3() {
 
 		$S3_KEY		= Config::get('aws.key');
 		$S3_SECRET	= Config::get('aws.secret');
@@ -284,7 +289,41 @@ class InstanceController extends \BaseController {
 
 		$sig = urlencode(base64_encode(hash_hmac('sha1', $stringToSign, $S3_SECRET, true)));
 		$url = urlencode("$S3_URL$S3_BUCKET$objectName?AWSAccessKeyId=$S3_KEY&Expires=$expires&Signature=$sig");
+	}*/
 
+	public static function upload_image($object_id, $instance_id) {
+
+		$temp_file = 'foo.jpg';
+
+		//resize and save - todo learn how to do facades in a package
+		\Intervention\Image\Facades\Image::make(Input::file('photo')
+				->getRealPath())
+				->resize(830, null, true)
+				->save($temp_file);
+
+		//s3 init
+		$app = new Application;
+		$app->register(new AwsServiceProvider($app), array(
+		    'config' => array(
+		        'aws' => array(
+		            'key'    => '<your-aws-access-key-id>',
+		            'secret' => '<your-aws-secret-access-key>',
+		            'region' => Region::US_WEST_2,
+		        ),
+		    ),
+		));
+
+		//send the image
+		$s3 = App::make('aws')->get('s3');
+		$s3->putObject(array(
+		    'Bucket'     => '<your-bucket>',
+		    'Key'        => '<the-name-of-your-object>',
+		    'SourceFile' => $temp_file,
+		));
+
+		//delete the image
+
+		
 	}
 }
 

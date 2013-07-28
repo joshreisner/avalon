@@ -53,11 +53,11 @@
 			<div class="control-group images">
 			    <label class="control-label">{{ $field->title }}</label>
 			    <div class="controls well">
-			    	<a class="add">
+			    	<!--<div class="image add">
 			    		<i class="icon-picture"></i>
 			    		<div class="dimension width">830</div>
 			    		<div class="dimension height">&infin;</div>
-			    	</a>
+			    	</div>-->
 				</div>
 			</div>
 		@elseif ($field->type == 'select')
@@ -121,35 +121,14 @@
 @section('side')
 	<p>{{ nl2br($object->form_help) }}</p>
 
-	<div class="well">
-		@foreach ($uploads as $upload)
-			@if (in_array($upload->extension, array('jpg', 'png', 'gif')))
-				<img src="{{ $upload->url }}" width="{{ $upload->width }}" height="{{ $upload->height }}">
-			@endif
-		@endforeach
-	</div>
-
 	{{ Form::open(array('method'=>'delete', 'action'=>array('InstanceController@destroy', $object->id, $instance->id))) }}
 	<button type="submit" class="btn btn-mini">{{ Lang::get('avalon::messages.instances_destroy') }}</button>
-	{{ Form::close() }}	
+	{{ Form::close() }}
 
-	<!--
-	<div class="well">
-		<button class="btn"><i class="icon-file-alt"></i> Upload Files</button>
-		<ul class="thumbnails">
-		  <li>
-		    <div class="thumbnail">
-		      <img src="http://joshreisner.com/wp-content/uploads/2013/07/wemblers25-830x553.jpg" alt="">
-		      <h3>Thumbnail label</h3>
-		    </div>
-		  </li>
-		  <li>
-		    <div class="thumbnail">
-		      <img src="http://joshreisner.com/wp-content/uploads/2013/07/wemblers25-830x553.jpg" alt="">
-		      <h3>Thumbnail label</h3>
-		    </div>
-		  </li>
-		</ul>
-	</div>
-	-->
+	<!-- hidden image upload form -->
+	{{ Form::open(array('method'=>'post', 'class'=>'upload', 'files'=>true, 'action'=>array('InstanceController@upload_image', $object->id, $instance->id))) }}
+	<input type="hidden" name="field_id" value="41">
+	<input type="file" name="image_upload" id="image_upload">
+	{{ Form::close() }}
+
 @endsection

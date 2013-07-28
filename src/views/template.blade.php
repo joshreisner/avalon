@@ -3,7 +3,7 @@
 	<head>
 		<title>@yield('title')</title>
 		<meta charset="UTF-8">
-		{{ HTML::style('/packages/joshreisner/avalon/css/global.css') }}
+		{{ HTML::style('/packages/joshreisner/avalon/css/main.css') }}
 	</head>
 	<body>
 		<div class="container">
@@ -24,6 +24,6 @@
 			</div>
 		</div>
 
-		{{ HTML::script('/packages/joshreisner/avalon/js/global.min.js') }}
+		{{ HTML::script('/packages/joshreisner/avalon/js/main.min.js') }}
 	</body>
 </html>

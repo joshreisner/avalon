@@ -17,9 +17,11 @@ Route::group(array('before'=>'avalon_auth', 'prefix'=>Config::get('avalon::prefi
 	Route::post('/objects/{object_id}/instances/reorder',				'InstanceController@reorder');
 	Route::get('/objects/{object_id}/instances/{instance_id}/delete',	'InstanceController@delete');
 
-	Route::any('/upload/file/to/s3', 'InstanceController@redactor_s3');
+	//Route::any('/upload/file/to/s3', 'InstanceController@redactor_s3');
 
 	Route::get('/import/wordpress', 'ImportController@wordpress');
+
+	Route::post('/objects/{object_id}/instances/{instance_id}/upload/image', 'InstanceController@upload_image');
 
 });
 

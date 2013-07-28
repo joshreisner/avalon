@@ -1,7 +1,9 @@
 //@codekit-prepend "jquery-1.10.2.min.js"
 //@codekit-prepend "jquery.validate.min.js"
-//@codekit-prepend "bootstrap.js"
 //@codekit-prepend "jquery.tablednd.0.8.min.js"
+//@codekit-prepend "jquery.ui.widget.js"
+//@codekit-prepend "jquery-file-upload/jquery.fileupload.js"
+//@codekit-prepend "bootstrap.js"
 //@codekit-prepend "redactor.js"
 
 $(function() {
@@ -82,8 +84,8 @@ $(function() {
 			        });
                 }
             }
-        },
-        s3: '/login/upload/file/to/s3'
+        }
+        //, s3: '/login/upload/file/to/s3'
 	});
 
 	//slug fields
@@ -94,5 +96,56 @@ $(function() {
 			$(this).val(val);
 		});	
 	});
+
+	function random_string(len) {
+		var str = '';
+		var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+		for (var i = 0; i < len; i++) str += characters.charAt(Math.floor(Math.random() * characters.length));
+		return str;
+	}
+	
+	//image upload
+	var well = $(".control-group.images .controls");
+	$("input#image_upload").fileupload({
+		url: 				$(this).closest("form").attr('action'),
+		type: 				'POST',
+		dataType: 			"xml", 
+		acceptFileTypes : 	/(\.|\/)(jpg|gif|png)$/i,
+		autoUpload: 		true,
+		dropZone: 			well,
+		add: function(e, data) {
+			window.console.log('added!');
+			//window.console.log(data);
+        	data.context = $('<div class="image"/>').html('<div class="progress progress-striped active"><div class="bar"></div></div>').appendTo(well);
+        	data.filename = random_string(20) + "/" + data.files[0].name;
+			data.submit();
+		},
+		fail: function(e, data) {
+			window.console.log('fail');
+			window.console.log(data);
+		},
+		progress: function(e, data){
+			//update progress bar
+			var percent = Math.round((e.loaded / e.total) * 100);
+			$(data.context).find('.bar').css('width', percent + '%');
+		},
+		done: function(e, data) {
+			window.console.log('done');
+			//window.console.log(data);
+			$(data.context).find('.bar').fadeOut(function(){
+				$(data.context).html("hiii bitch");	
+			});
+			
+		}
+	});
+
+	window.addEventListener("dragover", function(e){
+		e = e || event;
+		e.preventDefault();
+	}, false);
+	window.addEventListener("drop", function(e){
+		e = e || event;
+		e.preventDefault();
+	}, false);
 
 });
