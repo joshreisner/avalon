@@ -53,12 +53,8 @@
 			<div class="control-group images">
 			    <label class="control-label">{{ $field->title }}</label>
 			    <div class="controls well">
-			    	<!--<div class="image add">
-			    		<i class="icon-picture"></i>
-			    		<div class="dimension width">830</div>
-			    		<div class="dimension height">&infin;</div>
-			    	</div>-->
-				</div>
+					<input type="hidden" name="{{ $field->name }}" value="{{ @$instance->{$field->name} }}">
+			    </div>
 			</div>
 		@elseif ($field->type == 'select')
 			@if ($field->required)

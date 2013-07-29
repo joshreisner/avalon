@@ -307,6 +307,7 @@ class InstanceController extends \BaseController {
 			    'Bucket'     => Config::get('aws.bucket'),
 			    'Key'        => Input::get('filename'),
 			    'SourceFile' => $temp_file,
+	            'ACL'		 => 'public-read',
 			));
 
 		//delete the image

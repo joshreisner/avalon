@@ -122,13 +122,17 @@ $(function() {
 		var extension = fileparts.pop();
 		if (extension == 'jpeg') extension = 'jpg'; //hate jpeg
 		var okfiletypes = new Array('jpg', 'png', 'gif');
-		if (!$.inArray(extension, okfiletypes)) return false; //throw error?
-		var filename = make_slug(fileparts.join('.'), 20) + '-' + random_string(5) + '.' + extension;
+		if ($.inArray(extension, okfiletypes) == -1) {
+			alert('extension ' + extension + ' is invalid for this field.  Please use jpg, png or gif.');
+			return false; //throw error?
+		}
+		var filename = 'images/' + make_slug(fileparts.join('.'), 20) + '-' + random_string(5) + '.' + extension;
 		return filename;
 	}
 	
 	//image upload
 	var well = $(".control-group.images .controls");
+	var images = new Array();
 	$("input#image_upload").fileupload({
 		url: 				$(this).closest("form").attr('action'),
 		type: 				'POST',
@@ -138,7 +142,7 @@ $(function() {
 		dropZone: 			well,
 		add: function(e, data) {
         	if (data.filename = file_name(data.files[0].name)) {
-	        	data.context = $('<div class="image"/>').html('<div class="progress progress-striped active"><div class="bar"></div></div>').appendTo(well);
+	        	data.context = $('<div class="image loading"/>').html('<div class="progress progress-striped active"><div class="bar"></div></div>').appendTo(well);
 				$(this).closest("form").find("input[name=filename]").val(data.filename);
 				data.submit();
         	}
@@ -155,10 +159,11 @@ $(function() {
 		done: function(e, data) {
 			window.console.log('done');
 			//window.console.log(data);
-			$(data.context).find('.bar').fadeOut(function(){
-				$(data.context).html("hiii bitch");	
-			});
-			
+			var img = document.createElement('img');
+			img.src = 'https://s3.amazonaws.com/josh-reisner-dot-com/' + data.filename;
+			$(data.context).removeClass("loading").html(img);
+			images[images.length] = data.filename;
+			$("input[name=images]").val(images.join("|"));
 		}
 	});
 
