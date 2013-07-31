@@ -28,5 +28,6 @@ Route::group(array('before'=>'avalon_auth', 'prefix'=>Config::get('avalon::prefi
 //filters
 Route::filter('avalon_auth', function()
 {
-    if (!Session::has('avalon_id')) return Redirect::action('LoginController@getIndex');
+	Session::flash('pre_login_url', URL::current());
+    if (!Session::has('avalon_id')) return View::make('avalon::login.index'); //Redirect::action('LoginController@getIndex');
 });

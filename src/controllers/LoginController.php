@@ -2,16 +2,6 @@
 
 class LoginController extends \BaseController {
 
-	/*
-	|--------------------------------------------------------------------------
-	| Login Controller
-	|--------------------------------------------------------------------------
-	|
-	| Handle logins to Avalon.  Avoids the built-in Laravel Auth model so as not to 
-	| conflict with any potential applications.
-	|
-	*/
-
 	//show login page if not logged in
 	public function getIndex() {
 		//show install form
@@ -36,6 +26,9 @@ class LoginController extends \BaseController {
 					DB::table('avalon_users')->where('id', $user->id)->update(array(
 						'last_login'=>new DateTime
 					));
+
+					//redirect::intended does not seem to be working
+					if (Session::has('pre_login_url')) return Redirect::to(Session::get('pre_login_url'));
 					return Redirect::action('ObjectController@index');
 				}
 			}
@@ -68,6 +61,7 @@ class LoginController extends \BaseController {
 
 	}
 	
+	//logout
 	public function getLogout() {
 		Session::forget('avalon_id');
 		return Redirect::action('LoginController@getIndex');

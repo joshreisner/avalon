@@ -32,6 +32,7 @@
 		    </div>
 		
 		    <div class="modal-footer">
+		    	<a href="/" class="btn">{{ Lang::get('avalon::messages.site_cancel') }}</a>
 		    	<!--<a href="/login/password" class="btn">{{ Lang::get('avalon::messages.users_password_reset') }}</a>-->
 		    	<input type="submit" class="btn btn-primary" value="{{ Lang::get('avalon::messages.site_login') }}">
 		    </div>
