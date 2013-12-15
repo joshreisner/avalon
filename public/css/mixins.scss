@@ -1,0 +1,32 @@
+@mixin opacity($opacity: 0.5) {
+	$ieOpacity: $opacity * 100;
+	   -moz-opacity: $opacity;
+	 -khtml-opacity: $opacity;
+	-webkit-opacity: $opacity;
+	     -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=$ieOpacity);
+	         filter: alpha(opacity=$ieOpacity);
+	        opacity: $opacity;
+}
+
+@mixin rotate($angle: 90deg) {
+    -webkit-transform: rotate($angle);
+    -moz-transform: rotate($angle);
+    -o-transform: rotate($angle);
+    -ms-transform: rotate($angle);
+    transform: rotate($angle);
+}
+
+@mixin rounded($radius: 2px) {
+	-webkit-border-radius: $radius;
+	   -moz-border-radius: $radius;
+            border-radius: $radius;
+	 -moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box; 
+}
+
+@mixin shadow($x-axis: 1px, $y-axis: 1px, $blur: 4px, $color: #000, $alpha: 0.3) {
+	$hsla: hsla(hue($color), saturation($color), lightness($color), $alpha);
+	-webkit-box-shadow: $x-axis $y-axis $blur $hsla;
+	   -moz-box-shadow: $x-axis $y-axis $blur $hsla;
+	        box-shadow: $x-axis $y-axis $blur $hsla;
+}
+

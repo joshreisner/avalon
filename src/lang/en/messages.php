@@ -75,7 +75,7 @@ return array(
 	'users_last_login'		=> 'Last Login',
 	'users_lastname'		=> 'Last Name',
 	'users_name'			=> 'Name',
-	'users_password'		=> 'Last Name',
+	'users_password'		=> 'Password',
 	'users_password_reset'	=> 'Reset Password',
     'users_role'			=> 'Role',
 	

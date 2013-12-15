@@ -12,8 +12,8 @@
 
 	<div class="btn-group">
 		<!--<a class="btn" href="/login/settings"><i class="icon-cog"></i> {{ Lang::get('avalon::messages.site_settings') }}</a>-->
-		<a class="btn" href="{{ URL::action('UserController@index') }}"><i class="icon-group"></i> {{ Lang::get('avalon::messages.users') }}</a>
-		<a class="btn" href="{{ URL::action('ObjectController@create') }}"><i class="icon-plus"></i> {{ Lang::get('avalon::messages.objects_create') }}</a>
+		<a class="btn btn-default" href="{{ URL::action('UserController@index') }}"><i class="glyphicon glyphicon-user"></i> {{ Lang::get('avalon::messages.users') }}</a>
+		<a class="btn btn-default" href="{{ URL::action('ObjectController@create') }}"><i class="glyphicon glyphicon-plus"></i> {{ Lang::get('avalon::messages.objects_create') }}</a>
 	</div>
 
 	@if (count($objects))
@@ -25,7 +25,7 @@
 			->draw()
 			}}
 	@else
-	<div class="alert">
+	<div class="alert alert-warning">
 		{{ Lang::get('avalon::messages.objects_empty') }}
 	</div>
 	@endif
@@ -33,5 +33,5 @@
 
 @section('side')
 	<p>{{ Lang::get('avalon::messages.objects_help') }}</p>
-	<p><a href="{{ URL::action('LoginController@getLogout') }}" class="btn btn-mini">{{ Lang::get('avalon::messages.site_logout') }}</a>
+	<p><a href="{{ URL::action('LoginController@getLogout') }}" class="btn btn-default btn-xs">{{ Lang::get('avalon::messages.site_logout') }}</a>
 @endsection
