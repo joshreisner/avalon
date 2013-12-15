@@ -6,7 +6,6 @@ class AvalonUpload extends \Eloquent {
 	protected $table = 'avalon_uploads';
 }
 
-
 class AvalonServiceProvider extends ServiceProvider {
 
 	/**
@@ -44,6 +43,8 @@ class AvalonServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
+
+		if (!\Schema::hasTable('avalon')) return;
 
 		//register avalon objects as models for yr application
 		foreach (\DB::table('avalon_objects')->get() as $object) {
