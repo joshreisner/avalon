@@ -12,7 +12,7 @@ class ObjectController extends \BaseController {
 		$objects = DB::table('avalon_objects')->orderBy('list_grouping')->orderBy('title')->get();
 		foreach ($objects as &$object) {
 			$object->link = URL::action('InstanceController@index', $object->id);
-			if ($object->instance_count == 0) $object->instance_count = '';
+			if ($object->count == 0) $object->instance_count = '';
 		}
 		return View::make('avalon::objects.index', array('objects'=>$objects));
 	}
@@ -56,35 +56,35 @@ class ObjectController extends \BaseController {
 
 		//create entry in objects table for new object
 		$object_id = DB::table('avalon_objects')->insertGetId(array(
-			'title'			=>$title,
-			'name'			=>$name,
-			'model'			=>$model,
-			'order_by'		=>$order_by,
-			'direction'		=>$direction,
-			'list_grouping'	=>Input::get('list_grouping'),
-			'updated_by'	=>Session::get('avalon_id'),
-			'updated_at'	=>new DateTime,
+			'title'			=> $title,
+			'name'			=> $name,
+			'model'			=> $model,
+			'order_by'		=> $order_by,
+			'direction'		=> $direction,
+			'list_grouping'	=> Input::get('list_grouping'),
+			'updated'		=> new DateTime,
+			'updater'		=> Session::get('avalon_id'),
 		));
 		
 		//create title field for table by default
 		DB::table('avalon_fields')->insert(array(
-			'title'			=>'Title',
-			'name'			=>'title',
-			'type'			=>'string',
-			'visibility'	=>'list',
-			'required'		=>1,
-			'object_id'		=>$object_id,
-			'updated_by'	=>Session::get('avalon_id'),
-			'updated_at'	=>new DateTime,
-			'precedence'	=>1
+			'title'			=> 'Title',
+			'name'			=> 'title',
+			'type'			=> 'string',
+			'visibility'	=> 'list',
+			'required'		=> 1,
+			'object_id'		=> $object_id,
+			'updated'		=> new DateTime,
+			'updater'		=> Session::get('avalon_id'),
+			'precedence'	=> 1
 		));
 		
 		//create table with boilerplate fields
 		Schema::create($name, function($table){
 			$table->increments('id');
 			$table->string('title');
-			$table->integer('updated_by')->nullable();
-			$table->dateTime('updated_at');
+			$table->integer('updater')->nullable();
+			$table->dateTime('updated');
 			$table->integer('precedence');
 			$table->integer('subsequence')->nullable();
 			$table->boolean('active')->default(1);

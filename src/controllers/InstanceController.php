@@ -9,7 +9,7 @@ class InstanceController extends \BaseController {
 	public function index($object_id) {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->where('visibility', 'list')->orderBy('precedence')->get();
-		$selects = array($object->name . '.id', $object->name . '.updated_at', $object->name . '.active');
+		$selects = array($object->name . '.id', $object->name . '.updated', $object->name . '.active');
 		foreach ($fields as $field) $selects[] = $object->name . '.' . $field->name;
 		$instances = DB::table($object->name)->select($selects);
 
@@ -70,7 +70,7 @@ class InstanceController extends \BaseController {
 		
 		//metadata
 		$inserts = array(
-			'updated_at'=>new DateTime,
+			'updated'=>new DateTime,
 			'updated_by'=>Session::get('avalon_id'),
 			'precedence'=>DB::table($object->name)->max('precedence') + 1
 		);
@@ -87,7 +87,7 @@ class InstanceController extends \BaseController {
 		//update objects table with latest counts
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
 			'instance_count'=>DB::table($object->name)->where('active', 1)->count(),
-			'instance_updated_at'=>new DateTime,
+			'instance_updated'=>new DateTime,
 			'instance_updated_by'=>Session::get('avalon_id')
 		));
 
@@ -167,7 +167,7 @@ class InstanceController extends \BaseController {
 		
 		//metadata
 		$updates = array(
-			'updated_at'=>new DateTime,
+			'updated'=>new DateTime,
 			'updated_by'=>Session::get('avalon_id'),
 		);
 		
@@ -199,7 +199,7 @@ class InstanceController extends \BaseController {
 		//update object meta
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
 			'instance_count'=>DB::table($object->name)->where('active', 1)->count(),
-			'instance_updated_at'=>new DateTime,
+			'instance_updated'=>new DateTime,
 			'instance_updated_by'=>Session::get('avalon_id')
 		));
 		
@@ -241,14 +241,14 @@ class InstanceController extends \BaseController {
 		//toggle instance with active or inactive
 		DB::table($object->name)->where('id', $instance_id)->update(array(
 			'active'=>Input::get('active'),
-			'updated_at'=>new DateTime,
+			'updated'=>new DateTime,
 			'updated_by'=>Session::get('avalon_id'),
 		));
 		
 		//update object meta
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
 			'instance_count'=>DB::table($object->name)->where('active', 1)->count(),
-			'instance_updated_at'=>new DateTime,
+			'instance_updated'=>new DateTime,
 			'instance_updated_by'=>Session::get('avalon_id'),
 		));
 	}

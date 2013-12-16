@@ -19,8 +19,8 @@
 	@if (count($objects))
 		{{ Table::rows($objects)
 			->column('title', 'string', Lang::get('avalon::messages.object'))
-			->column('instance_count', 'integer', Lang::get('avalon::messages.objects_count'))
-			->column('instance_updated_at', 'updated', Lang::get('avalon::messages.site_updated'))
+			->column('count', 'integer', Lang::get('avalon::messages.objects_count'))
+			->column('updated', 'updated', Lang::get('avalon::messages.site_updated'))
 			->groupBy('list_grouping')
 			->draw()
 			}}
