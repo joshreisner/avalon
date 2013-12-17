@@ -151,8 +151,8 @@ class FieldController extends \BaseController {
 			'related_object_id'	=>Input::has('related_object_id') ? Input::get('related_object_id') : null,
 			'required'			=>$required,
 			'precedence'		=>DB::table('avalon_fields')->where('object_id', $object_id)->max('precedence') + 1,
-			'updated_by'		=>Session::get('avalon_id'),
-			'updated_at'		=>new DateTime,
+			'updater'		=>Session::get('avalon_id'),
+			'updated'		=>new DateTime,
 		));
 		
 		return Redirect::action('FieldController@index', $object_id);
@@ -203,15 +203,15 @@ class FieldController extends \BaseController {
 		//related field and object
 		DB::table('avalon_fields')->where('id', $field_id)->update(array(
 			'title'				=>Input::get('title'),
-			//'name'			=>$new_field_name,
+			'name'				=>$new_field_name,
 			'visibility'		=>Input::get('visibility'),
 			'width'				=>Input::has('width') ? Input::get('width') : null,
 			'height'			=>Input::has('height') ? Input::get('height') : null,
 			'related_field_id'	=>Input::has('related_field_id') ? Input::get('related_field_id') : null,
 			'related_object_id'	=>Input::has('related_object_id') ? Input::get('related_object_id') : null,
 			'required'			=>$required,
-			'updated_by'		=>Session::get('avalon_id'),
-			'updated_at'		=>new DateTime,
+			'updater'		=>Session::get('avalon_id'),
+			'updated'		=>new DateTime,
 		));
 		
 		return Redirect::action('FieldController@index', $object_id);

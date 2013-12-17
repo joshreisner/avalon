@@ -98,6 +98,7 @@ class AvalonServiceProvider extends ServiceProvider {
 			//define model
 			eval('class ' . $object->model . ' extends Eloquent {
 				protected $table = "' . $object->name . '";
+				public $timestamps = false;
 				public function scopeActive($query) {
 					return $query->where("active", 1);
 				}

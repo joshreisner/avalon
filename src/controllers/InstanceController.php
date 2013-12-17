@@ -71,7 +71,7 @@ class InstanceController extends \BaseController {
 		//metadata
 		$inserts = array(
 			'updated'=>new DateTime,
-			'updated_by'=>Session::get('avalon_id'),
+			'updater'=>Session::get('avalon_id'),
 			'precedence'=>DB::table($object->name)->max('precedence') + 1
 		);
 		
@@ -86,9 +86,9 @@ class InstanceController extends \BaseController {
 		
 		//update objects table with latest counts
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
-			'instance_count'=>DB::table($object->name)->where('active', 1)->count(),
-			'instance_updated'=>new DateTime,
-			'instance_updated_by'=>Session::get('avalon_id')
+			'count'=>DB::table($object->name)->where('active', 1)->count(),
+			'updated'=>new DateTime,
+			'updater'=>Session::get('avalon_id')
 		));
 
 		//handle any checkboxes, had to wait for instance_id
@@ -116,7 +116,6 @@ class InstanceController extends \BaseController {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->orderBy('precedence')->get();
 		$instance = DB::table($object->name)->where('id', $instance_id)->first();
-		$uploads = DB::table('avalon_uploads')->where('instance_id', $instance_id)->orderBy('precedence')->get();
 		$options = array();
 
 		//format instance values for form
@@ -156,7 +155,6 @@ class InstanceController extends \BaseController {
 			'fields'=>$fields,
 			'instance'=>$instance,
 			'options'=>$options,
-			'uploads'=>$uploads,
 		));
 	}
 	
@@ -168,7 +166,7 @@ class InstanceController extends \BaseController {
 		//metadata
 		$updates = array(
 			'updated'=>new DateTime,
-			'updated_by'=>Session::get('avalon_id'),
+			'updater'=>Session::get('avalon_id'),
 		);
 		
 		//run loop through the fields
@@ -198,9 +196,9 @@ class InstanceController extends \BaseController {
 		
 		//update object meta
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
-			'instance_count'=>DB::table($object->name)->where('active', 1)->count(),
-			'instance_updated'=>new DateTime,
-			'instance_updated_by'=>Session::get('avalon_id')
+			'count'=>DB::table($object->name)->where('active', 1)->count(),
+			'updated'=>new DateTime,
+			'updater'=>Session::get('avalon_id')
 		));
 		
 		return Redirect::action('InstanceController@index', $object_id);
@@ -213,7 +211,7 @@ class InstanceController extends \BaseController {
 
 		//update object meta
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
-			'instance_count'=>DB::table($object->name)->where('active', 1)->count()
+			'count'=>DB::table($object->name)->where('active', 1)->count()
 		));
 
 		return Redirect::action('InstanceController@index', $object_id);
@@ -242,14 +240,14 @@ class InstanceController extends \BaseController {
 		DB::table($object->name)->where('id', $instance_id)->update(array(
 			'active'=>Input::get('active'),
 			'updated'=>new DateTime,
-			'updated_by'=>Session::get('avalon_id'),
+			'updater'=>Session::get('avalon_id'),
 		));
 		
 		//update object meta
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
-			'instance_count'=>DB::table($object->name)->where('active', 1)->count(),
-			'instance_updated'=>new DateTime,
-			'instance_updated_by'=>Session::get('avalon_id'),
+			'count'=>DB::table($object->name)->where('active', 1)->count(),
+			'updated'=>new DateTime,
+			'updater'=>Session::get('avalon_id'),
 		));
 	}
 

@@ -81,7 +81,6 @@
 				->class($field->required ? 'text required' : 'text')
 				->inlineHelp($field->help)
 				}}
-				}}
 		@elseif ($field->type == 'url')
 			{{ Former::url($field->name)
 				->label($field->title)
