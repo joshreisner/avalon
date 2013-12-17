@@ -6751,10 +6751,7 @@ body {
       border: 0;
       top: 25%; }
       body.login div.modal div.modal-content {
-        border-radius: 20px;
-        -webkit-box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
-        -moz-box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
-        box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3); }
+        border-radius: 20px; }
         body.login div.modal div.modal-content div.modal-header {
           border-radius: 20px 20px 0 0; }
         body.login div.modal div.modal-content div.modal-body .form-group:last-child {
@@ -6797,29 +6794,6 @@ body {
         float: left; }
         body form .control-group.checkboxes .controls label.checkbox:first-child {
           padding-top: 0; }
-    body form .control-group.images .controls.well {
-      margin-bottom: 0;
-      overflow: auto;
-      padding-bottom: 9px;
-      min-height: 112px; }
-      body form .control-group.images .controls.well div.image {
-        width: 100px;
-        height: 100px;
-        cursor: pointer;
-        float: left;
-        margin: 0 10px 10px 0; }
-        body form .control-group.images .controls.well div.image img {
-          -webkit-box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
-          -moz-box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
-          box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3); }
-        body form .control-group.images .controls.well div.image.loading {
-          background-color: #cccccc;
-          -webkit-box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
-          -moz-box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
-          box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3); }
-          body form .control-group.images .controls.well div.image.loading .progress {
-            margin: 45px 10px;
-            height: 10px; }
   body form.upload {
     display: none; }
   body .header {

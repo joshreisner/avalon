@@ -1,5 +1,4 @@
 @import "bootstrap.scss";
-@import "mixins.scss";
 @import "redactor.scss";
 
 $gray 			: #ccc;
@@ -18,7 +17,7 @@ body {
 		div.modal {
 			border-radius: $modal_radius; border: 0; top: 25%;
 			div.modal-content { 
-				border-radius: $modal_radius; @include shadow; 
+				border-radius: $modal_radius; 
 				div.modal-header { border-radius: $modal_radius $modal_radius 0 0; }
 				div.modal-body .form-group:last-child { margin-bottom: 0; }
 				div.modal-footer { margin-top: 0; border-radius: 0 0 $modal_radius $modal_radius; }
@@ -58,22 +57,6 @@ body {
 					label.checkbox { 
 						width: 152px; float: left; 
 						&:first-child { padding-top: 0; }
-					}
-				}
-			}
-
-			&.images {
-				.controls.well {
-					margin-bottom: 0; overflow: auto; padding-bottom: 9px; min-height: 112px;
-					div.image { 
-						width: 100px; height: 100px; cursor: pointer; float: left; margin: 0 10px 10px 0;
-
-						img { @include shadow; }
-						
-						&.loading { 
-							background-color: $gray; @include shadow;
-							.progress { margin: 45px 10px; height: 10px; }
-						}
 					}
 				}
 			}

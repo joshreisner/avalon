@@ -66,7 +66,7 @@ class Table {
 				} elseif ($column['type'] == 'delete') {
 					$value = '<a href="' . $row->delete . '">' . ($row->active ? '<i class="glyphicon glyphicon-check"></i>' : '<i class="glyphicon glyphicon-check-empty"></i>') . '</a>';
 				} else {
-					$value	= $row->{$column['key']};
+					$value	= strip_tags($row->{$column['key']});
 					if ($column['type'] == 'updated') {
 						$value = Dates::relative($value);
 					} else {
