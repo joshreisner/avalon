@@ -18,7 +18,7 @@
 	<div class="form-group">
 		{{ Form::label('title', Lang::get('avalon::messages.fields_title'), array('class'=>'col-sm-2')) }}
 	    <div class="col-sm-10">
-			{{ Form::text('title', '', array('class'=>'required form-control', 'autofocus'=>'autofocus')) }}
+			{{ Form::text('title', false, array('class'=>'required form-control', 'autofocus'=>'autofocus')) }}
 	    </div>
 	</div>
 
@@ -33,7 +33,7 @@
 	<div class="form-group">
 		{{ Form::label('related_object_id', Lang::get('avalon::messages.fields_related_object'), array('class'=>'col-sm-2')) }}
 	    <div class="col-sm-10">
-			{{ Form::select('related_object_id', array_merge(array(''), $related_objects), '', array('class'=>'form-control')) }}
+			{{ Form::select('related_object_id', array_merge(array(''), $related_objects), false, array('class'=>'form-control')) }}
 	    </div>
 	</div>
 	@endif
@@ -42,7 +42,7 @@
 	<div class="form-group">
 		{{ Form::label('related_field_id', Lang::get('avalon::messages.fields_related_field'), array('class'=>'col-sm-2')) }}
 	    <div class="col-sm-10">
-			{{ Form::select('related_field_id', array_merge(array(''), $related_fields), '', array('class'=>'form-control')) }}
+			{{ Form::select('related_field_id', array_merge(array(''), $related_fields), false, array('class'=>'form-control')) }}
 	    </div>
 	</div>
 	@endif

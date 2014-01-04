@@ -17,7 +17,6 @@
 		<a class="btn btn-default" href="{{ URL::action('InstanceController@create', $object->id) }}"><i class="glyphicon glyphicon-plus"></i> {{ Lang::get('avalon::messages.instances_create') }}</a>
 	</div>
 
-
 	@if (count($instances))
 		<?php
 		$table = new Table;

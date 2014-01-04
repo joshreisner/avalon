@@ -12,13 +12,13 @@
 		Lang::get('avalon::messages.instances_edit'),
 		)) }}
 
-	{{ Former::horizontal_open()->action(URL::action('InstanceController@update', array($object->id, $instance->id)))->method('put') }}
+	{{ Form::open(array('class'=>'form-horizontal', 'url'=>URL::action('InstanceController@update', array($object->id, $instance->id)), 'method'=>'put')) }}
 	
 	@foreach ($fields as $field)
 		@if ($field->type == 'checkboxes')
-			<div class="control-group checkboxes">
-			    <label class="control-label">{{ $field->title }}</label>
-			    <div class="controls">
+			<div class="form-group checkboxes">
+			    <label class="col-sm-2">{{ $field->title }}</label>
+			    <div class="checkbox">
 			    	@foreach ($options[$field->name]['options'] as $checkbox)
 					<label class="checkbox">
 						<input type="checkbox" name="{{ $field->name }}[]" value="{{ $checkbox->id }}" @if (in_array($checkbox->id, $options[$field->name]['values'])) checked="checked"@endif> {{ $checkbox->{$options[$field->name]['column_name']} }}
@@ -27,28 +27,26 @@
 				</div>
 			</div>
 		@elseif ($field->type == 'date')
-			{{ Former::input($field->name)
-				->type('date')
-				->class($field->required ? 'date required' : 'date')
-				->label($field->title)
-				->value($instance->{$field->name})
-				->inlineHelp($field->help)
-				}}
+			<div class="form-group">
+				{{ Form::label($field->name, $field->title, array('class'=>'col-sm-2')) }}
+			    <div class="col-sm-10">
+					{{ Form::date($field->name, $instance->{$field->name}, array('class'=>$field->required ? 'form-control date required' : 'form-control date')) }}
+			    </div>
+			</div>
 		@elseif ($field->type == 'datetime')
-			{{ Former::input($field->name)
-				->type('datetime-local')
-				->class($field->required ? 'datetime required' : 'datetime')
-				->label($field->title)
-				->value($instance->{$field->name})
-				->inlineHelp($field->help)
-				}}
+			<div class="form-group">
+				{{ Form::label($field->name, $field->title, array('class'=>'col-sm-2')) }}
+			    <div class="col-sm-10">
+					{{ Form::datetime($field->name, $instance->{$field->name}, array('class'=>$field->required ? 'form-control datetime required' : 'form-control datetime')) }}
+			    </div>
+			</div>
 		@elseif ($field->type == 'html')
-			{{ Former::textarea($field->name)
-				->label($field->title)
-				->class($field->required ? 'html required' : 'html')
-				->value($instance->{$field->name})
-				->inlineHelp($field->help)
-				}}
+			<div class="form-group">
+				{{ Form::label($field->name, $field->title, array('class'=>'col-sm-2')) }}
+			    <div class="col-sm-10">
+					{{ Form::textarea($field->name, $instance->{$field->name}, array('class'=>$field->required ? 'form-control html required' : 'form-control html')) }}
+			    </div>
+			</div>
 		@elseif ($field->type == 'images')
 			<div class="control-group images">
 			    <label class="control-label">{{ $field->title }}</label>
@@ -74,43 +72,44 @@
 				}}
 			@endif
 		@elseif ($field->type == 'slug')
-			{{ Former::text($field->name)
-				->label($field->title)
-				->class($field->required ? 'slug required' : 'slug')
-				->value($instance->{$field->name})
-				->inlineHelp($field->help)
-				}}
+			<div class="form-group">
+				{{ Form::label($field->name, $field->title, array('class'=>'col-sm-2')) }}
+			    <div class="col-sm-10">
+					{{ Form::text($field->name, $instance->{$field->name}, array('class'=>$field->required ? 'form-control slug required' : 'form-control slug')) }}
+			    </div>
+			</div>
 		@elseif ($field->type == 'string')
-			{{ Former::text($field->name)
-				->label($field->title)
-				->class($field->required ? 'string required' : 'string')
-				->value($instance->{$field->name})
-				->inlineHelp($field->help)
-				}}
+			<div class="form-group">
+				{{ Form::label($field->name, $field->title, array('class'=>'col-sm-2')) }}
+			    <div class="col-sm-10">
+					{{ Form::text($field->name, $instance->{$field->name}, array('class'=>$field->required ? 'form-control string required' : 'form-control string')) }}
+			    </div>
+			</div>
 		@elseif ($field->type == 'text')
-			{{ Former::textarea($field->name)
-				->label($field->title)
-				->class($field->required ? 'text required' : 'text')
-				->value($instance->{$field->name})
-				->inlineHelp($field->help)
-				}}
+			<div class="form-group">
+				{{ Form::label($field->name, $field->title, array('class'=>'col-sm-2')) }}
+			    <div class="col-sm-10">
+					{{ Form::textarea($field->name, $instance->{$field->name}, array('class'=>$field->required ? 'form-control text required' : 'form-control text')) }}
+			    </div>
+			</div>
 		@elseif ($field->type == 'url')
-			{{ Former::url($field->name)
-				->label($field->title)
-				->class($field->required ? 'url required' : 'url')
-				->placeholder(Lang::get('avalon::messages.fields_url_placeholder'))
-				->value($instance->{$field->name})
-				->inlineHelp($field->help)
-				}}
+			<div class="form-group">
+				{{ Form::label($field->name, $field->title, array('class'=>'col-sm-2')) }}
+			    <div class="col-sm-10">
+					{{ Form::url($field->name, $instance->{$field->name}, array('class'=>$field->required ? 'form-control url required' : 'form-control url')) }}
+			    </div>
+			</div>
 		@endif
 	@endforeach
 	
-	{{ Former::actions()
-		->primary_submit(Lang::get('avalon::messages.site_save'))
-		->link(Lang::get('avalon::messages.site_cancel'), URL::action('InstanceController@index', $object->id))
-		}}
-	
-	{{ Former::close() }}
+	<div class="form-group">
+	    <div class="col-sm-10 col-sm-offset-2">
+			{{ Form::submit(Lang::get('avalon::messages.site_save'), array('class'=>'btn btn-primary')) }}
+			{{ HTML::link(URL::action('InstanceController@index', $object->id), Lang::get('avalon::messages.site_cancel'), array('class'=>'btn btn-default')) }}
+	    </div>
+	</div>
+
+	{{ Form::close() }}
 
 @endsection
 

@@ -16,14 +16,14 @@
 	<div class="form-group">
 		{{ Form::label('title', Lang::get('avalon::messages.objects_title'), array('class'=>'col-sm-2')) }}
 	    <div class="col-sm-10">
-			{{ Form::text('title', '', array('class'=>'required form-control', 'autofocus'=>'autofocus')) }}
+			{{ Form::text('title', false, array('class'=>'required form-control', 'autofocus'=>'autofocus')) }}
 	    </div>
 	</div>
 
 	<div class="form-group">
 		{{ Form::label('list_grouping', Lang::get('avalon::messages.objects_list_grouping'), array('class'=>'col-sm-2')) }}
 	    <div class="col-sm-10">
-			{{ Form::text('list_grouping', '', array('class'=>'form-control')) }}
+			{{ Form::text('list_grouping', false, array('class'=>'form-control')) }}
 	    </div>
 	</div>
 

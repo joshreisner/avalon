@@ -26,12 +26,29 @@ class AvalonServiceProvider extends ServiceProvider {
 		
 		include __DIR__ . '/../../routes.php';
 
-		//Former Config -- otherwise URL placeholder is Http://
-		\Config::set('former::translatable', array(
-			'help', 'inlineHelp', 'blockHelp', 'label'
-		));
+		\Form::macro('date', function($name, $value = null, $options = array()) {
+		    $input =  '<input type="date" name="' . $name . '" value="' . $value . '"';
 
-		\Config::set('former::required_text', '');
+		    foreach ($options as $key => $value) {
+		        $input .= ' ' . $key . '="' . $value . '"';
+		    }
+
+		    $input .= '>';
+
+		    return $input;
+		});
+
+		\Form::macro('datetime', function($name, $value = null, $options = array()) {
+		    $input =  '<input type="datetime" name="' . $name . '" value="' . $value . '"';
+
+		    foreach ($options as $key => $value) {
+		        $input .= ' ' . $key . '="' . $value . '"';
+		    }
+
+		    $input .= '>';
+
+		    return $input;
+		});
 
     
 	}
