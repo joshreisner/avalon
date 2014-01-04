@@ -188,30 +188,37 @@ class FieldController extends \BaseController {
 	//save edits to database
 	public function update($object_id, $field_id) {
 		$table_name = DB::table('avalon_objects')->where('id', $object_id)->pluck('name');
-		$new_field_name = Str::slug(Input::get('name'), '_');
-		$old_field_name = DB::table('avalon_fields')->where('id', $field_id)->pluck('name');
+		$field_name = Str::slug(Input::get('name'), '_');
 		$required	= Input::has('required') ? 1 : 0;
+		$field = DB::table('avalon_fields')->where('id', $field_id)->first();
 
 		//rename column if necessary		
-		if ($old_field_name != $new_field_name) {
-			Schema::table($table_name, function($table) use ($old_field_name, $new_field_name) {
+		if ($field->name != $field_name) {
+			Schema::table($table_name, function($table) use ($field, $field_name) {
 				//todo check in a bit to see if this is working -- mysterious error "Call to undefined method"
-				$table->renameColumn($old_field_name, $new_field_name);
+				$table->renameColumn($field->name, $field_name);
 			});
+		}
+
+		//change nullability if necessary
+		if ($field->required != $required) {
+			//can't decide whether to attempt with DB::statement() or to use schema builder to 
+			//make a new column and then copy. schema seems more appropriate but would require
+			//a refactor of the column-adding above to avoid too much repetition
 		}
 
 		//related field and object
 		DB::table('avalon_fields')->where('id', $field_id)->update(array(
 			'title'				=>Input::get('title'),
-			'name'				=>$new_field_name,
+			'name'				=>$field_name,
 			'visibility'		=>Input::get('visibility'),
 			'width'				=>Input::has('width') ? Input::get('width') : null,
 			'height'			=>Input::has('height') ? Input::get('height') : null,
 			'related_field_id'	=>Input::has('related_field_id') ? Input::get('related_field_id') : null,
 			'related_object_id'	=>Input::has('related_object_id') ? Input::get('related_object_id') : null,
 			'required'			=>$required,
-			'updater'		=>Session::get('avalon_id'),
-			'updated'		=>new DateTime,
+			'updater'			=>Session::get('avalon_id'),
+			'updated'			=>new DateTime,
 		));
 		
 		return Redirect::action('FieldController@index', $object_id);

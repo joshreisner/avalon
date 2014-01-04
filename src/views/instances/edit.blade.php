@@ -117,7 +117,7 @@
 	<p>{{ nl2br($object->form_help) }}</p>
 
 	{{ Form::open(array('method'=>'delete', 'action'=>array('InstanceController@destroy', $object->id, $instance->id))) }}
-	<button type="submit" class="btn btn-mini">{{ Lang::get('avalon::messages.instances_destroy') }}</button>
+	<button type="submit" class="btn btn-default btn-xs">{{ Lang::get('avalon::messages.instances_destroy') }}</button>
 	{{ Form::close() }}
 
 	<!-- hidden image upload form -->

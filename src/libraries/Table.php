@@ -64,7 +64,7 @@ class Table {
 				if ($column['type'] == 'draggy') {
 					$value = '<i class="glyphicon glyphicon-align-justify"></i>';
 				} elseif ($column['type'] == 'delete') {
-					$value = '<a href="' . $row->delete . '">' . ($row->active ? '<i class="glyphicon glyphicon-check"></i>' : '<i class="glyphicon glyphicon-check-empty"></i>') . '</a>';
+					$value = '<a href="' . $row->delete . '">' . ($row->active ? '<i class="glyphicon glyphicon-check"></i>' : '<i class="glyphicon glyphicon-unchecked"></i>') . '</a>';
 				} else {
 					$value	= strip_tags($row->{$column['key']});
 					if ($column['type'] == 'updated') {

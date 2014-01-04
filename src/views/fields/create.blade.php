@@ -25,7 +25,7 @@
 	<div class="form-group">
 		{{ Form::label('type', Lang::get('avalon::messages.fields_type'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
-			{{ Form::select('type', $types, 'text', array('class'=>'form-control'))	 }}
+			{{ Form::select('type', $types, 'string', array('class'=>'form-control'))	 }}
 	    </div>
 	</div>
 	

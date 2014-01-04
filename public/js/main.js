@@ -15,18 +15,10 @@ $(function() {
 		onfocusout:false,
     	onkeyup: function(element) { },
 		highlight: function(element, errorClass, validClass) {
-			if (element.type === 'radio') {
-				//this.findByName(element.name).parent("div").parent("div").addClass("error").removeClass(validClass);
-			} else {
-				$(element).closest("div.control-group").addClass("error");
-			}
+			$(element).closest("div.form-group").addClass("has-error");
 		},
 		unhighlight: function(element, errorClass, validClass) {
-			if (element.type === 'radio') {
-				//this.findByName(element.name).parent("div").parent("div").removeClass("error").addClass("success");
-			} else {
-				$(element).closest("div.control-group").removeClass("error");
-			}
+			$(element).closest("div.form-group").removeClass("has-error");
 		}
 	});
 
@@ -55,10 +47,10 @@ $(function() {
 		parent.toggleClass('inactive');
 		if (parent.hasClass('inactive')) {
 			var active = 0;
-			$(this).find('i').removeClass('icon-check').addClass('icon-check-empty');
+			$(this).find('i').removeClass('glyphicon-check').addClass('glyphicon-unchecked');
 		} else {
 			var active = 1;
-			$(this).find('i').removeClass('icon-check-empty').addClass('icon-check');
+			$(this).find('i').removeClass('glyphicon-unchecked').addClass('glyphicon-check');
 		}
 		
 		//send ajax update
@@ -79,8 +71,9 @@ $(function() {
                 callback: function(buttonName, buttonDOM, buttonObject) {
                 	editor = this;
 			        $.getJSON('http://hipsterjesus.com/api/', function(data) {
-			            editor.set(data.text);
 						$('.redactor_act').removeClass('redactor_act');
+			            editor.set(data.text);
+			            editor.focusEnd();
 			        });
                 }
             }

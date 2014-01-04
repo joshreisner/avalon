@@ -32,7 +32,7 @@
 	<div class="form-group">
 		{{ Form::label('type', Lang::get('avalon::messages.fields_type'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
-			{{ Form::select('type', $types, $field->type, array('class'=>'form-control')) }}
+			{{ Form::select('type', $types, $field->type, array('class'=>'form-control', 'disabled')) }}
 	    </div>
 	</div>
 			
@@ -79,7 +79,7 @@
 		<div class="col-sm-offset-2 col-sm-10">
 			<div class="checkbox">
 				<label>
-					{{ Form::checkbox('required', $field->required) }} {{ Lang::get('avalon::messages.fields_required') }}
+					{{ Form::checkbox('required', 'on', $field->required) }} {{ Lang::get('avalon::messages.fields_required') }}
 				</label>
 			</div>
 		</div>
@@ -98,7 +98,13 @@
 
 @section('side')
 	<p>{{ Lang::get('avalon::messages.fields_edit_help') }}</p>
-	{{ Form::open(array('method'=>'delete', 'action'=>array('FieldController@destroy', $object->id, $field->id))) }}
-	<button type="submit" class="btn btn-mini">{{ Lang::get('avalon::messages.fields_destroy') }}</button>
-	{{ Form::close() }}	
+
+	@if ($object->order_by == $field->name)
+		<p>{{ Lang::get('avalon::messages.fields_not_deletable') }}</p>
+	@else
+		{{ Form::open(array('method'=>'delete', 'action'=>array('FieldController@destroy', $object->id, $field->id))) }}
+		<button type="submit" class="btn btn-default btn-xs">{{ Lang::get('avalon::messages.fields_destroy') }}</button>
+		{{ Form::close() }}	
+	@endif
+
 @endsection
