@@ -11,38 +11,44 @@
 		Lang::get('avalon::messages.objects_create'),
 		)) }}
 
-	{{ Former::horizontal_open()->action(URL::action('ObjectController@store')) }}
+	{{ Form::open(array('class'=>'form-horizontal', 'url'=>URL::action('ObjectController@store'))) }}
 
-	{{ Former::text('title')
-	        ->label(Lang::get('avalon::messages.objects_title'))
-	        ->class('required')
-	        ->inlineHelp(Lang::get('avalon::messages.objects_title_help'))
-	        }}
+	<div class="form-group">
+		{{ Form::label('title', Lang::get('avalon::messages.objects_title'), array('class'=>'col-sm-2')) }}
+	    <div class="col-sm-10">
+			{{ Form::text('title', '', array('class'=>'required form-control', 'autofocus'=>'autofocus')) }}
+	    </div>
+	</div>
 
-	{{ Former::text('list_grouping')
-	        ->label(Lang::get('avalon::messages.objects_list_grouping'))
-	        ->data_provide('typeahead')
-	        ->data_source($typeahead)
-	        }}
+	<div class="form-group">
+		{{ Form::label('list_grouping', Lang::get('avalon::messages.objects_list_grouping'), array('class'=>'col-sm-2')) }}
+	    <div class="col-sm-10">
+			{{ Form::text('list_grouping', '', array('class'=>'form-control')) }}
+	    </div>
+	</div>
 
-	{{ Former::select('order_by')
-	        ->options($order_by)
-	        ->label(Lang::get('avalon::messages.objects_order_by'))
-	        ->value('precedence')
-	        }}
+	<div class="form-group">
+		{{ Form::label('order_by', Lang::get('avalon::messages.objects_order_by'), array('class'=>'col-sm-2')) }}
+	    <div class="col-sm-10">
+			{{ Form::select('order_by', $order_by, 'precedence', array('class'=>'form-control')) }}
+	    </div>
+	</div>
 
-	{{ Former::select('direction')
-	        ->options($direction)
-	        ->label(Lang::get('avalon::messages.objects_direction'))
-	        ->value('asc')
-	        }}
+	<div class="form-group">
+		{{ Form::label('direction', Lang::get('avalon::messages.objects_direction'), array('class'=>'col-sm-2')) }}
+	    <div class="col-sm-10">
+			{{ Form::select('direction', $direction, 'asc', array('class'=>'form-control')) }}
+	    </div>
+	</div>
 
-	{{ Former::actions()
-	        ->primary_submit(Lang::get('avalon::messages.site_save'))
-	        ->link(Lang::get('avalon::messages.site_cancel'), URL::action('ObjectController@index'))
-	        }}
+	<div class="form-group">
+	    <div class="col-sm-10 col-sm-push-2">
+			{{ Form::submit(Lang::get('avalon::messages.site_save'), array('class'=>'btn btn-primary')) }}
+			{{ HTML::link(URL::action('ObjectController@index'), Lang::get('avalon::messages.site_cancel'), array('class'=>'btn btn-default')) }}
+	    </div>
+	</div>
 
-	{{ Former::close() }}
+	{{ Form::close() }}
 		
 @endsection
 

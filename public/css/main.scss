@@ -9,6 +9,7 @@ $margin			: 24px;
 $modal_radius	: 20px;
 
 html { height: 100%; }
+
 body {
 	margin-top: $margin; height: 100%;
 
@@ -71,7 +72,7 @@ body {
 		
 		h1 {
 			font-weight: normal; font-size: $margin; line-height: $margin; margin: 0 0 $margin 0;
-			i { color: $gray; }
+			i.glyphicon-chevron-right { color: $gray; }
 		}
 		
 		.btn-group {
@@ -79,10 +80,9 @@ body {
 		}
 		
 		table {
-			/* table-layout: fixed; */
+			margin: -6px 0 $margin;
 			tbody { border-top: 0; }
 			tr {
-				th { font-weight: normal; color: $gray; }
 				th, td {
 					&.draggy, &.delete { width: 18px; text-align: center; color: $gray; }
 					&.draggy { cursor: url(https://mail.google.com/mail/images/2/openhand.cur), default !important; }
@@ -103,6 +103,7 @@ body {
 						font-size: 12px; 
 					}
 				}
+
 				&.dragging {
 					td.draggy {
 						cursor: url(https://mail.google.com/mail/images/2/closedhand.cur), default !important;

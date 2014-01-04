@@ -6803,17 +6803,14 @@ body {
     font-size: 24px;
     line-height: 24px;
     margin: 0 0 24px 0; }
-    body .main h1 i {
+    body .main h1 i.glyphicon-chevron-right {
       color: #cccccc; }
   body .main .btn-group {
     margin-bottom: 24px; }
   body .main table {
-    /* table-layout: fixed; */ }
+    margin: -6px 0 24px; }
     body .main table tbody {
       border-top: 0; }
-    body .main table tr th {
-      font-weight: normal;
-      color: #cccccc; }
     body .main table tr th.draggy, body .main table tr th.delete, body .main table tr td.draggy, body .main table tr td.delete {
       width: 18px;
       text-align: center;

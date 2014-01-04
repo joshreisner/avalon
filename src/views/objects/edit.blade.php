@@ -12,79 +12,81 @@
 		Lang::get('avalon::messages.objects_edit'),
 		)) }}
 
-	{{ Former::horizontal_open()->action(URL::action('ObjectController@update', $object->id))->method('put') }}
+	{{ Form::open(array('class'=>'form-horizontal', 'url'=>URL::action('ObjectController@update', $object->id), 'method'=>'put')) }}
 	
-	{{ Former::text('title')
-		->label(Lang::get('avalon::messages.objects_title'))
-		->value($object->title)
-		->class('required')
-		->inlineHelp(Lang::get('avalon::messages.objects_title_help'))
-		}}
+	<div class="form-group">
+		{{ Form::label('title', Lang::get('avalon::messages.objects_title'), array('class'=>'col-sm-2')) }}
+	    <div class="col-sm-10">
+			{{ Form::text('title', $object->title, array('class'=>'required form-control', 'autofocus'=>'autofocus')) }}
+	    </div>
+	</div>
 	
-	{{ Former::text('list_grouping')
-		->label(Lang::get('avalon::messages.objects_list_grouping'))
-		->value($object->list_grouping)
-		->data_provide('typeahead')
-		->data_source($typeahead)
-		}}
-	
-	{{ Former::text('name')
-		->label(Lang::get('avalon::messages.objects_name'))
-		->value($object->name)
-		->class('required')
-		}}
-	
-	{{ Former::text('model')
-		->label(Lang::get('avalon::messages.objects_model'))
-		->value($object->model)
-		->class('required')
-		}}
-	
-	<!-- doesn't work yet
-	{{ Former::select('order_by')
-		->options($order_by)
-		->label(Lang::get('avalon::messages.objects_order_by'))
-		->value($object->order_by)
-		}} -->
-
-	<div class="control-group">
-		<label for="title" class="control-label">{{ Lang::get('avalon::messages.objects_order_by') }}</label>
-		<div class="controls">
-			{{ Form::select('order_by', $order_by, $object->order_by) }}			
+	<div class="form-group">
+		{{ Form::label('list_grouping', Lang::get('avalon::messages.objects_list_grouping'), array('class'=>'col-sm-2')) }}
+	    <div class="col-sm-10">
+			{{ Form::text('list_grouping', $object->list_grouping, array('class'=>'form-control')) }}
+	    </div>
+	</div>
+		
+	<div class="form-group">
+		{{ Form::label('name', Lang::get('avalon::messages.objects_name'), array('class'=>'col-sm-2')) }}
+	    <div class="col-sm-10">
+			{{ Form::text('name', $object->name, array('class'=>'required form-control')) }}
+	    </div>
+	</div>
+		
+	<div class="form-group">
+		{{ Form::label('model', Lang::get('avalon::messages.objects_model'), array('class'=>'col-sm-2')) }}
+	    <div class="col-sm-10">
+			{{ Form::text('model', $object->model, array('class'=>'required form-control')) }}
+	    </div>
+	</div>
+			
+	<div class="form-group">
+		{{ Form::label('order_by', Lang::get('avalon::messages.objects_order_by'), array('class'=>'col-sm-2')) }}
+		<div class="col-sm-10">
+			{{ Form::select('order_by', $order_by, $object->order_by, array('class'=>'form-control')) }}			
 		</div>
 	</div>
 	
-	{{ Former::select('direction')
-		->options($direction)
-		->label(Lang::get('avalon::messages.objects_direction'))
-		->value($object->direction)
-		}}
-	
+	<div class="form-group">
+		{{ Form::label('direction', Lang::get('avalon::messages.objects_direction'), array('class'=>'col-sm-2')) }}
+		<div class="col-sm-10">
+			{{ Form::select('direction', $direction, $object->direction, array('class'=>'form-control')) }}			
+		</div>
+	</div>
+		
 	@if (count($group_by_field))
-	{{ Former::select('group_by_field')
-		->options(array(''=>''))
-		->fromQuery($group_by_field, 'title')
-		->value($object->group_by_field)
-		->label(Lang::get('avalon::messages.objects_group_by'))
-		}}
+	<div class="form-group">
+		{{ Form::label('group_by_field', Lang::get('avalon::messages.objects_group_by'), array('class'=>'col-sm-2')) }}
+		<div class="col-sm-10">
+			{{ Form::select('group_by_field', $group_by_field, $object->group_by_field, array('class'=>'form-control')) }}			
+		</div>
+	</div>
 	@endif
 	
-	{{ Former::textarea('list_help')
-		->label(Lang::get('avalon::messages.objects_list_help'))
-		->value($object->list_help)
-		}}
-	
-	{{ Former::textarea('form_help')
-		->label(Lang::get('avalon::messages.objects_form_help'))
-		->value($object->form_help)
-		}}
-	
-	{{ Former::actions()
-		->primary_submit(Lang::get('avalon::messages.site_save'))
-		->link(Lang::get('avalon::messages.site_cancel'), URL::action('InstanceController@index', $object->id))
-		}}
-	
-	{{ Former::close() }}
+	<div class="form-group">
+		{{ Form::label('list_help', Lang::get('avalon::messages.objects_list_help'), array('class'=>'col-sm-2')) }}
+		<div class="col-sm-10">
+			{{ Form::textarea('list_help', $object->list_help, array('class'=>'form-control')) }}			
+		</div>
+	</div>
+
+	<div class="form-group">
+		{{ Form::label('form_help', Lang::get('avalon::messages.objects_form_help'), array('class'=>'col-sm-2')) }}
+		<div class="col-sm-10">
+			{{ Form::textarea('form_help', $object->form_help, array('class'=>'form-control')) }}			
+		</div>
+	</div>
+
+	<div class="form-group">
+	    <div class="col-sm-10 col-sm-push-2">
+			{{ Form::submit(Lang::get('avalon::messages.site_save'), array('class'=>'btn btn-primary')) }}
+			{{ HTML::link(URL::action('InstanceController@index', $object->id), Lang::get('avalon::messages.site_cancel'), array('class'=>'btn btn-default')) }}
+	    </div>
+	</div>
+
+	{{ Form::close() }}
 	
 @endsection
 
