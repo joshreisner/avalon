@@ -80,7 +80,7 @@
 	</div>
 
 	<div class="form-group">
-	    <div class="col-sm-10 col-sm-push-2">
+	    <div class="col-sm-10 col-sm-offset-2">
 			{{ Form::submit(Lang::get('avalon::messages.site_save'), array('class'=>'btn btn-primary')) }}
 			{{ HTML::link(URL::action('InstanceController@index', $object->id), Lang::get('avalon::messages.site_cancel'), array('class'=>'btn btn-default')) }}
 	    </div>

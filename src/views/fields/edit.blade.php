@@ -13,78 +13,86 @@
 		Lang::get('avalon::messages.fields_edit'),
 		)) }}
 
-	{{ Former::horizontal_open()->action(URL::action('FieldController@update', array($object->id, $field->id)))->method('put') }}
+	{{ Form::open(array('class'=>'form-horizontal', 'url'=>URL::action('FieldController@update', array($object->id, $field->id)), 'method'=>'put')) }}
 	
-	{{ Former::text('title')
-		->label(Lang::get('avalon::messages.fields_title'))
-		->value($field->title)
-		->class('required')
-		}}
+	<div class="form-group">
+		{{ Form::label('title', Lang::get('avalon::messages.fields_title'), array('class'=>'col-sm-2')) }}
+	    <div class="col-sm-10">
+			{{ Form::text('title', $field->title, array('class'=>'required form-control', 'autofocus'=>'autofocus')) }}
+	    </div>
+	</div>
 	
-	{{ Former::text('name')
-		->label(Lang::get('avalon::messages.fields_name'))
-		->value($field->name)
-		->class('required')
-		}}
-	
-	{{ Former::select('type')
-		->options($types)
-		->value($field->type)
-		->label(Lang::get('avalon::messages.fields_type'))
-		->disabled()
-		}}
-	
+	<div class="form-group">
+		{{ Form::label('name', Lang::get('avalon::messages.fields_title'), array('class'=>'col-sm-2')) }}
+	    <div class="col-sm-10">
+			{{ Form::text('name', $field->name, array('class'=>'required form-control')) }}
+	    </div>
+	</div>
+
+	<div class="form-group">
+		{{ Form::label('type', Lang::get('avalon::messages.fields_type'), array('class'=>'col-sm-2')) }}
+	    <div class="col-sm-10">
+			{{ Form::select('type', $types, $field->type, array('class'=>'form-control')) }}
+	    </div>
+	</div>
+			
 	@if (count($related_objects))
-	{{ Former::select('related_object_id')
-		->addOption('', '')
-		->fromQuery($related_objects, 'title')
-		->value($field->related_object_id)
-		->label(Lang::get('avalon::messages.fields_related_object'))
-		}}
+	<div class="form-group">
+		{{ Form::label('related_object_id', Lang::get('avalon::messages.fields_related_object'), array('class'=>'col-sm-2')) }}
+	    <div class="col-sm-10">
+			{{ Form::select('related_object_id', array_merge(array(''), $related_objects), $field->related_object_id, array('class'=>'form-control')) }}
+	    </div>
+	</div>
 	@endif
 	
 	@if (count($related_fields))
-	{{ Former::select('related_field_id')
-		->addOption('', '')
-		->fromQuery($related_fields, 'title')
-		->value($field->related_field_id)
-		->label(Lang::get('avalon::messages.fields_related_field'))
-		}}
+	<div class="form-group">
+		{{ Form::label('related_field_id', Lang::get('avalon::messages.fields_related_field'), array('class'=>'col-sm-2')) }}
+	    <div class="col-sm-10">
+			{{ Form::select('related_field_id', array_merge(array(''), $related_fields), $field->related_field_id, array('class'=>'form-control')) }}
+	    </div>
+	</div>
 	@endif
 	
-	{{ Former::select('visibility')
-		->options($visibility)
-		->value($field->visibility)
-		->label(Lang::get('avalon::messages.fields_visibility'))
-		}}
+	<div class="form-group">
+		{{ Form::label('visibility', Lang::get('avalon::messages.fields_visibility'), array('class'=>'col-sm-2')) }}
+	    <div class="col-sm-10">
+			{{ Form::select('visibility', $visibility, $field->visibility, array('class'=>'form-control')) }}
+	    </div>
+	</div>
+
+	<div class="form-group">
+		{{ Form::label('width', Lang::get('avalon::messages.fields_width'), array('class'=>'col-sm-2')) }}
+	    <div class="col-sm-10">
+			{{ Form::text('width', $field->width, array('class'=>'form-control')) }}
+	    </div>
+	</div>
+
+	<div class="form-group">
+		{{ Form::label('height', Lang::get('avalon::messages.fields_height'), array('class'=>'col-sm-2')) }}
+	    <div class="col-sm-10">
+			{{ Form::text('height', $field->height, array('class'=>'form-control')) }}
+	    </div>
+	</div>
 	
-	{{ Former::text('width')
-		->label(Lang::get('avalon::messages.fields_width'))
-		->value($field->width)
-		}}
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<div class="checkbox">
+				<label>
+					{{ Form::checkbox('required', $field->required) }} {{ Lang::get('avalon::messages.fields_required') }}
+				</label>
+			</div>
+		</div>
+	</div>
 	
-	{{ Former::text('height')
-		->label(Lang::get('avalon::messages.fields_height'))
-		->value($field->height)
-		}}
-	
-	@if ($field->required)
-	{{ Former::checkbox('required')
-		->checked()
-		->label(Lang::get('avalon::messages.fields_required'))
-		}}
-	@else
-	{{ Former::checkbox('required')
-		->label(Lang::get('avalon::messages.fields_required'))
-		}}
-	@endif
-	
-	{{ Former::actions()
-		->primary_submit(Lang::get('avalon::messages.site_save'))
-		->link(Lang::get('avalon::messages.site_cancel'), URL::action('FieldController@index', $object->id))
-		}}
-	
-	{{ Former::close() }}
+	<div class="form-group">
+	    <div class="col-sm-10 col-sm-offset-2">
+			{{ Form::submit(Lang::get('avalon::messages.site_save'), array('class'=>'btn btn-primary')) }}
+			{{ HTML::link(URL::action('FieldController@index', $object->id), Lang::get('avalon::messages.site_cancel'), array('class'=>'btn btn-default')) }}
+	    </div>
+	</div>
+
+	{{ Form::close() }}
 	
 @endsection
 

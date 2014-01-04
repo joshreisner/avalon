@@ -6745,7 +6745,7 @@ body {
   margin-top: 24px;
   height: 100%; }
   body.login {
-    background-color: #f0f0f0; }
+    background-color: #cccccc; }
     body.login div.modal {
       border-radius: 20px;
       border: 0;

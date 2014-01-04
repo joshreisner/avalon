@@ -40,12 +40,12 @@ class FieldController extends \BaseController {
 				->where('object_id', $object->id)
 				->where('type', 'string')
 				->orderBy('precedence')
-				->get();
+				->lists('title', 'id');
 
 		$related_objects = DB::table('avalon_objects')
 				->where('id', '<>', $object_id)
 				->orderBy('title')
-				->get();
+				->lists('title', 'id');
 
 		return View::make('avalon::fields.create', array(
 			'object'=>$object,
@@ -168,12 +168,12 @@ class FieldController extends \BaseController {
 				->where('id', '<>', $field->id)
 				->where('type', 'string')
 				->orderBy('precedence')
-				->get();
+				->lists('title', 'id');
 
 		$related_objects = DB::table('avalon_objects')
 				->where('id', '<>', $object_id)
 				->orderBy('title')
-				->get();
+				->lists('title', 'id');
 
 		return View::make('avalon::fields.edit', array(
 			'object'=>$object,

@@ -14,7 +14,7 @@ body {
 	margin-top: $margin; height: 100%;
 
 	&.login { 
-		background-color: #f0f0f0;
+		background-color: $gray;
 		div.modal {
 			border-radius: $modal_radius; border: 0; top: 25%;
 			div.modal-content { 
