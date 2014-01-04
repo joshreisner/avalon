@@ -16,14 +16,14 @@
 	{{ Form::open(array('class'=>'form-horizontal', 'url'=>URL::action('FieldController@store', $object->id))) }}
 	
 	<div class="form-group">
-		{{ Form::label('title', Lang::get('avalon::messages.fields_title'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('title', Lang::get('avalon::messages.fields_title'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::text('title', false, array('class'=>'required form-control', 'autofocus'=>'autofocus')) }}
 	    </div>
 	</div>
 
 	<div class="form-group">
-		{{ Form::label('type', Lang::get('avalon::messages.fields_type'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('type', Lang::get('avalon::messages.fields_type'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::select('type', $types, 'text', array('class'=>'form-control'))	 }}
 	    </div>
@@ -31,7 +31,7 @@
 	
 	@if (count($related_objects))
 	<div class="form-group">
-		{{ Form::label('related_object_id', Lang::get('avalon::messages.fields_related_object'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('related_object_id', Lang::get('avalon::messages.fields_related_object'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::select('related_object_id', array_merge(array(''), $related_objects), false, array('class'=>'form-control')) }}
 	    </div>
@@ -40,7 +40,7 @@
 	
 	@if (count($related_fields))
 	<div class="form-group">
-		{{ Form::label('related_field_id', Lang::get('avalon::messages.fields_related_field'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('related_field_id', Lang::get('avalon::messages.fields_related_field'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::select('related_field_id', array_merge(array(''), $related_fields), false, array('class'=>'form-control')) }}
 	    </div>
@@ -48,7 +48,7 @@
 	@endif
 	
 	<div class="form-group">
-		{{ Form::label('visibility', Lang::get('avalon::messages.fields_visibility'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('visibility', Lang::get('avalon::messages.fields_visibility'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::select('visibility', $visibility, 'list', array('class'=>'form-control')) }}
 	    </div>

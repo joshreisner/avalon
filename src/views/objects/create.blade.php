@@ -14,28 +14,28 @@
 	{{ Form::open(array('class'=>'form-horizontal', 'url'=>URL::action('ObjectController@store'))) }}
 
 	<div class="form-group">
-		{{ Form::label('title', Lang::get('avalon::messages.objects_title'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('title', Lang::get('avalon::messages.objects_title'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::text('title', false, array('class'=>'required form-control', 'autofocus'=>'autofocus')) }}
 	    </div>
 	</div>
 
 	<div class="form-group">
-		{{ Form::label('list_grouping', Lang::get('avalon::messages.objects_list_grouping'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('list_grouping', Lang::get('avalon::messages.objects_list_grouping'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::text('list_grouping', false, array('class'=>'form-control')) }}
 	    </div>
 	</div>
 
 	<div class="form-group">
-		{{ Form::label('order_by', Lang::get('avalon::messages.objects_order_by'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('order_by', Lang::get('avalon::messages.objects_order_by'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::select('order_by', $order_by, 'precedence', array('class'=>'form-control')) }}
 	    </div>
 	</div>
 
 	<div class="form-group">
-		{{ Form::label('direction', Lang::get('avalon::messages.objects_direction'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('direction', Lang::get('avalon::messages.objects_direction'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::select('direction', $direction, 'asc', array('class'=>'form-control')) }}
 	    </div>

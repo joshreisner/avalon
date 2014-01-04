@@ -16,21 +16,21 @@
 	{{ Form::open(array('class'=>'form-horizontal', 'url'=>URL::action('FieldController@update', array($object->id, $field->id)), 'method'=>'put')) }}
 	
 	<div class="form-group">
-		{{ Form::label('title', Lang::get('avalon::messages.fields_title'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('title', Lang::get('avalon::messages.fields_title'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::text('title', $field->title, array('class'=>'required form-control', 'autofocus'=>'autofocus')) }}
 	    </div>
 	</div>
 	
 	<div class="form-group">
-		{{ Form::label('name', Lang::get('avalon::messages.fields_title'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('name', Lang::get('avalon::messages.fields_title'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::text('name', $field->name, array('class'=>'required form-control')) }}
 	    </div>
 	</div>
 
 	<div class="form-group">
-		{{ Form::label('type', Lang::get('avalon::messages.fields_type'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('type', Lang::get('avalon::messages.fields_type'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::select('type', $types, $field->type, array('class'=>'form-control')) }}
 	    </div>
@@ -38,7 +38,7 @@
 			
 	@if (count($related_objects))
 	<div class="form-group">
-		{{ Form::label('related_object_id', Lang::get('avalon::messages.fields_related_object'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('related_object_id', Lang::get('avalon::messages.fields_related_object'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::select('related_object_id', array_merge(array(''), $related_objects), $field->related_object_id, array('class'=>'form-control')) }}
 	    </div>
@@ -47,7 +47,7 @@
 	
 	@if (count($related_fields))
 	<div class="form-group">
-		{{ Form::label('related_field_id', Lang::get('avalon::messages.fields_related_field'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('related_field_id', Lang::get('avalon::messages.fields_related_field'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::select('related_field_id', array_merge(array(''), $related_fields), $field->related_field_id, array('class'=>'form-control')) }}
 	    </div>
@@ -55,21 +55,21 @@
 	@endif
 	
 	<div class="form-group">
-		{{ Form::label('visibility', Lang::get('avalon::messages.fields_visibility'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('visibility', Lang::get('avalon::messages.fields_visibility'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::select('visibility', $visibility, $field->visibility, array('class'=>'form-control')) }}
 	    </div>
 	</div>
 
 	<div class="form-group">
-		{{ Form::label('width', Lang::get('avalon::messages.fields_width'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('width', Lang::get('avalon::messages.fields_width'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::text('width', $field->width, array('class'=>'form-control')) }}
 	    </div>
 	</div>
 
 	<div class="form-group">
-		{{ Form::label('height', Lang::get('avalon::messages.fields_height'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('height', Lang::get('avalon::messages.fields_height'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::text('height', $field->height, array('class'=>'form-control')) }}
 	    </div>

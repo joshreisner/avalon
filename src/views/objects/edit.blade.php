@@ -15,42 +15,42 @@
 	{{ Form::open(array('class'=>'form-horizontal', 'url'=>URL::action('ObjectController@update', $object->id), 'method'=>'put')) }}
 	
 	<div class="form-group">
-		{{ Form::label('title', Lang::get('avalon::messages.objects_title'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('title', Lang::get('avalon::messages.objects_title'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::text('title', $object->title, array('class'=>'required form-control', 'autofocus'=>'autofocus')) }}
 	    </div>
 	</div>
 	
 	<div class="form-group">
-		{{ Form::label('list_grouping', Lang::get('avalon::messages.objects_list_grouping'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('list_grouping', Lang::get('avalon::messages.objects_list_grouping'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::text('list_grouping', $object->list_grouping, array('class'=>'form-control')) }}
 	    </div>
 	</div>
 		
 	<div class="form-group">
-		{{ Form::label('name', Lang::get('avalon::messages.objects_name'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('name', Lang::get('avalon::messages.objects_name'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::text('name', $object->name, array('class'=>'required form-control')) }}
 	    </div>
 	</div>
 		
 	<div class="form-group">
-		{{ Form::label('model', Lang::get('avalon::messages.objects_model'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('model', Lang::get('avalon::messages.objects_model'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::text('model', $object->model, array('class'=>'required form-control')) }}
 	    </div>
 	</div>
 			
 	<div class="form-group">
-		{{ Form::label('order_by', Lang::get('avalon::messages.objects_order_by'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('order_by', Lang::get('avalon::messages.objects_order_by'), array('class'=>'control-label col-sm-2')) }}
 		<div class="col-sm-10">
 			{{ Form::select('order_by', $order_by, $object->order_by, array('class'=>'form-control')) }}			
 		</div>
 	</div>
 	
 	<div class="form-group">
-		{{ Form::label('direction', Lang::get('avalon::messages.objects_direction'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('direction', Lang::get('avalon::messages.objects_direction'), array('class'=>'control-label col-sm-2')) }}
 		<div class="col-sm-10">
 			{{ Form::select('direction', $direction, $object->direction, array('class'=>'form-control')) }}			
 		</div>
@@ -58,7 +58,7 @@
 		
 	@if (count($group_by_field))
 	<div class="form-group">
-		{{ Form::label('group_by_field', Lang::get('avalon::messages.objects_group_by'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('group_by_field', Lang::get('avalon::messages.objects_group_by'), array('class'=>'control-label col-sm-2')) }}
 		<div class="col-sm-10">
 			{{ Form::select('group_by_field', $group_by_field, $object->group_by_field, array('class'=>'form-control')) }}			
 		</div>
@@ -66,14 +66,14 @@
 	@endif
 	
 	<div class="form-group">
-		{{ Form::label('list_help', Lang::get('avalon::messages.objects_list_help'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('list_help', Lang::get('avalon::messages.objects_list_help'), array('class'=>'control-label col-sm-2')) }}
 		<div class="col-sm-10">
 			{{ Form::textarea('list_help', $object->list_help, array('class'=>'form-control')) }}			
 		</div>
 	</div>
 
 	<div class="form-group">
-		{{ Form::label('form_help', Lang::get('avalon::messages.objects_form_help'), array('class'=>'col-sm-2')) }}
+		{{ Form::label('form_help', Lang::get('avalon::messages.objects_form_help'), array('class'=>'control-label col-sm-2')) }}
 		<div class="col-sm-10">
 			{{ Form::textarea('form_help', $object->form_help, array('class'=>'form-control')) }}			
 		</div>

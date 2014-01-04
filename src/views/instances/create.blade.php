@@ -17,7 +17,7 @@
 	@foreach ($fields as $field)
 		@if ($field->type == 'checkboxes')
 			<div class="form-group">
-			    <label class="col-sm-2">{{ $field->title }}</label>
+			    <label class="control-label col-sm-2">{{ $field->title }}</label>
 			    <div class="checkbox">
 			    	@foreach ($options[$field->name]['options'] as $checkbox)
 					<label class="checkbox">
@@ -28,21 +28,21 @@
 			</div>
 		@elseif ($field->type == 'date')
 			<div class="form-group">
-				{{ Form::label($field->name, $field->title, array('class'=>'col-sm-2')) }}
+				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
 					{{ Form::date($field->name, $field->required ? date('Y-m-d\TH:i:s') : false, array('class'=>$field->required ? 'form-control date required' : 'form-control date')) }}
 			    </div>
 			</div>
 		@elseif ($field->type == 'datetime')
 			<div class="form-group">
-				{{ Form::label($field->name, $field->title, array('class'=>'col-sm-2')) }}
+				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
 					{{ Form::datetime($field->name, $field->required ? date('Y-m-d\TH:i:s') : false, array('class'=>$field->required ? 'form-control datetime required' : 'form-control datetime')) }}
 			    </div>
 			</div>
 		@elseif ($field->type == 'html')
 			<div class="form-group">
-				{{ Form::label($field->name, $field->title, array('class'=>'col-sm-2')) }}
+				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
 					{{ Form::textarea($field->name, false, array('class'=>$field->required ? 'form-control html required' : 'form-control html')) }}
 			    </div>
@@ -64,28 +64,28 @@
 			@endif
 		@elseif ($field->type == 'slug')
 			<div class="form-group">
-				{{ Form::label($field->name, $field->title, array('class'=>'col-sm-2')) }}
+				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
 					{{ Form::text($field->name, false, array('class'=>$field->required ? 'form-control slug required' : 'form-control slug')) }}
 			    </div>
 			</div>
 		@elseif ($field->type == 'string')
 			<div class="form-group">
-				{{ Form::label($field->name, $field->title, array('class'=>'col-sm-2')) }}
+				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
 					{{ Form::text($field->name, false, array('class'=>$field->required ? 'form-control string required' : 'form-control string')) }}
 			    </div>
 			</div>
 		@elseif ($field->type == 'text')
 			<div class="form-group">
-				{{ Form::label($field->name, $field->title, array('class'=>'col-sm-2')) }}
+				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
 					{{ Form::textarea($field->name, false, array('class'=>$field->required ? 'form-control text required' : 'form-control text')) }}
 			    </div>
 			</div>
 		@elseif ($field->type == 'url')
 			<div class="form-group">
-				{{ Form::label($field->name, $field->title, array('class'=>'col-sm-2')) }}
+				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
 					{{ Form::url($field->name, false, array('class'=>$field->required ? 'form-control url required' : 'form-control url')) }}
 			    </div>
