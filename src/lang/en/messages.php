@@ -36,7 +36,7 @@ return array(
 
 	'object'				=> 'Object',
 	'objects'				=> 'Objects',
-	'objects_count'			=> '#',
+	'objects_count'			=> 'Count',
 	'objects_create'		=> 'Create Object',
 	'objects_create_help'	=> 'This action will create a new table in the database.',
 	'objects_dependencies'	=> 'This object can\'t be deleted because it has dependencies.',

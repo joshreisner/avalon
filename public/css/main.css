@@ -6820,17 +6820,16 @@ body {
         body .main table tr th.delete a:hover, body .main table tr td.delete a:hover {
           color: #555555;
           text-decoration: none; }
+      body .main table tr th.center, body .main table tr td.center {
+        text-align: center; }
       body .main table tr th.date, body .main table tr td.date {
         text-align: right; }
       body .main table tr th.datetime, body .main table tr td.datetime {
         text-align: right; }
       body .main table tr th.integer, body .main table tr td.integer {
         text-align: right; }
-      body .main table tr th.center, body .main table tr td.center {
-        text-align: center; }
       body .main table tr th.updated, body .main table tr td.updated {
-        text-align: right;
-        width: 140px; }
+        text-align: right; }
       body .main table tr.group td {
         padding-top: 34px;
         color: #555555;
