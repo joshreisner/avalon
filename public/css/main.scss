@@ -89,11 +89,11 @@ body {
 						color: $gray;
 						&:hover { color: $gray_dark; text-decoration: none; }
 					}
-					&.center { text-align: center; }
 					&.date { text-align: right; }
 					&.datetime { text-align: right; }
 					&.integer { text-align: right; }
-					&.updated { text-align: right; }
+					&.center { text-align: center; }
+					&.updated { text-align: right; width: 140px; }
 				}
 				
 				&.group {
