@@ -47,6 +47,13 @@
 					{{ Form::textarea($field->name, $instance->{$field->name}, array('class'=>$field->required ? 'form-control html required' : 'form-control html')) }}
 			    </div>
 			</div>
+		@elseif ($field->type == 'integer')
+			<div class="form-group">
+				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
+			    <div class="col-sm-10">
+			    	<input type="number" step="1" name="{{ $field->name }}" value="{{ $instance->{$field->name} }}" class="form-control integer @if($field->required) required@endif">
+			    </div>
+			</div>
 		@elseif ($field->type == 'images')
 			<div class="control-group images">
 			    <label class="control-label">{{ $field->title }}</label>

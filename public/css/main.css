@@ -6763,10 +6763,8 @@ body {
     margin-bottom: 24px; }
     body form .form-group {
       /* label sup { display: none; } */ }
-      body form .form-group:last-child {
-        margin-bottom: 0; }
-      body form .form-group.has-error .help-inline {
-        display: none !important; }
+      body form .form-group input.integer {
+        max-width: 200px; }
       body form .form-group .redactor_box {
         border: 1px solid #cccccc;
         border-radius: 4px; }
@@ -6781,6 +6779,10 @@ body {
               background: url(/packages/joshreisner/avalon/img/lorem_ipsum_button.png) no-repeat; }
         body form .form-group .redactor_box div.redactor_editor {
           border-radius: 0 0 4px 4px; }
+      body form .form-group:last-child {
+        margin-bottom: 0; }
+      body form .form-group.has-error .help-inline {
+        display: none !important; }
       body form .form-group.checkboxes .controls {
         padding-top: 5px;
         overflow: auto;

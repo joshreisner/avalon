@@ -3,11 +3,12 @@
 class FieldController extends \BaseController {
 
 	private static $types = array(
-		'checkboxes'	=>'Checkboxes',
+		//'checkboxes'	=>'Checkboxes',
 		'date'			=>'Date',
 		'datetime'		=>'Date + Time',
 		'html'			=>'HTML',
-		'images'		=>'Images',
+		//'images'		=>'Images',
+		'integer'		=>'Integer',
 		'select'		=>'Select',
 		'slug'			=>'Slug',
 		'string'		=>'String',
@@ -101,9 +102,8 @@ class FieldController extends \BaseController {
 							$table->dateTime($field_name)->nullable();
 						}
 						break;
-					
-						break;
 
+					case 'integer':
 					case 'select':
 						if ($required) {
 							$table->integer($field_name);

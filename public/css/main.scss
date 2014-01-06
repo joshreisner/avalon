@@ -30,9 +30,9 @@ body {
 		margin-bottom: $margin;
 		.form-group {
 			/* label sup { display: none; } */
-			&:last-child { margin-bottom: 0; }
-			&.has-error {
-				.help-inline { display: none !important; }
+
+			input {
+				&.integer { max-width: 200px; }
 			}
 			.redactor_box {
 				border: 1px solid $gray; border-radius: $field_radius;
@@ -50,6 +50,10 @@ body {
 				}
 			}
 
+			&:last-child { margin-bottom: 0; }
+			&.has-error {
+				.help-inline { display: none !important; }
+			}
 			&.checkboxes {
 				.controls {
 					padding-top: 5px; overflow: auto; max-height: 300px;
