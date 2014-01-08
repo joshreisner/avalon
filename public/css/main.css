@@ -6813,14 +6813,15 @@ body {
         border-top: 0; }
       body .main table tr th.draggy, body .main table tr th.delete, body .main table tr td.draggy, body .main table tr td.delete {
         width: 18px;
-        text-align: center;
-        color: #cccccc; }
+        text-align: center; }
       body .main table tr th.draggy, body .main table tr td.draggy {
+        color: #cccccc;
         cursor: url(https://mail.google.com/mail/images/2/openhand.cur), default !important; }
       body .main table tr th.delete a, body .main table tr td.delete a {
-        color: #cccccc; }
+        color: inherit; }
+        body .main table tr th.delete a i, body .main table tr td.delete a i {
+          top: 2px; }
         body .main table tr th.delete a:hover, body .main table tr td.delete a:hover {
-          color: #555555;
           text-decoration: none; }
       body .main table tr th.center, body .main table tr td.center {
         text-align: center; }

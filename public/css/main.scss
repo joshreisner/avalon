@@ -87,11 +87,12 @@ body {
 			tbody { border-top: 0; }
 			tr {
 				th, td {
-					&.draggy, &.delete { width: 18px; text-align: center; color: $gray; }
-					&.draggy { cursor: url(https://mail.google.com/mail/images/2/openhand.cur), default !important; }
+					&.draggy, &.delete { width: 18px; text-align: center; }
+					&.draggy { color: $gray; cursor: url(https://mail.google.com/mail/images/2/openhand.cur), default !important; }
 					&.delete a {
-						color: $gray;
-						&:hover { color: $gray_dark; text-decoration: none; }
+						color: inherit; 
+						i { top: 2px; }
+						&:hover { text-decoration: none; }
 					}
 					&.center { text-align: center; }
 					&.date { text-align: right; }

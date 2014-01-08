@@ -242,13 +242,17 @@ class InstanceController extends \BaseController {
 			'updated'=>new DateTime,
 			'updater'=>Session::get('avalon_id'),
 		));
-		
+
 		//update object meta
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
 			'count'=>DB::table($object->name)->where('active', 1)->count(),
 			'updated'=>new DateTime,
 			'updater'=>Session::get('avalon_id'),
 		));
+
+		$updated = DB::table($object->name)->where('id', $instance_id)->pluck('updated');
+
+		return Dates::relative($updated);
 	}
 
 	//sanitize field values before inserting

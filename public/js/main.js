@@ -47,17 +47,18 @@ $(function() {
 		parent.toggleClass('inactive');
 		if (parent.hasClass('inactive')) {
 			var active = 0;
-			$(this).find('i').removeClass('glyphicon-check').addClass('glyphicon-unchecked');
+			$(this).find('i').removeClass('glyphicon-ok-circle').addClass('glyphicon-remove-circle');
 		} else {
 			var active = 1;
-			$(this).find('i').removeClass('glyphicon-unchecked').addClass('glyphicon-check');
+			$(this).find('i').removeClass('glyphicon-remove-circle').addClass('glyphicon-ok-circle');
 		}
 		
 		//send ajax update
 		$.get($(this).attr('href'), { active: active }, function(data){
-			window.console.log('sent post and data was ' + data);
+			//window.console.log('sent post and data was ' + data);
+			parent.find("td.updated").html(data);
 		}).fail(function() { 
-			window.console.log('error');
+			//window.console.log('error');
 		});
 	});
 	
