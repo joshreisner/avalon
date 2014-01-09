@@ -53,6 +53,7 @@ class InstanceController extends \BaseController {
 					'options'=>DB::table($related_table->name)->where('active', 1)->orderBy($related_table->order_by, $related_table->direction)->lists($related_column->name, 'id'),
 					'column_name'=>$related_column->name,
 				);
+				if ($field->type == 'select' && !$field->required) $options[$field->name]['options'] = array(''=>'') + $options[$field->name]['options'];
 			}
 		}
 
@@ -135,7 +136,10 @@ class InstanceController extends \BaseController {
 					$values = DB::table($field->name)->where(self::getKey($object->name), $instance_id)->get();
 					foreach ($values as &$value) $value = $value->{$key};
 					$options[$field->name]['values'] = $values;
+				} elseif ($field->type == 'select' && !$field->required) {
+					$options[$field->name]['options'] = array(''=>'') + $options[$field->name]['options'];
 				}
+
 			} elseif ($field->type == 'slug') {
 				if (empty($field->help)) $field->help = Lang::get('avalon::messages.fields_slug_help');
 

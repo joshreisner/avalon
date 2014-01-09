@@ -33,6 +33,7 @@
 		{{ Lang::get('avalon::messages.instances_empty', array('title'=>$object->title)) }}
 	</div>
 	@endif
+
 @endsection
 
 @section('side')

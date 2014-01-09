@@ -17,8 +17,8 @@ class FieldController extends \BaseController {
 	);
 	
 	private static $visibility = array(
-		'normal'=>'Normal',
 		'list'=>'Show in List',
+		'normal'=>'Normal',
 		'hidden'=>'Hidden',
 	);
 
@@ -163,14 +163,14 @@ class FieldController extends \BaseController {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		$field = DB::table('avalon_fields')->where('id', $field_id)->first();
 
-		$related_fields = DB::table('avalon_fields')
+		$related_fields = array(''=>'') + DB::table('avalon_fields')
 				->where('object_id', $field->object_id)
 				->where('id', '<>', $field->id)
 				->where('type', 'string')
 				->orderBy('precedence')
 				->lists('title', 'id');
 
-		$related_objects = DB::table('avalon_objects')
+		$related_objects = array(''=>'') + DB::table('avalon_objects')
 				->where('id', '<>', $object_id)
 				->orderBy('title')
 				->lists('title', 'id');

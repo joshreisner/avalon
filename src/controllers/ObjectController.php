@@ -19,11 +19,11 @@ class ObjectController extends \BaseController {
 	
 	//display create object form
 	public function create() {
-		$order_by = array(
+		$order_by = array(Lang::get('avalon::messages.fields_system')=>array(
 			'id'=>Lang::get('avalon::messages.fields_id'),
 			'precedence'=>Lang::get('avalon::messages.fields_precedence'),
 			'created_at'=>Lang::get('avalon::messages.fields_updated_at'),
-		);
+		));
 
 		//typehead
 		$typeahead = DB::table('avalon_objects')->select('list_grouping')->distinct()->orderBy('list_grouping')->get();
@@ -120,7 +120,7 @@ class ObjectController extends \BaseController {
 			'order_by'=>$order_by,
 			'direction'=>self::$direction,
 			'dependencies'=>DB::table('avalon_fields')->where('related_object_id', $object_id)->count(),
-			'group_by_field'=>DB::table('avalon_fields')->where('object_id', $object_id)->where('type', 'select')->get(),
+			'group_by_field'=>DB::table('avalon_fields')->where('object_id', $object_id)->where('type', 'select')->lists('title', 'id'),
 			'typeahead'=>$typeahead,
 		));
 	}
