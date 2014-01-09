@@ -50,7 +50,7 @@ class InstanceController extends \BaseController {
 				$related_table = DB::table('avalon_objects')->where('id', $field->related_object_id)->first();
 				$related_column = DB::table('avalon_fields')->where('object_id', $field->related_object_id)->where('type', 'string')->first();
 				$options[$field->name] = array(
-					'options'=>DB::table($related_table->name)->where('active', 1)->select('id', $related_column->name)->orderBy($related_table->order_by, $related_table->direction)->get(),
+					'options'=>DB::table($related_table->name)->where('active', 1)->orderBy($related_table->order_by, $related_table->direction)->lists($related_column->name, 'id'),
 					'column_name'=>$related_column->name,
 				);
 			}
@@ -126,7 +126,7 @@ class InstanceController extends \BaseController {
 				$related_table = DB::table('avalon_objects')->where('id', $field->related_object_id)->first();
 				$related_column = DB::table('avalon_fields')->where('object_id', $field->related_object_id)->where('type', 'string')->first();
 				$options[$field->name] = array(
-					'options'=>DB::table($related_table->name)->where('active', 1)->select('id', $related_column->name)->orderBy($related_table->order_by, $related_table->direction)->get(),
+					'options'=>DB::table($related_table->name)->where('active', 1)->orderBy($related_table->order_by, $related_table->direction)->lists($related_column->name, 'id'),
 					'column_name'=>$related_column->name,
 				);
 

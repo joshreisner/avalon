@@ -48,20 +48,12 @@
 			    </div>
 			</div>
 		@elseif ($field->type == 'select')
-			@if ($field->required)
-			{{ Former::select($field->name)
-				->label($field->title)
-				->fromQuery($options[$field->name]['options'], $options[$field->name]['column_name'])
-				->inlineHelp($field->help)
-				}}
-			@else
-			{{ Former::select($field->name)
-				->label($field->title)
-				->addOption('', '')
-				->fromQuery($options[$field->name]['options'], $options[$field->name]['column_name'])
-				->inlineHelp($field->help)
-				}}
-			@endif
+			<div class="form-group">
+				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
+			    <div class="col-sm-10">
+					{{ Form::select($field->name, $options[$field->name]['options'], false, array('class'=>$field->required ? 'form-control select required' : 'form-control select')) }}
+			    </div>
+			</div>
 		@elseif ($field->type == 'slug')
 			<div class="form-group">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}

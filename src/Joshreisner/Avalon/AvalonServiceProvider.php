@@ -26,6 +26,7 @@ class AvalonServiceProvider extends ServiceProvider {
 		
 		include __DIR__ . '/../../routes.php';
 
+		//add some special fields to the default laravel form class
 		\Form::macro('date', function($name, $value = null, $options = array()) {
 		    $input =  '<input type="date" name="' . $name . '" value="' . $value . '"';
 
