@@ -63,6 +63,18 @@ class AvalonServiceProvider extends ServiceProvider {
 		    return $input;
 		});
 
+		\Form::macro('time', function($name, $value = null, $options = array()) {
+		    $input =  '<input type="time" name="' . $name . '" value="' . $value . '"';
+
+		    foreach ($options as $key => $value) {
+		        $input .= ' ' . $key . '="' . $value . '"';
+		    }
+
+		    $input .= '>';
+
+		    return $input;
+		});
+
 		\View::composer('*', function($view)
 		{
 		    $view->with('account', \DB::table('avalon')->where('id', 1)->first());

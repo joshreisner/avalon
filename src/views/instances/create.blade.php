@@ -89,6 +89,13 @@
 					{{ Form::textarea($field->name, false, array('class'=>'form-control ' . $field->type . ($field->required ? ' required' : ''))) }}
 			    </div>
 			</div>
+		@elseif ($field->type == 'time')
+			<div class="form-group">
+				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
+			    <div class="col-sm-10">
+					{{ Form::time($field->name, false, array('class'=>'form-control ' . $field->type . ($field->required ? ' required' : ''))) }}
+			    </div>
+			</div>
 		@elseif ($field->type == 'url')
 			<div class="form-group">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}

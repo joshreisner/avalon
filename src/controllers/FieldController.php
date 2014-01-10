@@ -14,6 +14,7 @@ class FieldController extends \BaseController {
 		'slug'			=>'Slug',
 		'string'		=>'String',
 		'text'			=>'Text',
+		'time'			=>'Time',
 		'url'			=>'URL',
 	);
 	
@@ -137,6 +138,13 @@ class FieldController extends \BaseController {
 							$table->text($field_name);
 						} else {
 							$table->text($field_name)->nullable();
+						}
+
+					case 'time':
+						if ($required) {
+							$table->time($field_name);
+						} else {
+							$table->time($field_name)->nullable();
 						}
 				}
 			});

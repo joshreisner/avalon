@@ -34,7 +34,10 @@ body {
 
 			input {
 				&.color { max-width: 100px; }
+				&.date { max-width: 200px; }
+				&.datetime { max-width: 200px; }
 				&.integer { max-width: 200px; }
+				&.time { max-width: 200px; }
 			}
 			.redactor_box {
 				border: 1px solid $gray; border-radius: $field_radius;

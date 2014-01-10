@@ -6767,7 +6767,13 @@ body {
       /* label sup { display: none; } */ }
       body form .form-group input.color {
         max-width: 100px; }
+      body form .form-group input.date {
+        max-width: 200px; }
+      body form .form-group input.datetime {
+        max-width: 200px; }
       body form .form-group input.integer {
+        max-width: 200px; }
+      body form .form-group input.time {
         max-width: 200px; }
       body form .form-group .redactor_box {
         border: 1px solid #cccccc;
