@@ -3,7 +3,7 @@
 return array(
 
     'account_edit'			=> 'Site Settings',
-    'account_edit_help'		=> 'Link color should be dark enough to show up against a white background.',
+    'account_edit_help'		=> 'Link color should be dark enough to show up against a white background.<br><br>Image should be 92px high, with a maximum width of 1170px.',
     'account_title'			=> 'Title',
     'account_image'			=> 'Banner Image',
     'account_color'			=> 'Link Color',

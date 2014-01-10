@@ -14,7 +14,7 @@
 			    <div class="modal-content">
 	
 					<div class="modal-header">
-						<h3 class="modal-title">{{ $account->title }}</h3>
+						<h2 class="modal-title">{{ $account->title }}</h2>
 					</div>
 				
 					<div class="modal-body">

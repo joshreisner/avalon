@@ -6747,18 +6747,20 @@ body {
   body.login {
     background-color: #cccccc; }
     body.login div.modal {
-      border-radius: 20px;
+      border-radius: 14px;
       border: 0;
       top: 25%; }
       body.login div.modal div.modal-content {
-        border-radius: 20px; }
+        border-radius: 14px; }
         body.login div.modal div.modal-content div.modal-header {
-          border-radius: 20px 20px 0 0; }
+          border-radius: 14px 14px 0 0;
+          color: white; }
         body.login div.modal div.modal-content div.modal-body .form-group:last-child {
           margin-bottom: 0; }
         body.login div.modal div.modal-content div.modal-footer {
           margin-top: 0;
-          border-radius: 0 0 20px 20px; }
+          border-radius: 0 0 14px 14px;
+          background-color: whitesmoke; }
   body form {
     margin-bottom: 24px; }
     body form .form-group {
@@ -6797,7 +6799,11 @@ body {
     body form.upload {
       display: none; }
   body .header {
-    margin-bottom: 24px; }
+    margin-bottom: 24px;
+    overflow: hidden; }
+    body .header img {
+      max-width: 100%;
+      height: auto; }
   body .main {
     margin-bottom: 24px; }
     body .main h1 {

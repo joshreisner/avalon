@@ -1,7 +1,7 @@
 @extends('avalon::template')
 
 @section('title')
-	{{ Lang::get('avalon::messages.accounts_edit') }}
+	{{ Lang::get('avalon::messages.account_edit') }}
 @endsection
 
 @section('main')

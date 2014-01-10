@@ -13,7 +13,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12 header">
-					<a href="{{ URL::action('ObjectController@index') }}"><img src="{{ $account->image }}" width="1170" height="92"></a>
+					<a href="{{ URL::action('ObjectController@index') }}"><img src="{{ $account->image }}"></a>
 				</div>
 			</div>
 			<div class="row">
