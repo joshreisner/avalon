@@ -4,12 +4,16 @@
 		<title>@yield('title')</title>
 		<meta charset="UTF-8">
 		{{ HTML::style('/packages/joshreisner/avalon/css/main.css') }}
+		<style type="text/css">
+			a, a:hover, a:active { color: #{{ $account->color }}; }
+			.btn-primary, .btn-primary:hover { background-color: #{{ $account->color }}; border-color: #{{ $account->color }}; }
+		</style>
 	</head>
 	<body>
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12 header">
-					<a href="{{ URL::action('ObjectController@index') }}"><img src="/packages/joshreisner/avalon/img/banner.png" width="1170" height="92"></a>
+					<a href="{{ URL::action('ObjectController@index') }}"><img src="{{ $account->image }}" width="1170" height="92"></a>
 				</div>
 			</div>
 			<div class="row">
@@ -23,7 +27,7 @@
 				</div>
 			</div>
 		</div>
-
+		{{ HTML::script('/packages/joshreisner/avalon/js/jscolor/jscolor.js') }}
 		{{ HTML::script('/packages/joshreisner/avalon/js/main.min.js') }}
 	</body>
 </html>

@@ -4,6 +4,7 @@ class FieldController extends \BaseController {
 
 	private static $types = array(
 		//'checkboxes'	=>'Checkboxes',
+		'color'			=>'Color',
 		'date'			=>'Date',
 		'datetime'		=>'Date + Time',
 		'html'			=>'HTML',
@@ -87,6 +88,14 @@ class FieldController extends \BaseController {
 			Schema::table($table_name, function($table) use ($type, $field_name, $required) {
 				switch ($type) {
 
+					case 'color':
+						if ($required) {
+							$table->string($field_name, 6);
+						} else {
+							$table->string($field_name, 6)->nullable();
+						}
+						break;
+					
 					case 'date':
 						if ($required) {
 							$table->date($field_name);

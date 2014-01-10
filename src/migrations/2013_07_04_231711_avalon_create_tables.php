@@ -13,8 +13,9 @@ class AvalonCreateTables extends Migration {
 	{
 		Schema::create('avalon', function($table){
 			$table->increments('id');
-			$table->string('link_color')->default('#336699');
-			$table->string('banner_image')->default('/packages/joshreisner/avalon/img/banner.png');
+			$table->string('title')->default('Welcome to Avalon');
+			$table->string('color')->default('#3276b1');
+			$table->string('image')->default('/packages/joshreisner/avalon/img/banner.png');
 			$table->dateTime('updated');
 			$table->integer('updater');
 		});

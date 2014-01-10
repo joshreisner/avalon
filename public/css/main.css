@@ -6763,6 +6763,8 @@ body {
     margin-bottom: 24px; }
     body form .form-group {
       /* label sup { display: none; } */ }
+      body form .form-group input.color {
+        max-width: 100px; }
       body form .form-group input.integer {
         max-width: 200px; }
       body form .form-group .redactor_box {

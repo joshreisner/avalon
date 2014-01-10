@@ -63,6 +63,12 @@ class AvalonServiceProvider extends ServiceProvider {
 		    return $input;
 		});
 
+		\View::composer('*', function($view)
+		{
+		    $view->with('account', \DB::table('avalon')->where('id', 1)->first());
+		});
+
+
 	}
 
 	/**

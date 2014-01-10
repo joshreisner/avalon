@@ -2,6 +2,12 @@
 
 return array(
 
+    'account_edit'			=> 'Site Settings',
+    'account_edit_help'		=> 'Link color should be dark enough to show up against a white background.',
+    'account_title'			=> 'Title',
+    'account_image'			=> 'Banner Image',
+    'account_color'			=> 'Link Color',
+
 	'fields'				=> 'Fields',
 	'fields_create'			=> 'Create',
 	'fields_create_help'	=> 'There are bunch of rules that will eventually be implemented in JS.  For the time being, a related field must be selected when adding a slug field.',
@@ -61,7 +67,6 @@ return array(
 	'site_login'			=> 'Log In',
 	'site_logout'			=> 'Log Out',
     'site_save'				=> 'Save Changes',
-    'site_settings'			=> 'Site Settings',
     'site_updated'			=> 'Updated',
     'site_welcome'			=> 'Welcome to Avalon',
 

@@ -11,7 +11,7 @@
 		)) }}
 
 	<div class="btn-group">
-		<!--<a class="btn" href="/login/settings"><i class="icon-cog"></i> {{ Lang::get('avalon::messages.site_settings') }}</a>-->
+		<a class="btn btn-default" href="{{ URL::action('AccountController@edit') }}"><i class="glyphicon glyphicon-cog"></i> {{ Lang::get('avalon::messages.account_edit') }}</a>
 		<a class="btn btn-default" href="{{ URL::action('UserController@index') }}"><i class="glyphicon glyphicon-user"></i> {{ Lang::get('avalon::messages.users') }}</a>
 		<a class="btn btn-default" href="{{ URL::action('ObjectController@create') }}"><i class="glyphicon glyphicon-plus"></i> {{ Lang::get('avalon::messages.objects_create') }}</a>
 	</div>
