@@ -12,4 +12,8 @@ class Dates {
 		return date('M d, Y', strtotime($string));
 	}
 
+	public static function time($string) {
+		return date('g:i A', strtotime($string));
+	}
+
 }

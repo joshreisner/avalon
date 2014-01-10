@@ -69,6 +69,8 @@ class Table {
 					$value	= strip_tags($row->{$column['key']});
 					if ($column['type'] == 'updated') {
 						$value = Dates::relative($value);
+					} elseif ($column['type'] == 'time') {
+						$value = Dates::time($value);
 					} else {
 						if ($column['type'] == 'date') {
 							$value = Dates::absolute($value);

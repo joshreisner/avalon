@@ -53,8 +53,8 @@ class FieldController extends \BaseController {
 		return View::make('avalon::fields.create', array(
 			'object'=>$object,
 			'types'=>self::$types,
-			'related_fields'=>$related_fields,
-			'related_objects'=>$related_objects,
+			'related_fields'=>array(''=>'') + $related_fields,
+			'related_objects'=>array(''=>'') + $related_objects,
 			'visibility'=>self::$visibility,
 		));
 	}

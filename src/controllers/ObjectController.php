@@ -120,7 +120,7 @@ class ObjectController extends \BaseController {
 			'order_by'=>$order_by,
 			'direction'=>self::$direction,
 			'dependencies'=>DB::table('avalon_fields')->where('related_object_id', $object_id)->count(),
-			'group_by_field'=>DB::table('avalon_fields')->where('object_id', $object_id)->where('type', 'select')->lists('title', 'id'),
+			'group_by_field'=>array(''=>'') + DB::table('avalon_fields')->where('object_id', $object_id)->where('type', 'select')->lists('title', 'id'),
 			'typeahead'=>$typeahead,
 		));
 	}
