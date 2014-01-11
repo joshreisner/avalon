@@ -54,6 +54,16 @@
 					{{ Form::textarea($field->name, $instance->{$field->name}, array('class'=>'form-control ' . $field->type . ($field->required ? ' required' : ''))) }}
 			    </div>
 			</div>
+		@elseif ($field->type == 'image')
+			<div class="form-group">
+				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
+			    <div class="col-sm-10">
+					{{ Form::text($field->name, $instance->{$field->name}) }}
+					<div class="upload_image" data-object="{{ $object->id }}" data-field="{{ $field->id }}" data-instance="{{ $instance->id }}">
+						<img src="{{ $instance->{$field->name} }}">
+					</div>
+			    </div>
+			</div>
 		@elseif ($field->type == 'integer')
 			<div class="form-group">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
@@ -122,13 +132,6 @@
 
 	{{ Form::open(array('method'=>'delete', 'action'=>array('InstanceController@destroy', $object->id, $instance->id))) }}
 	<button type="submit" class="btn btn-default btn-xs">{{ Lang::get('avalon::messages.instances_destroy') }}</button>
-	{{ Form::close() }}
-
-	<!-- hidden image upload form -->
-	{{ Form::open(array('method'=>'post', 'class'=>'upload', 'files'=>true, 'action'=>array('InstanceController@upload_image', $object->id, $instance->id))) }}
-	<input type="hidden" name="field_id" value="41">
-	<input type="hidden" name="filename">
-	<input type="file" name="image_upload" id="image_upload">
 	{{ Form::close() }}
 
 @endsection

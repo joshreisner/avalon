@@ -54,6 +54,13 @@
 					{{ Form::textarea($field->name, false, array('class'=>'form-control html' . ($field->required ? ' required' : ''))) }}
 			    </div>
 			</div>
+		@elseif ($field->type == 'image')
+			<div class="form-group">
+				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
+			    <div class="col-sm-10">
+					{{ Form::hidden($field->name, false) }}
+			    </div>
+			</div>
 		@elseif ($field->type == 'integer')
 			<div class="form-group">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}

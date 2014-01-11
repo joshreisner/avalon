@@ -59,6 +59,7 @@ body {
 			&.has-error {
 				.help-inline { display: none !important; }
 			}
+
 			&.checkboxes {
 				.controls {
 					padding-top: 5px; overflow: auto; max-height: 300px;
@@ -70,7 +71,10 @@ body {
 			}
 		}
 
-		&.upload { display: none; }
+		&.upload { 
+			opacity:.3; background-color: pink; position: absolute; 
+			input { position: absolute; top: 0; right: 0; bottom: 0; left: 0; cursor: pointer; }
+		}
 	}
 	
 	.header { 

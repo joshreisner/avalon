@@ -24,7 +24,8 @@ Route::group(array('before'=>'avalon_auth', 'prefix'=>Config::get('avalon::prefi
 
 	//Route::any('/upload/file/to/s3', 'InstanceController@redactor_s3');
 
-	Route::post('/objects/{object_id}/instances/{instance_id}/upload/image', 'InstanceController@upload_image');
+	//Route::post('/objects/{object_id}/instances/{instance_id}/upload/image', 'InstanceController@upload_image');
+	Route::post('/upload/image', 'UploadController@image');
 
 });
 

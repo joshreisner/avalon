@@ -295,7 +295,7 @@ class InstanceController extends \BaseController {
 
 		$sig = urlencode(base64_encode(hash_hmac('sha1', $stringToSign, $S3_SECRET, true)));
 		$url = urlencode("$S3_URL$S3_BUCKET$objectName?AWSAccessKeyId=$S3_KEY&Expires=$expires&Signature=$sig");
-	}*/
+	}
 
 	public static function upload_image($object_id, $instance_id) {
 
@@ -322,5 +322,6 @@ class InstanceController extends \BaseController {
 		//send a response
 		
 	}
+	*/
 }
 

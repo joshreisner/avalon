@@ -124,7 +124,36 @@ $(function() {
 		return filename;
 	}
 	
-	//image upload
+	//image fields
+	$("div.upload_image img").each(function(){
+		var offset = $(this).offset();
+		$("<form class='upload upload_image'><input type='file'></form>").appendTo("body").css({
+			top: offset.top, 
+			left: offset.left,
+			width: $(this).width(),
+			height: $(this).height(),
+			display: 'block'
+		});
+	});
+
+	$("form.upload_image input").fileupload({
+		url: 				"/login/upload/image",
+		type: 				"POST",
+		dataType: 			"text", 
+		acceptFileTypes : 	/(\.|\/)(jpg|gif|png)$/i,
+		autoUpload: 		true,
+		add: function(e, data) {
+			data.submit();
+		},
+		fail: function(e, data) {
+			window.console.log('fail ' + data.jqXHR.responseText);
+		},
+		done: function(e, data) {
+			window.console.log('done ' + data.jqXHR.responseText);
+		}
+	});
+
+	//images upload
 	var well = $(".control-group.images .controls");
 	var images = new Array();
 	$("input#image_upload").fileupload({
@@ -161,6 +190,7 @@ $(function() {
 		}
 	});
 
+	//i believe these allow the browser to accept a file dropzone
 	window.addEventListener("dragover", function(e){
 		e = e || event;
 		e.preventDefault();

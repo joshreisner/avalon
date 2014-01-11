@@ -8,6 +8,7 @@ class FieldController extends \BaseController {
 		'date'			=>'Date',
 		'datetime'		=>'Date + Time',
 		'html'			=>'HTML',
+		'image'			=>'Image',
 		//'images'		=>'Images',
 		'integer'		=>'Integer',
 		'select'		=>'Select',
