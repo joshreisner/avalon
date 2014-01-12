@@ -123,37 +123,8 @@ $(function() {
 		var filename = 'images/' + make_slug(fileparts.join('.'), 20) + '-' + random_string(5) + '.' + extension;
 		return filename;
 	}
-	
-	//image fields
-	$("div.upload_image img").each(function(){
-		var offset = $(this).offset();
-		$("<form class='upload upload_image'><input type='file'></form>").appendTo("body").css({
-			top: offset.top, 
-			left: offset.left,
-			width: $(this).width(),
-			height: $(this).height(),
-			display: 'block'
-		});
-	});
 
-	$("form.upload_image input").fileupload({
-		url: 				"/login/upload/image",
-		type: 				"POST",
-		dataType: 			"text", 
-		acceptFileTypes : 	/(\.|\/)(jpg|gif|png)$/i,
-		autoUpload: 		true,
-		add: function(e, data) {
-			data.submit();
-		},
-		fail: function(e, data) {
-			window.console.log('fail ' + data.jqXHR.responseText);
-		},
-		done: function(e, data) {
-			window.console.log('done ' + data.jqXHR.responseText);
-		}
-	});
-
-	//images upload
+	//multiple images upload
 	var well = $(".control-group.images .controls");
 	var images = new Array();
 	$("input#image_upload").fileupload({
@@ -200,4 +171,39 @@ $(function() {
 		e.preventDefault();
 	}, false);
 
+});
+
+$(window).load(function(){
+	
+	//single image upload
+	$("div.upload_image img").each(function(){
+		var offset = $(this).offset();
+		var width = $(this).width();
+		var height = $(this).height();
+		var field_id = $(this).parent().attr("data-field");
+		$("<form class='upload upload_image'><input type='hidden' name='field_id' value='" + field_id + "'><input type='file' name='image'></form>").appendTo("body").css({
+			top: offset.top, 
+			left: offset.left,
+			width: width,
+			height: height,
+			display: 'block'
+		});
+	});
+
+	$("form.upload_image input").fileupload({
+		url: 				"/login/upload/image",
+		type: 				"POST",
+		dataType: 			"text", 
+		acceptFileTypes : 	/(\.|\/)(jpg|gif|png)$/i,
+		autoUpload: 		true,
+		add: function(e, data) {
+			data.submit();
+		},
+		fail: function(e, data) {
+			window.console.log('fail ' + data.jqXHR.responseText);
+		},
+		done: function(e, data) {
+			window.console.log('done ' + data.jqXHR.responseText);
+		}
+	});
 });

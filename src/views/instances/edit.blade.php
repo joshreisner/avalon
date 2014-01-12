@@ -58,8 +58,8 @@
 			<div class="form-group">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
-					{{ Form::text($field->name, $instance->{$field->name}) }}
-					<div class="upload_image" data-object="{{ $object->id }}" data-field="{{ $field->id }}" data-instance="{{ $instance->id }}">
+					{{ Form::hidden($field->name, $instance->{$field->name}) }}
+					<div class="upload_image" data-field="{{ $field->id }}">
 						<img src="{{ $instance->{$field->name} }}">
 					</div>
 			    </div>

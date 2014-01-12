@@ -6803,10 +6803,9 @@ body {
           body form .form-group.checkboxes .controls label.checkbox:first-child {
             padding-top: 0; }
     body form.upload {
-      opacity: .3;
-      background-color: pink;
       position: absolute; }
       body form.upload input {
+        opacity: 0;
         position: absolute;
         top: 0;
         right: 0;
