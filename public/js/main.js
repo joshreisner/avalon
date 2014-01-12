@@ -1,11 +1,3 @@
-//@codekit-prepend "jquery-1.10.2.min.js"
-//@codekit-prepend "jquery.validate.min.js"
-//@codekit-prepend "jquery.tablednd.0.8.min.js"
-//@codekit-prepend "jquery.ui.widget.js"
-//@codekit-prepend "jquery-file-upload/jquery.fileupload.js"
-//@codekit-prepend "bootstrap.js"
-//@codekit-prepend "redactor.js"
-
 $(function() {
 
 	//generic form validator
@@ -176,12 +168,11 @@ $(function() {
 $(window).load(function(){
 	
 	//single image upload
-	$("div.upload_image img").each(function(){
+	$("img.upload").each(function(){
 		var offset = $(this).offset();
 		var width = $(this).width();
 		var height = $(this).height();
-		var field_id = $(this).parent().attr("data-field");
-		$("<form class='upload upload_image'><input type='hidden' name='field_id' value='" + field_id + "'><input type='file' name='image'></form>").appendTo("body").css({
+		$("<form class='upload upload_image' name='" + $(this).attr("alt") + "'><input type='hidden' name='field_id' value='" + $(this).attr("data-field") + "'><input type='file' name='image'></form>").appendTo("body").css({
 			top: offset.top, 
 			left: offset.left,
 			width: width,
@@ -204,6 +195,7 @@ $(window).load(function(){
 		},
 		done: function(e, data) {
 			window.console.log('done ' + data.jqXHR.responseText);
+			console.log($(this).parent().attr('name'));
 		}
 	});
 });
