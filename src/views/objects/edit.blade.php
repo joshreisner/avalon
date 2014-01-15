@@ -95,7 +95,7 @@
 
 	@if (!$dependencies)
 		{{ Form::open(array('method'=>'delete', 'action'=>array('ObjectController@destroy', $object->id))) }}
-		<button type="submit" class="btn btn-mini">{{ Lang::get('avalon::messages.objects_destroy') }}</button>
+		<button type="submit" class="btn btn-default btn-xs">{{ Lang::get('avalon::messages.objects_destroy') }}</button>
 		{{ Form::close() }}
 	@else
 		<p>{{ Lang::get('avalon::messages.objects_dependencies', array('dependencies', $dependencies)) }}</p>

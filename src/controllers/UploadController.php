@@ -21,9 +21,7 @@ class UploadController extends \BaseController {
 			));
 			unlink($temp);
 
-			//save it to the database
-
-
+			//return filename
 			return 'https://s3.amazonaws.com/' . $bucket . '/' . $target;
 		} else {
 			return 'no image';
