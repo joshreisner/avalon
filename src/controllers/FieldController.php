@@ -140,6 +140,7 @@ class FieldController extends \BaseController {
 						} else {
 							$table->text($field_name)->nullable();
 						}
+						break;
 
 					case 'time':
 						if ($required) {
@@ -147,6 +148,7 @@ class FieldController extends \BaseController {
 						} else {
 							$table->time($field_name)->nullable();
 						}
+						break;
 				}
 			});
 

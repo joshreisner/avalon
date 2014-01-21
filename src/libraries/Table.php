@@ -66,20 +66,21 @@ class Table {
 				} elseif ($column['type'] == 'delete') {
 					$value = '<a href="' . $row->delete . '">' . ($row->active ? '<i class="glyphicon glyphicon-ok-circle"></i>' : '<i class="glyphicon glyphicon-remove-circle"></i>') . '</a>';
 				} else {
-					$value	= strip_tags($row->{$column['key']});
+					$value = Str::limit(strip_tags($row->{$column['key']}));
 					if ($column['type'] == 'updated') {
 						$value = Dates::relative($value);
 					} elseif ($column['type'] == 'time') {
 						$value = Dates::time($value);
-					} else {
-						if ($column['type'] == 'date') {
-							$value = Dates::absolute($value);
-						} elseif ($column['type'] == 'datetime') {
-							$value = Dates::absolute($value);
-						}
-						if (isset($row->link)) {
-							$value = '<a href="' . $row->link . '">' . $value . '</a>';
-						}
+					} elseif ($column['type'] == 'date') {
+						$value = Dates::absolute($value);
+					} elseif ($column['type'] == 'datetime') {
+						$value = Dates::absolute($value);
+					}
+
+					if (empty($value)) $value = '&hellip;';
+
+					if (isset($row->link)) {
+						$value = '<a href="' . $row->link . '">' . $value . '</a>';
 					}
 				}
 
