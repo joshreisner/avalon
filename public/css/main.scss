@@ -20,7 +20,7 @@ body {
 			border-radius: $modal_radius; border: 0; top: 25%;
 			div.modal-content { 
 				border-radius: $modal_radius;
-				div.modal-header { border-radius: $modal_radius $modal_radius 0 0; color: $white; }
+				div.modal-header { border-radius: $modal_radius $modal_radius 0 0; }
 				div.modal-body .form-group:last-child { margin-bottom: 0; }
 				div.modal-footer { margin-top: 0; border-radius: 0 0 $modal_radius $modal_radius; background-color: $gray_light; }
 			}
@@ -78,8 +78,10 @@ body {
 	}
 	
 	.header { 
-		margin-bottom: $margin; overflow: hidden;
-		img { max-width: 100%; height: auto; }
+		margin-bottom: $margin; overflow: auto;
+		a {
+			background-image: url(/packages/joshreisner/avalon/img/banner.png); display: block; width: 295px; height: 92px; float: left;
+		}
 	}
 	
 	.main {
@@ -87,6 +89,7 @@ body {
 
 		h1 {
 			font-weight: normal; font-size: $margin; line-height: $margin; margin: 0 0 $margin 0;
+			font-family: inherit;
 			i.glyphicon-chevron-right { color: $gray; }
 		}
 		
@@ -107,10 +110,10 @@ body {
 						&:hover { text-decoration: none; }
 					}
 					&.center { text-align: center; }
-					&.date { text-align: right; }
-					&.datetime { text-align: right; }
+					&.date { text-align: right; white-space: nowrap; }
+					&.datetime { text-align: right; white-space: nowrap; }
 					&.integer { text-align: right; }
-					&.updated { text-align: right; }
+					&.updated_at { text-align: right; white-space: nowrap; width: 120px; }
 				}
 				
 				&.group {
@@ -136,14 +139,22 @@ body {
 					a { color: $gray; }
 				}
 			}
+			&.objects {
+				tr {
+					td, th {
+						&.string { width: 200px; }
+						&.updated_at { width: 200px; }
+						&.integer { text-align: center; }
+					}
+				}
+			}
 		}
-		
 	}
 	
 	.side {
 		margin-bottom: $margin;
 		.inner {
-			font-size: 1.1em; border-left: 2px dashed $gray; padding: $margin; color: $gray_dark; margin-top: 38px;
+			font-size: 1.1em; border-left: 2px dashed $gray; padding: 9px $margin; color: $gray_dark; margin-top: 38px;
 			
 			p { margin: 0 0 $margin 0; }
 

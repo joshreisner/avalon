@@ -4,16 +4,15 @@
 		<title>@yield('title')</title>
 		<meta charset="UTF-8">
 		{{ HTML::style('/packages/joshreisner/avalon/css/main.css') }}
-		<style type="text/css">
-			a, a:hover, a:active { color: #{{ $account->color }}; }
-			.btn-primary, .btn-primary:hover { background-color: #{{ $account->color }}; border-color: #{{ $account->color }}; }
-		</style>
+		@if (!empty($account->css))
+		{{ HTML::style($account->css) }}
+		@endif
 	</head>
 	<body>
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12 header">
-					<a href="{{ URL::action('ObjectController@index') }}"><img src="{{ $account->image }}"></a>
+					<a href="{{ URL::action('ObjectController@index') }}"></a>
 				</div>
 			</div>
 			<div class="row">

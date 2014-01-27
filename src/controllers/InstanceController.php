@@ -9,7 +9,7 @@ class InstanceController extends \BaseController {
 	public function index($object_id) {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->where('visibility', 'list')->orderBy('precedence')->get();
-		$selects = array($object->name . '.id', $object->name . '.updated', $object->name . '.active');
+		$selects = array($object->name . '.id', $object->name . '.updated_at', $object->name . '.deleted_at');
 		foreach ($fields as $field) $selects[] = $object->name . '.' . $field->name;
 		$instances = DB::table($object->name)->select($selects);
 
@@ -50,7 +50,7 @@ class InstanceController extends \BaseController {
 				$related_table = DB::table('avalon_objects')->where('id', $field->related_object_id)->first();
 				$related_column = DB::table('avalon_fields')->where('object_id', $field->related_object_id)->where('type', 'string')->first();
 				$options[$field->name] = array(
-					'options'=>DB::table($related_table->name)->where('active', 1)->orderBy($related_table->order_by, $related_table->direction)->lists($related_column->name, 'id'),
+					'options'=>DB::table($related_table->name)->orderBy($related_table->order_by, $related_table->direction)->lists($related_column->name, 'id'),
 					'column_name'=>$related_column->name,
 				);
 				if ($field->type == 'select' && !$field->required) $options[$field->name]['options'] = array(''=>'') + $options[$field->name]['options'];
@@ -71,8 +71,9 @@ class InstanceController extends \BaseController {
 		
 		//metadata
 		$inserts = array(
-			'updated'=>new DateTime,
-			'updater'=>Session::get('avalon_id'),
+			'created_at'=>new DateTime,
+			'updated_at'=>new DateTime,
+			'updated_by'=>Session::get('avalon_id'),
 			'precedence'=>DB::table($object->name)->max('precedence') + 1
 		);
 		
@@ -87,9 +88,9 @@ class InstanceController extends \BaseController {
 		
 		//update objects table with latest counts
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
-			'count'=>DB::table($object->name)->where('active', 1)->count(),
-			'updated'=>new DateTime,
-			'updater'=>Session::get('avalon_id')
+			'count'=>DB::table($object->name)->whereNull('deleted_at')->count(),
+			'updated_at'=>new DateTime,
+			'updated_by'=>Session::get('avalon_id')
 		));
 
 		//handle any checkboxes, had to wait for instance_id
@@ -127,7 +128,7 @@ class InstanceController extends \BaseController {
 				$related_table = DB::table('avalon_objects')->where('id', $field->related_object_id)->first();
 				$related_column = DB::table('avalon_fields')->where('object_id', $field->related_object_id)->where('type', 'string')->first();
 				$options[$field->name] = array(
-					'options'=>DB::table($related_table->name)->where('active', 1)->orderBy($related_table->order_by, $related_table->direction)->lists($related_column->name, 'id'),
+					'options'=>DB::table($related_table->name)->orderBy($related_table->order_by, $related_table->direction)->lists($related_column->name, 'id'),
 					'column_name'=>$related_column->name,
 				);
 
@@ -169,8 +170,8 @@ class InstanceController extends \BaseController {
 		
 		//metadata
 		$updates = array(
-			'updated'=>new DateTime,
-			'updater'=>Session::get('avalon_id'),
+			'updated_at'=>new DateTime,
+			'updated_by'=>Session::get('avalon_id'),
 		);
 		
 		//run loop through the fields
@@ -200,9 +201,9 @@ class InstanceController extends \BaseController {
 		
 		//update object meta
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
-			'count'=>DB::table($object->name)->where('active', 1)->count(),
-			'updated'=>new DateTime,
-			'updater'=>Session::get('avalon_id')
+			'count'=>DB::table($object->name)->whereNull('deleted_at')->count(),
+			'updated_at'=>new DateTime,
+			'updated_by'=>Session::get('avalon_id')
 		));
 		
 		return Redirect::action('InstanceController@index', $object_id);
@@ -215,7 +216,7 @@ class InstanceController extends \BaseController {
 
 		//update object meta
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
-			'count'=>DB::table($object->name)->where('active', 1)->count()
+			'count'=>DB::table($object->name)->whereNull('deleted_at')->count(),
 		));
 
 		return Redirect::action('InstanceController@index', $object_id);
@@ -236,25 +237,27 @@ class InstanceController extends \BaseController {
 		//echo 'done reordering';
 	}
 	
-	//toggle active
+	//soft delete
 	public function delete($object_id, $instance_id) {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		
 		//toggle instance with active or inactive
+		$deleted_at = (Input::get('active') == 1) ? null : new DateTime;
+
 		DB::table($object->name)->where('id', $instance_id)->update(array(
-			'active'=>Input::get('active'),
-			'updated'=>new DateTime,
-			'updater'=>Session::get('avalon_id'),
+			'deleted_at'=>$deleted_at,
+			'updated_at'=>new DateTime,
+			'updated_by'=>Session::get('avalon_id'),
 		));
 
 		//update object meta
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
-			'count'=>DB::table($object->name)->where('active', 1)->count(),
-			'updated'=>new DateTime,
-			'updater'=>Session::get('avalon_id'),
+			'count'=>DB::table($object->name)->whereNull('deleted_at')->count(),
+			'updated_at'=>new DateTime,
+			'updated_by'=>Session::get('avalon_id'),
 		));
 
-		$updated = DB::table($object->name)->where('id', $instance_id)->pluck('updated');
+		$updated = DB::table($object->name)->where('id', $instance_id)->pluck('updated_at');
 
 		return Dates::relative($updated);
 	}

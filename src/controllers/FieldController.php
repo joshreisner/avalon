@@ -29,6 +29,9 @@ class FieldController extends \BaseController {
 	public function index($object_id) {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->orderBy('precedence')->get();
+		foreach ($fields as &$field) {
+			$field->link = URL::action('FieldController@edit', array($object->id, $field->id));
+		}
 		return View::make('avalon::fields.index', array(
 			'object'=>$object,
 			'fields'=>$fields,
@@ -171,8 +174,8 @@ class FieldController extends \BaseController {
 			'related_object_id'	=>Input::has('related_object_id') ? Input::get('related_object_id') : null,
 			'required'			=>$required,
 			'precedence'		=>DB::table('avalon_fields')->where('object_id', $object_id)->max('precedence') + 1,
-			'updater'		=>Session::get('avalon_id'),
-			'updated'		=>new DateTime,
+			'updated_by'		=>Session::get('avalon_id'),
+			'updated_at'		=>new DateTime,
 		));
 		
 		return Redirect::action('FieldController@index', $object_id);
@@ -237,8 +240,8 @@ class FieldController extends \BaseController {
 			'related_field_id'	=>Input::has('related_field_id') ? Input::get('related_field_id') : null,
 			'related_object_id'	=>Input::has('related_object_id') ? Input::get('related_object_id') : null,
 			'required'			=>$required,
-			'updater'			=>Session::get('avalon_id'),
-			'updated'			=>new DateTime,
+			'updated_by'		=>Session::get('avalon_id'),
+			'updated_at'		=>new DateTime,
 		));
 		
 		return Redirect::action('FieldController@index', $object_id);

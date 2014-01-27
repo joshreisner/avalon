@@ -77,6 +77,11 @@ class UserController extends \BaseController {
 
 	//toggle active flag
 	public function delete($user_id) {
-		DB::table('avalon_users')->where('id', $user_id)->update(array('active'=>Input::get('active')));
+		if (Input::get('active') == 1) {
+			echo 'yes';
+		} else {
+			echo 'no';
+		}
+		//DB::table('avalon_users')->where('id', $user_id)->update(array('active'=>Input::get('active')));
 	}
 }

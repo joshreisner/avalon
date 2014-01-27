@@ -3,17 +3,18 @@
 return array(
 
     'account_edit'			=> 'Site Settings',
-    'account_edit_help'		=> 'Link color should be dark enough to show up against a white background.<br><br>Image should be 92px high, with a maximum width of 1170px.',
+    'account_edit_help'		=> 'Title will go on the login screen and in the browser title.<br><br>Custom CSS allows you to override Avalon\'s styles from an external stylesheet. Specify a local URL, such as /assets/css/avalon.css',
     'account_title'			=> 'Title',
-    'account_image'			=> 'Banner Image',
-    'account_color'			=> 'Link Color',
+    'account_css'			=> 'Custom CSS',
 
 	'fields'				=> 'Fields',
 	'fields_create'			=> 'Create',
+	'fields_created_at'		=> 'Created',
 	'fields_create_help'	=> 'There are bunch of rules that will eventually be implemented in JS.  For the time being, a related field must be selected when adding a slug field.',
 	'fields_edit'			=> 'Edit',
 	'fields_edit_help'		=> 'You may edit all the field properties, except not the type.',
 	'fields_destroy'		=> 'Destroy Field',
+	'fields_empty'			=> 'No fields have been added yet.',
 	'fields_height'			=> 'Height',
 	'fields_help'			=> 'Help',
 	'fields_id'				=> 'ID',
@@ -67,7 +68,7 @@ return array(
 	'site_login'			=> 'Log In',
 	'site_logout'			=> 'Log Out',
     'site_save'				=> 'Save Changes',
-    'site_updated'			=> 'Updated',
+    'site_updated_at'		=> 'Updated',
     'site_welcome'			=> 'Welcome to Avalon',
 
 	'users'					=> 'Users',

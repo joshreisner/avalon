@@ -22,7 +22,8 @@ class ObjectController extends \BaseController {
 		$order_by = array(Lang::get('avalon::messages.fields_system')=>array(
 			'id'=>Lang::get('avalon::messages.fields_id'),
 			'precedence'=>Lang::get('avalon::messages.fields_precedence'),
-			'created_at'=>Lang::get('avalon::messages.fields_updated_at'),
+			'created_at'=>Lang::get('avalon::messages.fields_created_at'),
+			'updated_at'=>Lang::get('avalon::messages.fields_updated_at'),
 		));
 
 		//typehead
@@ -62,8 +63,8 @@ class ObjectController extends \BaseController {
 			'order_by'		=> $order_by,
 			'direction'		=> $direction,
 			'list_grouping'	=> Input::get('list_grouping'),
-			'updated'		=> new DateTime,
-			'updater'		=> Session::get('avalon_id'),
+			'updated_at'	=> new DateTime,
+			'updated_by'	=> Session::get('avalon_id'),
 		));
 		
 		//create title field for table by default
@@ -74,8 +75,8 @@ class ObjectController extends \BaseController {
 			'visibility'	=> 'list',
 			'required'		=> 1,
 			'object_id'		=> $object_id,
-			'updated'		=> new DateTime,
-			'updater'		=> Session::get('avalon_id'),
+			'updated_at'	=> new DateTime,
+			'updated_by'	=> Session::get('avalon_id'),
 			'precedence'	=> 1
 		));
 		
@@ -83,11 +84,10 @@ class ObjectController extends \BaseController {
 		Schema::create($name, function($table){
 			$table->increments('id');
 			$table->string('title');
-			$table->integer('updater')->nullable();
-			$table->dateTime('updated');
+			$table->integer('updated_by')->nullable();
 			$table->integer('precedence');
-			$table->integer('subsequence')->nullable();
-			$table->boolean('active')->default(1);
+			$table->timestamps();
+			$table->softDeletes();
 		});
 		
 		return Redirect::action('InstanceController@index', $object_id);

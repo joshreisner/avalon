@@ -145,17 +145,25 @@ class AvalonServiceProvider extends ServiceProvider {
 			//define model
 			eval('class ' . $object->model . ' extends Eloquent {
 				protected $table = "' . $object->name . '";
+				protected $guarded = array();
+			    protected $softDelete = true;
 				public $object_id = "' . $object->id . '";
-				public $timestamps = false;
-				public function scopeActive($query) {
-					return $query->where("active", 1);
+
+				public static function boot() {
+			        static::creating(function($object)
+			        {
+			        	$object->precedence = DB::table(\'' . $object->name . '\')->max(\'precedence\') + 1;
+			            //$object->created_by = Auth::user()->id;
+			            //$object->updated_by = Auth::user()->id;
+			        });
 				}
+
+				' /* save this for later
 				public function uploads() {
 					return $this->hasMany("AvalonUpload", "instance_id")->where("table", "' . $object->name . '");
 				}
-				' . implode(' ', $relationships) . '
+				'*/ . implode(' ', $relationships) . '
 			}');
-
 		}
 
 	}

@@ -31,8 +31,10 @@ class Table {
 
 
 	//draw the table
-	public function draw() {
+	public function draw($class=false) {
 
+		if ($class) $class = ' ' . $class;
+		
 		//start up
 		if (self::$draggable) array_unshift(self::$columns, array('head'=>'', 'type'=>'draggy'));
 		if (self::$deletable) self::$columns[] = array('head'=>'', 'type'=>'delete');
@@ -50,6 +52,7 @@ class Table {
 		$bodies = $rows = array();
 		foreach (self::$rows as $row) {
 			$columns = array();
+			$link = true;
 			foreach (self::$columns as $column) {
 
 				//handle groupings
@@ -64,10 +67,10 @@ class Table {
 				if ($column['type'] == 'draggy') {
 					$value = '<i class="glyphicon glyphicon-align-justify"></i>';
 				} elseif ($column['type'] == 'delete') {
-					$value = '<a href="' . $row->delete . '">' . ($row->active ? '<i class="glyphicon glyphicon-ok-circle"></i>' : '<i class="glyphicon glyphicon-remove-circle"></i>') . '</a>';
+					$value = '<a href="' . $row->delete . '">' . (!$row->deleted_at ? '<i class="glyphicon glyphicon-ok-circle"></i>' : '<i class="glyphicon glyphicon-remove-circle"></i>') . '</a>';
 				} else {
 					$value = Str::limit(strip_tags($row->{$column['key']}));
-					if ($column['type'] == 'updated') {
+					if ($column['type'] == 'updated_at') {
 						$value = Dates::relative($value);
 					} elseif ($column['type'] == 'time') {
 						$value = Dates::time($value);
@@ -77,10 +80,10 @@ class Table {
 						$value = Dates::absolute($value);
 					}
 
-					if (empty($value)) $value = '&hellip;';
-
-					if (isset($row->link)) {
+					if (isset($row->link) && $link) {
+						if ($value == '') $value = '&hellip;';
 						$value = '<a href="' . $row->link . '">' . $value . '</a>';
+						$link = false;
 					}
 				}
 
@@ -89,13 +92,13 @@ class Table {
 			}
 
 			//create row
-			$rows[] = '<tr id="' . $row->id . '"' . (self::$deletable && !$row->active ? ' class="inactive"' : '') . '>' . implode($columns) . '</tr>';
+			$rows[] = '<tr id="' . $row->id . '"' . (self::$deletable && $row->deleted_at ? ' class="inactive"' : '') . '>' . implode($columns) . '</tr>';
 		}
 
 		$bodies[] = '<tbody>' . implode($rows) . '</tbody>';
 
 		//output
-		return '<table class="table table-condensed' . (self::$draggable ? ' draggable" data-draggable-url="' . self::$draggable: '') . '">' .
+		return '<table class="table table-condensed' . $class . (self::$draggable ? ' draggable" data-draggable-url="' . self::$draggable: '') . '">' .
 					$head . 
 					implode($bodies) . 
 				'</table>';

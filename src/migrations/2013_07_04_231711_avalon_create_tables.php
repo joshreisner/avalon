@@ -13,11 +13,8 @@ class AvalonCreateTables extends Migration {
 	{
 		Schema::create('avalon', function($table){
 			$table->increments('id');
-			$table->string('title')->default('Welcome to Avalon');
-			$table->string('color')->default('#3276b1');
-			$table->string('image')->default('/packages/joshreisner/avalon/img/banner.png');
-			$table->dateTime('updated');
-			$table->integer('updater');
+			$table->string('title');
+			$table->string('css')->nullable();
 		});
 		
 		Schema::create('avalon_fields', function($table){
@@ -33,8 +30,8 @@ class AvalonCreateTables extends Migration {
 			$table->integer('width')->nullable();
 			$table->integer('height')->nullable();
 			$table->string('help')->nullable();
-			$table->dateTime('updated');
-			$table->integer('updater');
+			$table->dateTime('updated_at');
+			$table->integer('updated_by');
 			$table->integer('precedence');
 		});
 		
@@ -61,8 +58,8 @@ class AvalonCreateTables extends Migration {
 			$table->string('web_page')->nullable();
 			$table->string('list_grouping')->nullable();
 			$table->integer('count')->default(0);
-			$table->dateTime('updated');
-			$table->integer('updater');
+			$table->dateTime('updated_at');
+			$table->integer('updated_by');
 		});
 		
 		Schema::create('avalon_users', function($table){
@@ -73,11 +70,10 @@ class AvalonCreateTables extends Migration {
 			$table->string('password');
 			$table->integer('role');
 			$table->dateTime('last_login')->nullable();
-			$table->dateTime('updated');
-			$table->integer('updater')->nullable(); //for first user
-			$table->boolean('active')->default(1);
+			$table->dateTime('updated_at');
+			$table->integer('updated_by')->nullable(); //for first user
+			$table->softDeletes();
 		});
-		
 	}
 
 	/**

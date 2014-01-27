@@ -21,16 +21,9 @@
 	</div>
 	
 	<div class="form-group">
-		{{ Form::label('title', Lang::get('avalon::messages.account_color'), array('class'=>'control-label col-sm-2')) }}
+		{{ Form::label('title', Lang::get('avalon::messages.account_css'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
-			{{ Form::text('color', $account->color, array('class'=>'required form-control color')) }}
-	    </div>
-	</div>
-	
-	<div class="form-group">
-		{{ Form::label('title', Lang::get('avalon::messages.account_image'), array('class'=>'control-label col-sm-2')) }}
-	    <div class="col-sm-10">
-			{{ Form::text('image', $account->image, array('class'=>'required form-control')) }}
+			{{ Form::text('css', $account->css, array('class'=>'form-control')) }}
 	    </div>
 	</div>
 		

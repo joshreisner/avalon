@@ -48,7 +48,7 @@ $(function() {
 		//send ajax update
 		$.get($(this).attr('href'), { active: active }, function(data){
 			//window.console.log('sent post and data was ' + data);
-			parent.find("td.updated").html(data);
+			parent.find("td.updated_at").html(data);
 		}).fail(function() { 
 			//window.console.log('error');
 		});

@@ -20,9 +20,9 @@
 		{{ Table::rows($objects)
 			->column('title', 'string', Lang::get('avalon::messages.object'))
 			->column('count', 'integer', Lang::get('avalon::messages.objects_count'))
-			->column('updated', 'updated', Lang::get('avalon::messages.site_updated'))
+			->column('updated_at', 'updated_at', Lang::get('avalon::messages.site_updated_at'))
 			->groupBy('list_grouping')
-			->draw()
+			->draw('objects')
 			}}
 	@else
 	<div class="alert alert-warning">

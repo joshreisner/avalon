@@ -16,26 +16,20 @@
 		<a class="btn btn-default" href="{{ URL::action('FieldController@create', $object->id) }}"><i class="icon-plus"></i> {{ Lang::get('avalon::messages.fields_create') }}</a>
 	</div>
 
-	<table class="table table-condensed draggable" data-draggable-url="{{ URL::action('FieldController@reorder', $object->id) }}">
-		<thead>
-		<tr>
-			<th class="draggy"></th>
-			<th>{{ Lang::get('avalon::messages.fields_title') }}</th>
-			<th>{{ Lang::get('avalon::messages.fields_type') }}</th>
-			<th>{{ Lang::get('avalon::messages.fields_name') }}</th>
-			<th class="date">{{ Lang::get('avalon::messages.site_updated') }}</th>
-		</tr>
-		</thead>
-		@foreach ($fields as $field)
-		<tr id="{{ $field->id }}">
-			<td class="draggy"><i class="glyphicon glyphicon-align-justify"></i></td>
-			<td><a href="{{ URL::action('FieldController@edit', array($object->id, $field->id)) }}">{{ $field->title }}</a></td>
-			<td>{{ $types[$field->type] }}</td>
-			<td>{{ $object->name }}.{{ $field->name }}</td>
-			<td class="date">{{ Dates::relative($field->updated) }}</td>
-		</tr>
-		@endforeach
-	</table>
+	@if (count($fields))
+		{{ Table::rows($fields)
+			->draggable(URL::action('FieldController@reorder', $object->id))
+			->column('title', 'string', Lang::get('avalon::messages.fields_title'))
+			->column('type', 'string', Lang::get('avalon::messages.fields_type'))
+			->column('updated_at', 'updated_at', Lang::get('avalon::messages.site_updated_at'))
+			->draw('fields')
+			}}
+	@else
+	<div class="alert alert-warning">
+		{{ Lang::get('avalon::messages.fields_empty') }}
+	</div>
+	@endif
+
 @endsection
 
 @section('side')

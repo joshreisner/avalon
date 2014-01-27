@@ -43,17 +43,14 @@ class LoginController extends \BaseController {
 			'password'		=> Hash::make(Input::get('password')),
 			'role'			=> 1,
 			'last_login'	=> new DateTime,
-			'updated'		=> new DateTime,
+			'updated_at'	=> new DateTime,
 		));
 		
 		//show that user created self
-		DB::table('avalon_users')->where('id', $user_id)->update(array('updater'=>$user_id));
+		DB::table('avalon_users')->where('id', $user_id)->update(array('updated_by'=>$user_id));
 		
 		//make avalon row
-		DB::table('avalon')->insert(array(
-			'updated'	=> new DateTime,
-			'updater'	=> $user_id,
-		));
+		DB::table('avalon')->insert(array('title'=>Lang::get('avalon::messages.site_welcome')));
 		
 		Session::put('avalon_id', $user_id);
 		
