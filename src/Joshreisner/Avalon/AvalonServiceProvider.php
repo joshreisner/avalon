@@ -114,11 +114,11 @@ class AvalonServiceProvider extends ServiceProvider {
 			foreach ($related_fields as $field) {
 				if ($field->type == 'select') {
 					$relationships[] = 'public function ' . $field->object_name . '() {
-						return $this->hasMany("' . $field->model . '", "' . $field->field_name . '")->active()->orderBy("' . $field->order_by . '", "' . $field->direction . '");
+						return $this->hasMany("' . $field->model . '", "' . $field->field_name . '")->orderBy("' . $field->order_by . '", "' . $field->direction . '");
 					}';
 				} elseif ($field->type == 'checkboxes') {
 					$relationships[] = 'public function ' . $field->object_name . '() {
-						return $this->belongsToMany("' . $field->model . '", "' . $field->field_name . '", "' . \InstanceController::getKey($object->name) . '", "' . \InstanceController::getKey($field->object_name) . '")->active()->orderBy("' . $field->order_by . '", "' . $field->direction . '");
+						return $this->belongsToMany("' . $field->model . '", "' . $field->field_name . '", "' . \InstanceController::getKey($object->name) . '", "' . \InstanceController::getKey($field->object_name) . '")->orderBy("' . $field->order_by . '", "' . $field->direction . '");
 					}';
 				}
 			}
@@ -138,7 +138,7 @@ class AvalonServiceProvider extends ServiceProvider {
 					)->get();
 			foreach ($related_fields as $field) {
 				$relationships[] = 'public function ' . $field->object_name . '() {
-					return $this->belongsToMany("' . $field->model . '", "' . $field->field_name . '", "' . \InstanceController::getKey($object->name) . '", "' . \InstanceController::getKey($field->object_name) . '")->active()->orderBy("' . $field->order_by . '", "' . $field->direction . '");
+					return $this->belongsToMany("' . $field->model . '", "' . $field->field_name . '", "' . \InstanceController::getKey($object->name) . '", "' . \InstanceController::getKey($field->object_name) . '")->orderBy("' . $field->order_by . '", "' . $field->direction . '");
 				}';
 			}
 
