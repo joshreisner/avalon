@@ -275,5 +275,57 @@ class FieldController extends \BaseController {
 				$precedence++;
 			}
 		}
+
+		//reorder actual table fields
+		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
+		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->orderBy('precedence')->get();
+		$system = array('created_at', 'updated_at', 'updated_by', 'deleted_at', 'precedence');
+
+		db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT FIRST');
+		$last = 'id';
+		foreach ($fields as $field) {
+			db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN ' . $field->name . ' ' . self::type($field->type) . ' AFTER ' . $last);
+			$last = $field->name;
+		}
+
+		//if there are non-system columns, reorder
+		if ($last) {
+			db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN created_at DATETIME AFTER ' . $last);
+			db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN updated_at DATETIME AFTER created_at');
+			db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN updated_by INT AFTER updated_at');
+			db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN deleted_at DATETIME AFTER updated_by');
+			db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN precedence INT AFTER deleted_at');
+		}
+	}
+
+	//format field type
+	private function type($type) {
+		switch ($type) {
+
+			case 'color':
+				return 'VARCHAR(7)';
+			
+			case 'date':
+				return 'DATE';
+
+			case 'datetime':
+				return 'DATETIME';
+
+			case 'integer':
+			case 'select':
+				return 'INTEGER';
+
+			case 'slug':
+			case 'string':
+			case 'url':
+				return 'VARCHAR(255)';
+			
+			case 'html':
+			case 'text':
+				return 'TEXT';
+
+			case 'time':
+				return 'TIME';
+		}	
 	}
 }
