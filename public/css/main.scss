@@ -14,6 +14,8 @@ html { height: 100%; }
 body {
 	margin-top: $margin; height: 100%;
 
+	h1, h2, h3, h4, h5, h6 { font-family: inherit; }
+
 	&.login { 
 		background-color: $gray;
 		div.modal {
@@ -89,7 +91,6 @@ body {
 
 		h1 {
 			font-weight: normal; font-size: $margin; line-height: $margin; margin: 0 0 $margin 0;
-			font-family: inherit;
 			i.glyphicon-chevron-right { color: $gray; }
 		}
 		

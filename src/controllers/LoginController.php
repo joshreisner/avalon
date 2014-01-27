@@ -19,7 +19,7 @@ class LoginController extends \BaseController {
 		//regular login
 		if (DB::table('avalon')->count()) {
 			//attempt auth
-			if ($user = DB::table('avalon_users')->where('active', 1)->where('email', Input::get('email'))->select('id', 'password')->first()) {
+			if ($user = DB::table('avalon_users')->whereNull('deleted_at')->where('email', Input::get('email'))->select('id', 'password')->first()) {
 				if (Hash::check(Input::get('password'), $user->password)) {
 					//log in with supplied credentials
 					Session::put('avalon_id', $user->id);

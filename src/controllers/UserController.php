@@ -77,11 +77,9 @@ class UserController extends \BaseController {
 
 	//toggle active flag
 	public function delete($user_id) {
-		if (Input::get('active') == 1) {
-			echo 'yes';
-		} else {
-			echo 'no';
-		}
-		//DB::table('avalon_users')->where('id', $user_id)->update(array('active'=>Input::get('active')));
+		$deleted_at = (Input::get('active') == 1) ? null : new DateTime;
+		DB::table('avalon_users')->where('id', $user_id)->update(array('deleted_at'=>$deleted_at));
+		$updated = DB::table('avalon_users')->where('id', $user_id)->pluck('updated_at');
+		return Dates::relative($updated);
 	}
 }
