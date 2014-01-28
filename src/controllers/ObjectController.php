@@ -140,6 +140,9 @@ class ObjectController extends \BaseController {
 		$direction = Input::get('direction');
 		if ($order_by == 'precedence') $direction = 'asc';
 
+		//not sure why it's necessary, doesn't like empty value all of a sudden
+		$group_by_field = Input::has('group_by_field') ? Input::get('group_by_field') : null;
+
 		//update objects table
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
 			'title'				=>Input::get('title'),
@@ -148,7 +151,7 @@ class ObjectController extends \BaseController {
 			'order_by'			=>$order_by,
 			'direction'			=>$direction,
 			'list_grouping'		=>Input::get('list_grouping'),
-			'group_by_field'	=>Input::get('group_by_field'),
+			'group_by_field'	=>$group_by_field,
 			'list_help'			=>trim(Input::get('list_help')),
 			'form_help'			=>trim(Input::get('form_help')),
 		));

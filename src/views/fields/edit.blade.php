@@ -23,7 +23,7 @@
 	</div>
 	
 	<div class="form-group">
-		{{ Form::label('name', Lang::get('avalon::messages.fields_title'), array('class'=>'control-label col-sm-2')) }}
+		{{ Form::label('name', Lang::get('avalon::messages.fields_name'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
 			{{ Form::text('name', $field->name, array('class'=>'required form-control')) }}
 	    </div>
