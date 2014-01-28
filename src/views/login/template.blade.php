@@ -13,6 +13,14 @@
 
 		@yield('main')
 		
-		{{ HTML::script('/packages/joshreisner/avalon/js/main.min.js') }}
+		{{ HTML::script('/packages/joshreisner/avalon/js/jquery-1.11.0.min.js') }}
+		{{ HTML::script('/packages/joshreisner/avalon/js/jquery.validate.min.js') }}
+		{{ HTML::script('/packages/joshreisner/avalon/js/jquery.tablednd.0.8.min.js') }}
+		{{ HTML::script('/packages/joshreisner/avalon/js/jquery.ui.widget.js') }}
+		{{ HTML::script('/packages/joshreisner/avalon/js/jquery-file-upload/jquery.fileupload.js') }}
+		{{ HTML::script('/packages/joshreisner/avalon/js/bootstrap.js') }}
+		{{ HTML::script('/packages/joshreisner/avalon/js/redactor.js') }}		
+		{{ HTML::script('/packages/joshreisner/avalon/js/jscolor/jscolor.js') }}
+		{{ HTML::script('/packages/joshreisner/avalon/js/main.js') }}
 	</body>
 </html>
