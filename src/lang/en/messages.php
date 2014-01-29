@@ -48,6 +48,7 @@ return array(
 	'objects_create_help'		=> 'This action will create a new table in the database.',
 	'objects_dependencies'		=> 'This object can\'t be deleted because it has dependencies.',
 	'objects_destroy'			=> 'Destroy Object',
+	'objects_direction'			=> 'Direction',
 	'objects_edit'				=> 'Settings',
 	'objects_edit_help'			=> 'Use this page to edit the properties of the :title object.',
 	'objects_empty'				=> 'No objects have been added yet.',
@@ -59,7 +60,7 @@ return array(
 	'objects_model'				=> 'Model',
 	'objects_name'				=> 'Table Name',
 	'objects_order_by'			=> 'Order By',
-	'objects_direction'			=> 'Direction',
+	'objects_singleton'			=> 'Singleton',
 	'objects_title'				=> 'Title',
 	'objects_title_help'		=> 'Make this plural, please.',
 

@@ -31,10 +31,13 @@ class ObjectController extends \BaseController {
 		foreach ($typeahead as &$list_grouping) $list_grouping = '"' . $list_grouping->list_grouping . '"';
 		$typeahead = '[' . implode(',', $typeahead) . ']';
 
+		$singleton = Input::has('singleton') ? 1 : 0;
+
 		return View::make('avalon::objects.create', array(
 			'order_by'	=>$order_by,
 			'direction'	=>self::$direction,
 			'typeahead'	=>$typeahead,
+			'singleton' =>$singleton,
 		));
 	}
 	
@@ -143,6 +146,8 @@ class ObjectController extends \BaseController {
 		//not sure why it's necessary, doesn't like empty value all of a sudden
 		$group_by_field = Input::has('group_by_field') ? Input::get('group_by_field') : null;
 
+		$singleton = Input::has('singleton') ? 1 : 0;
+
 		//update objects table
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
 			'title'				=>Input::get('title'),
@@ -150,6 +155,7 @@ class ObjectController extends \BaseController {
 			'model'				=>Input::get('model'),
 			'order_by'			=>$order_by,
 			'direction'			=>$direction,
+			'singleton'			=>$singleton,
 			'list_grouping'		=>Input::get('list_grouping'),
 			'group_by_field'	=>$group_by_field,
 			'list_help'			=>trim(Input::get('list_help')),

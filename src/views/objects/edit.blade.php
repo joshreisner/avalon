@@ -56,6 +56,16 @@
 		</div>
 	</div>
 		
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<div class="checkbox">
+				<label>
+					{{ Form::checkbox('singleton', 'on', $object->singleton) }} {{ Lang::get('avalon::messages.objects_singleton') }}
+				</label>
+			</div>
+		</div>
+	</div>
+
 	@if (count($group_by_field))
 	<div class="form-group">
 		{{ Form::label('group_by_field', Lang::get('avalon::messages.objects_group_by'), array('class'=>'control-label col-sm-2')) }}

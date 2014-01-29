@@ -41,6 +41,9 @@ body {
 				&.integer { max-width: 200px; }
 				&.time { max-width: 200px; }
 			}
+
+			div.checkbox { padding-top: 4px; }
+
 			.redactor_box {
 				border: 1px solid $gray; border-radius: $field_radius;
 				ul.redactor_toolbar { 

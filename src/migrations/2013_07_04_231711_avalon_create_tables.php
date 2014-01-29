@@ -58,6 +58,7 @@ class AvalonCreateTables extends Migration {
 			$table->string('web_page')->nullable();
 			$table->string('list_grouping')->nullable();
 			$table->integer('count')->default(0);
+			$table->boolean('singleton')->default(0);
 			$table->dateTime('updated_at');
 			$table->integer('updated_by');
 		});
