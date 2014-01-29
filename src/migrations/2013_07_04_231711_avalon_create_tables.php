@@ -68,7 +68,8 @@ class AvalonCreateTables extends Migration {
 			$table->string('lastname');
 			$table->string('email')->unique();
 			$table->string('password');
-			$table->integer('role');
+			$table->integer('role')->nullable();
+			$table->string('token')->nullable(); //for password resets
 			$table->dateTime('last_login')->nullable();
 			$table->dateTime('updated_at');
 			$table->integer('updated_by')->nullable(); //for first user

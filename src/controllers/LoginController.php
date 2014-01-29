@@ -55,13 +55,78 @@ class LoginController extends \BaseController {
 		Session::put('avalon_id', $user_id);
 		
 		return Redirect::action('ObjectController@index');
-
 	}
 	
 	//logout
 	public function getLogout() {
 		Session::forget('avalon_id');
 		return Redirect::action('LoginController@getIndex');
+	}
+
+	//reset password form
+	public function getReset() {
+		return View::make('avalon::login.reset');
+	}
+
+	//send reset email
+	public function postReset() {
+
+		//get user
+		if (!$user = DB::table('avalon_users')->whereNull('deleted_at')->where('email', Input::get('email'))->first()) {
+			return Redirect::action('LoginController@getReset')->with(array(
+				'error'=>Lang::get('avalon::messages.users_password_reset_error')
+			));
+		}
+
+		//set new token every time
+		$token = Str::random();
+		DB::table('avalon_users')->where('id', $user->id)->update(array('token'=>$token));
+
+		//reset link
+		$link = URL::action('LoginController@getChange', array('token'=>$token, 'email'=>$user->email));
+
+		//send reminder email
+		Mail::send('avalon::emails.password', array('link'=>$link), function($message) use ($user)
+		{
+			$message->to($user->email)->subject(Lang::get('avalon::messages.users_password_reset'));
+		});
+
+		return Redirect::action('LoginController@getReset')->with(array('message'=>Lang::get('avalon::messages.users_password_reset_sent')));
+	}
+
+	//reset password form
+	public function getChange($email, $token) {
+		//todo check email / token combo
+		if (!$user = DB::table('avalon_users')->whereNull('deleted_at')->where('email', $email)->where('token', $token)->first()) {
+			return Redirect::action('LoginController@getReset')->with(array(
+				'error'=>Lang::get('avalon::messages.users_password_change_error')
+			));
+		}
+
+		return View::make('avalon::login.change', array(
+			'email'=>$email,
+			'token'=>$token,
+		));
+	}
+
+	//send reset email
+	public function postChange() {
+		if (!$user = DB::table('avalon_users')->whereNull('deleted_at')->where('email', Input::get('email'))->where('token', Input::get('token'))->first()) {
+			return Redirect::action('LoginController@getReset')->with(array(
+				'error'=>Lang::get('avalon::messages.users_password_change_error')
+			));
+		}
+
+		//successfully used reset token, time for it to die
+		DB::table('avalon_users')->where('id', $user->id)->update(array(
+			'token'=>null,
+			'password'=>Hash::make(Input::get('password')),
+			'last_login'=>new DateTime,
+		));
+
+		//log you in
+		Session::put('avalon_id', $user->id);
+		return Redirect::action('ObjectController@index');
 	}
 
 }

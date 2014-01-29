@@ -13,7 +13,7 @@
 		)) }}
 
 	<div class="btn-group">
-		<a class="btn btn-default" href="{{ URL::action('FieldController@create', $object->id) }}"><i class="icon-plus"></i> {{ Lang::get('avalon::messages.fields_create') }}</a>
+		<a class="btn btn-default" href="{{ URL::action('FieldController@create', $object->id) }}"><i class="glyphicon glyphicon-plus"></i> {{ Lang::get('avalon::messages.fields_create') }}</a>
 	</div>
 
 	@if (count($fields))

@@ -12,7 +12,7 @@
 		)) }}
 
 	<div class="btn-group">
-		<a class="btn btn-default" href="{{ URL::action('UserController@create') }}"><i class="icon-plus"></i> {{ Lang::get('avalon::messages.users_create') }}</a>
+		<a class="btn btn-default" href="{{ URL::action('UserController@create') }}"><i class="glyphicon glyphicon-plus"></i> {{ Lang::get('avalon::messages.users_create') }}</a>
 	</div>
 
 	{{ Table::rows($users)
