@@ -6839,6 +6839,10 @@ body {
       margin: -6px 0 24px; }
       body .main table tbody {
         border-top: 0; }
+      body .main table div.highlight {
+        z-index: -10;
+        background-color: whitesmoke;
+        position: absolute; }
       body .main table tr th.draggy, body .main table tr th.delete, body .main table tr td.draggy, body .main table tr td.delete {
         width: 18px;
         text-align: center; }

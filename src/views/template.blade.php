@@ -36,5 +36,8 @@
 		{{ HTML::script('/packages/joshreisner/avalon/js/redactor.js') }}		
 		{{ HTML::script('/packages/joshreisner/avalon/js/jscolor/jscolor.js') }}
 		{{ HTML::script('/packages/joshreisner/avalon/js/main.js') }}
+		
+		@yield('script')
+
 	</body>
 </html>

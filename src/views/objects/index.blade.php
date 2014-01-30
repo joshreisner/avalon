@@ -29,6 +29,7 @@
 		{{ Lang::get('avalon::messages.objects_empty') }}
 	</div>
 	@endif
+
 @endsection
 
 @section('side')

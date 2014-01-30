@@ -34,7 +34,7 @@ class InstanceController extends \BaseController {
 		return View::make('avalon::instances.index', array(
 			'object'=>$object, 
 			'fields'=>$fields, 
-			'instances'=>$instances
+			'instances'=>$instances,
 		));
 	}
 
@@ -110,7 +110,7 @@ class InstanceController extends \BaseController {
 			}
 		}
 		
-		return Redirect::action('InstanceController@index', $object_id);
+		return Redirect::action('InstanceController@index', $object_id)->with('instance_id', $instance_id);
 	}
 	
 	//show edit form
@@ -206,7 +206,7 @@ class InstanceController extends \BaseController {
 			'updated_by'=>Session::get('avalon_id')
 		));
 		
-		return Redirect::action('InstanceController@index', $object_id);
+		return Redirect::action('InstanceController@index', $object_id)->with('instance_id', $instance_id);
 	}
 	
 	//remove object from db - todo check key/constraints

@@ -9,6 +9,11 @@ $margin			: 24px;
 $modal_radius	: 14px;
 $field_radius	: 4px;
 
+$success		: #dff0d8;
+$warning		: #fcf8e3;
+$danger			: #f2dede;
+
+
 html { height: 100%; }
 
 body {
@@ -104,6 +109,7 @@ body {
 		table {
 			margin: -6px 0 $margin;
 			tbody { border-top: 0; }
+			div.highlight { z-index: -10; background-color: $gray_light; position: absolute; }
 			tr {
 				th, td {
 					&.draggy, &.delete { width: 18px; text-align: center; }
@@ -120,7 +126,7 @@ body {
 					&.updated_at { text-align: right; white-space: nowrap; width: 120px; }
 					&.color { 
 						width: 30px;
-						a { display: block; width: 30px; height: 30px; margin:-5px; }
+						a { display: block; width: 30px; height: 30px; margin: -5px; }
 					}
 				}
 				
