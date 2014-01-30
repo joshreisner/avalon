@@ -24,7 +24,7 @@
 	<div class="form-group">
 		{{ Form::label('list_grouping', Lang::get('avalon::messages.objects_list_grouping'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
-			{{ Form::text('list_grouping', $object->list_grouping, array('class'=>'form-control')) }}
+			{{ Form::text('list_grouping', $object->list_grouping, array('class'=>'form-control', 'data-provide'=>'typeahead', 'data-source'=>$list_groupings)) }}
 	    </div>
 	</div>
 		

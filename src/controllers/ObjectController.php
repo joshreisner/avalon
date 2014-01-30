@@ -26,18 +26,10 @@ class ObjectController extends \BaseController {
 			'updated_at'=>Lang::get('avalon::messages.fields_updated_at'),
 		));
 
-		//typehead
-		$typeahead = DB::table('avalon_objects')->select('list_grouping')->distinct()->orderBy('list_grouping')->get();
-		foreach ($typeahead as &$list_grouping) $list_grouping = '"' . $list_grouping->list_grouping . '"';
-		$typeahead = '[' . implode(',', $typeahead) . ']';
-
-		$singleton = Input::has('singleton') ? 1 : 0;
-
 		return View::make('avalon::objects.create', array(
 			'order_by'	=>$order_by,
 			'direction'	=>self::$direction,
-			'typeahead'	=>$typeahead,
-			'singleton' =>$singleton,
+			'list_groupings' =>self::getGroupings(),
 		));
 	}
 	
@@ -112,19 +104,13 @@ class ObjectController extends \BaseController {
 			Lang::get('avalon::messages.fields_user')=>$order_by,
 		);
 
-		//get typeahead info
-		//$typeahead = '["foo","bar", "baz"]';
-		$typeahead = DB::table('avalon_objects')->select('list_grouping')->distinct()->orderBy('list_grouping')->get();
-		foreach ($typeahead as &$list_grouping) $list_grouping = '"' . $list_grouping->list_grouping . '"';
-		$typeahead = '[' . implode(',', $typeahead) . ']';
-
 		return View::make('avalon::objects.edit', array(
 			'object'=>DB::table('avalon_objects')->where('id', $object_id)->first(), 
 			'order_by'=>$order_by,
 			'direction'=>self::$direction,
 			'dependencies'=>DB::table('avalon_fields')->where('related_object_id', $object_id)->count(),
 			'group_by_field'=>array(''=>'') + DB::table('avalon_fields')->where('object_id', $object_id)->where('type', 'select')->lists('title', 'id'),
-			'typeahead'=>$typeahead,
+			'list_groupings'=>self::getGroupings(),
 		));
 	}
 	
@@ -173,5 +159,12 @@ class ObjectController extends \BaseController {
 		DB::table('avalon_object_links')->where('object_id', $object_id)->orWhere('linked_id', $object_id)->delete();
 		return Redirect::action('ObjectController@index');
 	}
-	
+
+	//for list_grouping typeaheads
+	private static function getGroupings() {
+		$groupings = DB::table('avalon_objects')->where('list_grouping', '<>', '')->distinct()->orderBy('list_grouping')->lists('list_grouping');
+		foreach ($groupings as &$grouping) $grouping = '"' . str_replace('"', '', $grouping) . '"';
+		return '[' . implode(',', $groupings) . ']';
+	}
+
 }

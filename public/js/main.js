@@ -83,6 +83,16 @@ $(function() {
 		});	
 	});
 
+	//typeaheads	
+	$("input.typeahead").each(function(){
+		var $this = $(this);
+		console.log('hi');
+		$.getJSON($this.attr("data-typeahead"), function(data){
+		    $this.typeahead({ source:data });
+			console.log('there' + data);
+		});
+	});
+
 	function make_slug(str, len) {
 		str = str.trim().toLowerCase();
 		str = str.replace(/[^a-z0-9]+/g, '-');
