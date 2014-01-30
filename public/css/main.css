@@ -6744,6 +6744,8 @@ html {
 body {
   margin-top: 24px;
   height: 100%; }
+  body h1, body h2, body h3, body h4, body h5, body h6 {
+    font-family: inherit; }
   body.login {
     background-color: #cccccc; }
     body.login div.modal {
@@ -6753,8 +6755,7 @@ body {
       body.login div.modal div.modal-content {
         border-radius: 14px; }
         body.login div.modal div.modal-content div.modal-header {
-          border-radius: 14px 14px 0 0;
-          color: white; }
+          border-radius: 14px 14px 0 0; }
         body.login div.modal div.modal-content div.modal-body .form-group:last-child {
           margin-bottom: 0; }
         body.login div.modal div.modal-content div.modal-footer {
@@ -6775,6 +6776,8 @@ body {
         max-width: 200px; }
       body form .form-group input.time {
         max-width: 200px; }
+      body form .form-group div.checkbox {
+        padding-top: 4px; }
       body form .form-group .redactor_box {
         border: 1px solid #cccccc;
         border-radius: 4px; }
@@ -6814,10 +6817,13 @@ body {
         cursor: pointer; }
   body .header {
     margin-bottom: 24px;
-    overflow: hidden; }
-    body .header img {
-      max-width: 100%;
-      height: auto; }
+    overflow: auto; }
+    body .header a {
+      background-image: url(/packages/joshreisner/avalon/img/banner.png);
+      display: block;
+      width: 295px;
+      height: 92px;
+      float: left; }
   body .main {
     margin-bottom: 24px; }
     body .main h1 {
@@ -6848,13 +6854,24 @@ body {
       body .main table tr th.center, body .main table tr td.center {
         text-align: center; }
       body .main table tr th.date, body .main table tr td.date {
-        text-align: right; }
+        text-align: right;
+        white-space: nowrap; }
       body .main table tr th.datetime, body .main table tr td.datetime {
-        text-align: right; }
+        text-align: right;
+        white-space: nowrap; }
       body .main table tr th.integer, body .main table tr td.integer {
         text-align: right; }
-      body .main table tr th.updated, body .main table tr td.updated {
-        text-align: right; }
+      body .main table tr th.updated_at, body .main table tr td.updated_at {
+        text-align: right;
+        white-space: nowrap;
+        width: 120px; }
+      body .main table tr th.color, body .main table tr td.color {
+        width: 30px; }
+        body .main table tr th.color a, body .main table tr td.color a {
+          display: block;
+          width: 30px;
+          height: 30px;
+          margin: -5px; }
       body .main table tr.group td {
         padding-top: 34px;
         color: #555555;
@@ -6873,12 +6890,18 @@ body {
         color: #cccccc; }
         body .main table tr.inactive a {
           color: #cccccc; }
+      body .main table.objects tr td.string, body .main table.objects tr th.string {
+        width: 200px; }
+      body .main table.objects tr td.updated_at, body .main table.objects tr th.updated_at {
+        width: 200px; }
+      body .main table.objects tr td.integer, body .main table.objects tr th.integer {
+        text-align: center; }
   body .side {
     margin-bottom: 24px; }
     body .side .inner {
       font-size: 1.1em;
       border-left: 2px dashed #cccccc;
-      padding: 24px;
+      padding: 9px 24px;
       color: #555555;
       margin-top: 38px; }
       body .side .inner p {

@@ -177,6 +177,8 @@ class FieldController extends \BaseController {
 			'updated_by'		=>Session::get('avalon_id'),
 			'updated_at'		=>new DateTime,
 		));
+
+		self::organizeTable($object_id);
 		
 		return Redirect::action('FieldController@index', $object_id);
 	}
@@ -276,6 +278,10 @@ class FieldController extends \BaseController {
 			}
 		}
 
+		self::organizeTable($object_id);
+	}
+
+	private static function organizeTable($object_id) {
 		//reorder actual table fields
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->orderBy('precedence')->get();
@@ -295,11 +301,11 @@ class FieldController extends \BaseController {
 			db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN updated_by INT AFTER updated_at');
 			db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN deleted_at DATETIME AFTER updated_by');
 			db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN precedence INT AFTER deleted_at');
-		}
+		}		
 	}
 
 	//format field type
-	private function type($type) {
+	private static function type($type) {
 		switch ($type) {
 
 			case 'color':

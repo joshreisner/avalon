@@ -44,7 +44,10 @@ class Table {
 
 		//build <thead>
 		$columns = self::$columns;
-		foreach ($columns as &$column) $column = '<th class="' . $column['type'] . '">' . $column['head'] . '</th>';
+		foreach ($columns as &$column) {
+			if ($column['type'] == 'color') $column['head'] = '&nbsp;';
+			$column = '<th class="' . $column['type'] . '">' . $column['head'] . '</th>';
+		}
 		$columns = implode($columns);
 		$head = '<thead><tr>' . $columns . '</tr></thead>';
 
@@ -81,9 +84,13 @@ class Table {
 					}
 
 					if (isset($row->link) && $link) {
-						if ($value == '') $value = '&hellip;';
-						$value = '<a href="' . $row->link . '">' . $value . '</a>';
-						$link = false;
+						if ($column['type'] == 'color') {
+							$value = '<a href="' . $row->link . '" style="background-color: ' . $value . '"></a>';
+						} else {
+							if ($value == '') $value = '&hellip;';
+							$value = '<a href="' . $row->link . '">' . $value . '</a>';
+							$link = false;
+						}
 					}
 				}
 

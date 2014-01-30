@@ -118,6 +118,10 @@ body {
 					&.datetime { text-align: right; white-space: nowrap; }
 					&.integer { text-align: right; }
 					&.updated_at { text-align: right; white-space: nowrap; width: 120px; }
+					&.color { 
+						width: 30px;
+						a { display: block; width: 30px; height: 30px; margin:-5px; }
+					}
 				}
 				
 				&.group {
