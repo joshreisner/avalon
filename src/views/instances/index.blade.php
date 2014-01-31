@@ -18,16 +18,26 @@
 	</div>
 
 	@if (count($instances))
-		<?php
-		$table = new Table;
-		$table->rows($instances);
-		foreach ($fields as $field) $table->column($field->name, $field->type, $field->title);
-		$table->column('updated_at', 'updated_at', Lang::get('avalon::messages.site_updated_at'));
-		$table->deletable();
-		if (!empty($object->group_by_field)) $table->groupBy('group');
-		if ($object->order_by == 'precedence') $table->draggable(URL::action('InstanceController@reorder', $object->id));
-		echo $table->draw();
-		?>
+		@if ($object->nested)
+			<div class="nested" data-draggable-url="{{ URL::action('InstanceController@reorder', $object->id) }}">
+				<div class="legend">
+					<div class="title">Title</div>
+					<div class="updated">Updated</div>
+				</div>
+				@include('avalon::instances.nested', array('instances'=>$instances))
+			</div>
+		@else
+			<?php
+			$table = new Table;
+			$table->rows($instances);
+			foreach ($fields as $field) $table->column($field->name, $field->type, $field->title);
+			$table->column('updated_at', 'updated_at', Lang::get('avalon::messages.site_updated_at'));
+			$table->deletable();
+			if (!empty($object->group_by_field)) $table->groupBy('group');
+			if ($object->order_by == 'precedence') $table->draggable(URL::action('InstanceController@reorder', $object->id));
+			echo $table->draw();
+			?>
+		@endif
 	@else
 	<div class="alert alert-warning">
 		{{ Lang::get('avalon::messages.instances_empty', array('title'=>$object->title)) }}
@@ -50,14 +60,15 @@
 
 	@if (Session::has('instance_id'))
 		var $el = $("table tr#{{ Session::get('instance_id') }}");
-		console.log($el.height());
 		$el
 			.after("<div class='highlight'/>")
 			.next()
             .width($el.width())
             .height($el.height())
             .css("marginTop", -$el.height())
-			.fadeOut(500);
+			.fadeOut(500, function(){
+				$("div.highlight").remove();
+			});
 	@endif
 	</script>
 @endsection

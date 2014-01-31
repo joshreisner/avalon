@@ -8,7 +8,12 @@ class InstanceController extends \BaseController {
 	//show list of instances for an object
 	public function index($object_id) {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
-		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->where('visibility', 'list')->orderBy('precedence')->get();
+		$object->nested = false;
+		$fields = DB::table('avalon_fields')
+			->where('object_id', $object_id)
+			->where('visibility', 'list')
+			->orWhere('id', $object->group_by_field)
+			->orderBy('precedence')->get();
 		$selects = array($object->name . '.id', $object->name . '.updated_at', $object->name . '.deleted_at');
 		foreach ($fields as $field) $selects[] = $object->name . '.' . $field->name;
 		$instances = DB::table($object->name)->select($selects);
@@ -17,13 +22,18 @@ class InstanceController extends \BaseController {
 		if (!empty($object->group_by_field)) {
 			$grouped_field = DB::table('avalon_fields')->where('id', $object->group_by_field)->first();
 			$grouped_object = DB::table('avalon_objects')->where('id', $grouped_field->related_object_id)->first();
-			$instances = $instances->
-				join($grouped_object->name, $object->name . '.' . $grouped_field->name, '=', $grouped_object->name . '.id')
-				->orderBy($grouped_object->name . '.' . $grouped_object->order_by, $grouped_object->direction)
-				->addSelect($grouped_object->name . '.title as group');
+			if ($grouped_object->id == $object->id) {
+				//nested object
+				$object->nested = true;
+			} else {
+				$instances = $instances->
+					join($grouped_object->name, $object->name . '.' . $grouped_field->name, '=', $grouped_object->name . '.id')
+					->orderBy($grouped_object->name . '.' . $grouped_object->order_by, $grouped_object->direction)
+					->addSelect($grouped_object->name . '.title as group');
+			}
 		}
 
-		$instances = $instances->orderBy($object->name . '.' . $object->order_by, $object->direction)->get(); //todo select only $fields
+		$instances = $instances->orderBy($object->name . '.' . $object->order_by, $object->direction)->get();
 		
 		//per-type modifications to table output
 		foreach ($instances as &$instance) {
@@ -31,6 +41,24 @@ class InstanceController extends \BaseController {
 			$instance->delete = URL::action('InstanceController@delete', array($object->id, $instance->id));
 		}
 		
+		if ($object->nested) {
+			$list = array();
+			foreach ($instances as &$instance) {
+				$instance->children = array();
+				if (empty($instance->{$grouped_field->name})) { //$grouped_field->name is for ex parent_id
+					$list[] = $instance;
+					//echo 'empty';
+				} elseif (self::nestedNodeExists($list, $instance->{$grouped_field->name}, $instance)) {
+					//attached child to parent node
+					//echo 'exists';
+				} else {
+					//an error occurred, because a parent exists but is not in the tree
+					//echo 'error';
+				}
+			}
+			$instances = $list;
+		}
+
 		return View::make('avalon::instances.index', array(
 			'object'=>$object, 
 			'fields'=>$fields, 
@@ -224,17 +252,33 @@ class InstanceController extends \BaseController {
 	
 	//reorder fields by drag-and-drop
 	public function reorder($object_id) {
+		die('ok');
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
-		$instances = explode('&', Input::get('order'));
-		$precedence = 1;
-		foreach ($instances as $instance) {
-			list($garbage, $id) = explode('=', $instance);
-			if (!empty($id)) {
-				DB::table($object->name)->where('id', $id)->update(array('precedence'=>$precedence));
-				$precedence++;
+		$object->nested = false;
+
+		if (!empty($object->group_by_field)) {
+			$grouped_field = DB::table('avalon_fields')->where('id', $object->group_by_field)->first();
+			if ($grouped_field->related_object_id == $object->id) {
+				$object->nested = true;
 			}
 		}
-		//echo 'done reordering';
+
+		if ($object->nested) {
+
+		} else {
+			$instances = explode('&', Input::get('order'));
+			$precedence = 1;
+			foreach ($instances as $instance) {
+				list($garbage, $id) = explode('=', $instance);
+				if (!empty($id)) {
+					DB::table($object->name)->where('id', $id)->update(array('precedence'=>$precedence));
+					$precedence++;
+				}
+			}
+
+		}
+
+		return 'done reordering';
 	}
 	
 	//soft delete
@@ -273,6 +317,19 @@ class InstanceController extends \BaseController {
 		if (empty($value) && !$field->required) $value = null;
 
 		return $value;
+	}
+
+	//recursively assemble nested tree
+	private function nestedNodeExists(&$array, $parent_id, $child) {
+		foreach ($array as &$a) {
+			if ($a->id == $parent_id) {
+				$a->children[] = $child;
+				return true;
+			} elseif (count($a->children) && self::nestedNodeExists($a->children, $parent_id, $child)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	//return a foreign key column name for a given table name or object_id

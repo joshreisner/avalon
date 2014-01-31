@@ -32,6 +32,10 @@ body {
 				div.modal-footer { margin-top: 0; border-radius: 0 0 $modal_radius $modal_radius; background-color: $gray_light; }
 			}
 		}
+		a.github {
+			display: block; width: 149px; height: 149px; position: absolute; top: 0; right: 0; 
+			background-image: url(https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png);
+		}
 	}
 	
 	form {
@@ -105,7 +109,42 @@ body {
 		.btn-group {
 			margin-bottom: $margin;
 		}
-		
+
+		table, div.nested {
+			.draggy { color: $gray; cursor: url(https://mail.google.com/mail/images/2/openhand.cur), default !important; }
+			.delete a {
+				color: inherit; 
+				i { top: 2px; }
+				&:hover { text-decoration: none; }
+			}			
+		}
+
+		div.nested {
+			margin-left: -30px; 
+			.legend { 
+				font-weight: bold; border-bottom: 2px solid #ddd; position: relative; padding: 0 30px 5px; margin-left: 30px;
+				div.updated { position: absolute; right: 30px; top: 0; }
+			}
+			.placeholder { background:#eee !important; border: 0; }
+			// > ul > li:first-child > div.nested_row { border-top-width: 2px; }
+			li:last-child > div.nested_row { border-bottom-width: 0; }
+			ul {
+				list-style: none; padding-left: 30px;
+				li {
+					div.nested_row {
+						position: relative; padding: 5px 28px; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; margin-top: -1px;
+						time { position: absolute; right: 30px; }
+						div {
+							position: absolute; top: 0px; width: 24px; text-align: center; 
+							i { margin-top: 6px; }
+							&.draggy { left: 0px; }
+							&.delete { right: 0px; }
+						}
+					}
+				}
+			}
+		}
+
 		table {
 			margin: -6px 0 $margin;
 			tbody { border-top: 0; }
@@ -113,12 +152,6 @@ body {
 			tr {
 				th, td {
 					&.draggy, &.delete { width: 18px; text-align: center; }
-					&.draggy { color: $gray; cursor: url(https://mail.google.com/mail/images/2/openhand.cur), default !important; }
-					&.delete a {
-						color: inherit; 
-						i { top: 2px; }
-						&:hover { text-decoration: none; }
-					}
 					&.center { text-align: center; }
 					&.date { text-align: right; white-space: nowrap; }
 					&.datetime { text-align: right; white-space: nowrap; }

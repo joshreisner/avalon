@@ -6762,6 +6762,14 @@ body {
           margin-top: 0;
           border-radius: 0 0 14px 14px;
           background-color: whitesmoke; }
+    body.login a.github {
+      display: block;
+      width: 149px;
+      height: 149px;
+      position: absolute;
+      top: 0;
+      right: 0;
+      background-image: url(https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png); }
   body form {
     margin-bottom: 24px; }
     body form .form-group {
@@ -6835,6 +6843,55 @@ body {
         color: #cccccc; }
     body .main .btn-group {
       margin-bottom: 24px; }
+    body .main table .draggy, body .main div.nested .draggy {
+      color: #cccccc;
+      cursor: url(https://mail.google.com/mail/images/2/openhand.cur), default !important; }
+    body .main table .delete a, body .main div.nested .delete a {
+      color: inherit; }
+      body .main table .delete a i, body .main div.nested .delete a i {
+        top: 2px; }
+      body .main table .delete a:hover, body .main div.nested .delete a:hover {
+        text-decoration: none; }
+    body .main div.nested {
+      margin-left: -30px; }
+      body .main div.nested .legend {
+        font-weight: bold;
+        border-bottom: 2px solid #ddd;
+        position: relative;
+        padding: 0 30px 5px;
+        margin-left: 30px; }
+        body .main div.nested .legend div.updated {
+          position: absolute;
+          right: 30px;
+          top: 0; }
+      body .main div.nested .placeholder {
+        background: #eee !important;
+        border: 0; }
+      body .main div.nested li:last-child > div.nested_row {
+        border-bottom-width: 0; }
+      body .main div.nested ul {
+        list-style: none;
+        padding-left: 30px; }
+        body .main div.nested ul li div.nested_row {
+          position: relative;
+          padding: 5px 28px;
+          border-top: 1px solid #ddd;
+          border-bottom: 1px solid #ddd;
+          margin-top: -1px; }
+          body .main div.nested ul li div.nested_row time {
+            position: absolute;
+            right: 30px; }
+          body .main div.nested ul li div.nested_row div {
+            position: absolute;
+            top: 0px;
+            width: 24px;
+            text-align: center; }
+            body .main div.nested ul li div.nested_row div i {
+              margin-top: 6px; }
+            body .main div.nested ul li div.nested_row div.draggy {
+              left: 0px; }
+            body .main div.nested ul li div.nested_row div.delete {
+              right: 0px; }
     body .main table {
       margin: -6px 0 24px; }
       body .main table tbody {
@@ -6846,15 +6903,6 @@ body {
       body .main table tr th.draggy, body .main table tr th.delete, body .main table tr td.draggy, body .main table tr td.delete {
         width: 18px;
         text-align: center; }
-      body .main table tr th.draggy, body .main table tr td.draggy {
-        color: #cccccc;
-        cursor: url(https://mail.google.com/mail/images/2/openhand.cur), default !important; }
-      body .main table tr th.delete a, body .main table tr td.delete a {
-        color: inherit; }
-        body .main table tr th.delete a i, body .main table tr td.delete a i {
-          top: 2px; }
-        body .main table tr th.delete a:hover, body .main table tr td.delete a:hover {
-          text-decoration: none; }
       body .main table tr th.center, body .main table tr td.center {
         text-align: center; }
       body .main table tr th.date, body .main table tr td.date {

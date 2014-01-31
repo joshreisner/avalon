@@ -28,8 +28,9 @@
 		</div>
 		{{ HTML::script('/packages/joshreisner/avalon/js/jquery-1.11.0.min.js') }}
 		{{ HTML::script('/packages/joshreisner/avalon/js/jquery.validate.min.js') }}
+		{{ HTML::script('/packages/joshreisner/avalon/js/jquery-ui-1.10.4.custom.min.js') }}
+		{{ HTML::script('/packages/joshreisner/avalon/js/jquery.mjs.nestedSortable.js') }}
 		{{ HTML::script('/packages/joshreisner/avalon/js/jquery.tablednd.0.8.min.js') }}
-		{{ HTML::script('/packages/joshreisner/avalon/js/jquery.ui.widget.js') }}
 		{{ HTML::script('/packages/joshreisner/avalon/js/jquery-file-upload/jquery.fileupload.js') }}
 		{{ HTML::script('/packages/joshreisner/avalon/js/bootstrap.js') }}
 		{{ HTML::script('/packages/joshreisner/avalon/js/bootstrap3-typeahead.min.js') }}

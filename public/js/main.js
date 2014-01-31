@@ -30,6 +30,41 @@ $(function() {
 		}
 	});
 	
+	//nested sortable
+	$('div.nested > ul').nestedSortable({
+		listType: 'ul',
+		forcePlaceholderSize: true,
+		handle: 'div.draggy',
+		helper: 'clone',
+		items: 'li',
+		opacity: 0.8,
+		tabSize: 30,
+		delay: 300,
+		placeholder: 'placeholder',
+		tolerance: 'pointer',
+		toleranceElement: '> div',
+		protectRoot: false,
+		update: function(event, ui) {
+			var id 				= ui.item.attr('id').substr(5);
+			var arrayed 		= $('div.nested > ul').nestedSortable('toArray', {startDepthCount: 0});
+			var list 			= new Array();
+			var parent_id 		= false;
+
+			for (var i = 0; i < arrayed.length; i++) {
+				if (arrayed[i].item_id != 'root') list[list.length] = arrayed[i].item_id;
+				if (arrayed[i].item_id == id) parent_id = arrayed[i].parent_id;
+			}
+
+			$.post($("div.nested").first().attr('data-draggable-url'), { 
+					id : id,
+					parent_id : parent_id, 
+					list : list.join(',')
+			}, function(data){
+				$('.side .inner').html(data);
+			});
+		}        
+	});
+
 	//toggle instance, field, or user active or inactive
 	$('table').on('click', 'td.delete a', function(e) {
 		e.preventDefault();

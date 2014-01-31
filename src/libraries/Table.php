@@ -105,7 +105,7 @@ class Table {
 		$bodies[] = '<tbody>' . implode($rows) . '</tbody>';
 
 		//output
-		return '<table class="table table-condensed' . $class . (self::$draggable ? ' draggable" data-draggable-url="' . self::$draggable: '') . '">' .
+		return '<table class="table table-condensed' . $class . (self::$draggable ? ' draggable" data-draggable-url="' . self::$draggable : '') . '">' .
 					$head . 
 					implode($bodies) . 
 				'</table>';

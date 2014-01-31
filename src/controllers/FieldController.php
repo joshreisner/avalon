@@ -50,7 +50,6 @@ class FieldController extends \BaseController {
 				->lists('title', 'id');
 
 		$related_objects = DB::table('avalon_objects')
-				->where('id', '<>', $object_id)
 				->orderBy('title')
 				->lists('title', 'id');
 
@@ -196,7 +195,6 @@ class FieldController extends \BaseController {
 				->lists('title', 'id');
 
 		$related_objects = array(''=>'') + DB::table('avalon_objects')
-				->where('id', '<>', $object_id)
 				->orderBy('title')
 				->lists('title', 'id');
 
@@ -295,13 +293,15 @@ class FieldController extends \BaseController {
 		}
 
 		//if there are non-system columns, reorder
-		if ($last) {
-			db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN created_at DATETIME AFTER ' . $last);
-			db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN updated_at DATETIME AFTER created_at');
-			db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN updated_by INT AFTER updated_at');
-			db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN deleted_at DATETIME AFTER updated_by');
-			db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN precedence INT AFTER deleted_at');
-		}		
+		db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN created_at DATETIME NOT NULL AFTER ' . $last);
+		db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN updated_at DATETIME NOT NULL AFTER created_at');
+		db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN updated_by INT 		AFTER updated_at');
+		db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN deleted_at DATETIME AFTER updated_by');
+		db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN precedence INT 		NOT NULL AFTER deleted_at');
+
+		/*if (Schema::hasColumn($object->name, 'subsequence')) {
+			db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN subsequence INT AFTER precedence');
+		}*/
 	}
 
 	//format field type

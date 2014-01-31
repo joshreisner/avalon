@@ -79,10 +79,10 @@ class ObjectController extends \BaseController {
 		Schema::create($name, function($table){
 			$table->increments('id');
 			$table->string('title');
-			$table->integer('updated_by')->nullable();
-			$table->integer('precedence');
 			$table->timestamps();
+			$table->integer('updated_by')->nullable();
 			$table->softDeletes();
+			$table->integer('precedence');
 		});
 		
 		return Redirect::action('InstanceController@index', $object_id);
@@ -117,12 +117,10 @@ class ObjectController extends \BaseController {
 	//edit object settings
 	public function update($object_id) {
 
-		//trusting the user, not making edits to title or table name or model
-
 		//rename table if necessary
-		$old_name = DB::table('avalon_objects')->where('id', $object_id)->pluck('name');
+		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		$new_name = Str::slug(Input::get('name'), '_');
-		if ($old_name != $new_name) Schema::rename($old_name, $new_name);
+		if ($object->name != $new_name) Schema::rename($object->name, $new_name);
 		
 		//enforce predence always ascending
 		$order_by = Input::get('order_by');
@@ -133,6 +131,26 @@ class ObjectController extends \BaseController {
 		$group_by_field = Input::has('group_by_field') ? Input::get('group_by_field') : null;
 
 		$singleton = Input::has('singleton') ? 1 : 0;
+
+		/*if nested, table should have a subsequence column
+		$has_subsequence = Schema::hasColumn('users', 'subsequence');
+		$needs_subsequence = false;
+		if ($group_by_field) {
+			$group_by = DB::table('avalon_fields')->where('id', $group_by_field)->first();
+			if ($group_by->related_object_id == $object_id) {
+				//nested
+				$needs_subsequence = true;
+			}
+		}
+		if ($has_subsequence != $needs_subsequence) {
+			Schema::table($object->name, function($table) use ($needs_subsequence) {
+				if ($needs_subsequence) {
+				    $table->integer('subsequence')->after('precedence')->nullable();
+				} else {
+			    	$table->dropColumn('subsequence');
+				}
+			});
+		}*/
 
 		//update objects table
 		DB::table('avalon_objects')->where('id', $object_id)->update(array(
