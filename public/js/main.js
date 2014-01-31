@@ -60,7 +60,7 @@ $(function() {
 					parent_id : parent_id, 
 					list : list.join(',')
 			}, function(data){
-				$('.side .inner').html(data);
+				//$('.side .inner').html(data);
 			});
 		}        
 	});
@@ -84,6 +84,30 @@ $(function() {
 		$.get($(this).attr('href'), { active: active }, function(data){
 			//window.console.log('sent post and data was ' + data);
 			parent.find("td.updated_at").html(data);
+		}).fail(function() { 
+			//window.console.log('error');
+		});
+	});
+	
+	//toggle instance inside nested sortable
+	$('div.nested').on('click', 'div.delete a', function(e) {
+		e.preventDefault();
+		
+		//toggle row class
+		var parent = $(this).closest('div.nested_row');
+		parent.toggleClass('inactive');
+		if (parent.hasClass('inactive')) {
+			var active = 0;
+			$(this).find('i').removeClass('glyphicon-ok-circle').addClass('glyphicon-remove-circle');
+		} else {
+			var active = 1;
+			$(this).find('i').removeClass('glyphicon-remove-circle').addClass('glyphicon-ok-circle');
+		}
+		
+		//send ajax update
+		$.get($(this).attr('href'), { active: active }, function(data){
+			//window.console.log('sent post and data was ' + data);
+			parent.find("div.updated_at").html(data);
 		}).fail(function() { 
 			//window.console.log('error');
 		});

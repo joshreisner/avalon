@@ -21,8 +21,8 @@
 		@if ($object->nested)
 			<div class="nested" data-draggable-url="{{ URL::action('InstanceController@reorder', $object->id) }}">
 				<div class="legend">
-					<div class="title">Title</div>
-					<div class="updated">Updated</div>
+					Title
+					<div class="updated_at">Updated</div>
 				</div>
 				@include('avalon::instances.nested', array('instances'=>$instances))
 			</div>

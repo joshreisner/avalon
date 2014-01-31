@@ -6852,6 +6852,11 @@ body {
         top: 2px; }
       body .main table .delete a:hover, body .main div.nested .delete a:hover {
         text-decoration: none; }
+    body .main table .inactive, body .main div.nested .inactive {
+      text-decoration: line-through;
+      color: #cccccc; }
+      body .main table .inactive a, body .main div.nested .inactive a {
+        color: #cccccc; }
     body .main div.nested {
       margin-left: -30px; }
       body .main div.nested .legend {
@@ -6860,7 +6865,7 @@ body {
         position: relative;
         padding: 0 30px 5px;
         margin-left: 30px; }
-        body .main div.nested .legend div.updated {
+        body .main div.nested .legend div.updated_at {
           position: absolute;
           right: 30px;
           top: 0; }
@@ -6878,9 +6883,6 @@ body {
           border-top: 1px solid #ddd;
           border-bottom: 1px solid #ddd;
           margin-top: -1px; }
-          body .main div.nested ul li div.nested_row time {
-            position: absolute;
-            right: 30px; }
           body .main div.nested ul li div.nested_row div {
             position: absolute;
             top: 0px;
@@ -6888,6 +6890,13 @@ body {
             text-align: center; }
             body .main div.nested ul li div.nested_row div i {
               margin-top: 6px; }
+            body .main div.nested ul li div.nested_row div.updated_at {
+              position: absolute;
+              right: 30px;
+              width: 120px;
+              height: 30px;
+              line-height: 30px;
+              text-align: right; }
             body .main div.nested ul li div.nested_row div.draggy {
               left: 0px; }
             body .main div.nested ul li div.nested_row div.delete {
@@ -6937,11 +6946,6 @@ body {
         border-bottom-width: 1px;
         border-bottom-style: solid;
         background-color: whitesmoke; }
-      body .main table tr.inactive {
-        text-decoration: line-through;
-        color: #cccccc; }
-        body .main table tr.inactive a {
-          color: #cccccc; }
       body .main table.objects tr td.string, body .main table.objects tr th.string {
         width: 200px; }
       body .main table.objects tr td.updated_at, body .main table.objects tr th.updated_at {

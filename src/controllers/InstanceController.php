@@ -252,10 +252,10 @@ class InstanceController extends \BaseController {
 	
 	//reorder fields by drag-and-drop
 	public function reorder($object_id) {
-		die('ok');
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
-		$object->nested = false;
 
+		//determine whether nested
+		$object->nested = false;
 		if (!empty($object->group_by_field)) {
 			$grouped_field = DB::table('avalon_fields')->where('id', $object->group_by_field)->first();
 			if ($grouped_field->related_object_id == $object->id) {
@@ -264,21 +264,31 @@ class InstanceController extends \BaseController {
 		}
 
 		if ($object->nested) {
-
+			$instance_ids = explode(',', Input::get('list'));
+			$precedence = 1;
+			foreach ($instance_ids as $instance_id) {
+				if (!empty($instance_id)) {
+					DB::table($object->name)->where('id', $instance_id)->update(array('precedence'=>$precedence++));
+				}
+			}
+			if (Input::has('id') && Input::has('parent_id')) {
+				DB::table($object->name)->where('id', Input::get('id'))->update(array(
+					'parent_id'=>Input::get('parent_id'),
+					//updated_at, updated_by?
+				));
+			}
 		} else {
 			$instances = explode('&', Input::get('order'));
 			$precedence = 1;
 			foreach ($instances as $instance) {
-				list($garbage, $id) = explode('=', $instance);
+				list($garbage, $instance_id) = explode('=', $instance);
 				if (!empty($id)) {
-					DB::table($object->name)->where('id', $id)->update(array('precedence'=>$precedence));
-					$precedence++;
+					DB::table($object->name)->where('id', $instance_id)->update(array('precedence'=>$precedence++));
 				}
 			}
-
 		}
 
-		return 'done reordering';
+		//return 'done reordering';
 	}
 	
 	//soft delete

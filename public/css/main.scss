@@ -117,13 +117,17 @@ body {
 				i { top: 2px; }
 				&:hover { text-decoration: none; }
 			}			
+			.inactive {
+				text-decoration: line-through; color: $gray;
+				a { color: $gray; }
+			}
 		}
 
 		div.nested {
 			margin-left: -30px; 
 			.legend { 
 				font-weight: bold; border-bottom: 2px solid #ddd; position: relative; padding: 0 30px 5px; margin-left: 30px;
-				div.updated { position: absolute; right: 30px; top: 0; }
+				div.updated_at { position: absolute; right: 30px; top: 0; }
 			}
 			.placeholder { background:#eee !important; border: 0; }
 			// > ul > li:first-child > div.nested_row { border-top-width: 2px; }
@@ -133,10 +137,10 @@ body {
 				li {
 					div.nested_row {
 						position: relative; padding: 5px 28px; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; margin-top: -1px;
-						time { position: absolute; right: 30px; }
 						div {
 							position: absolute; top: 0px; width: 24px; text-align: center; 
 							i { margin-top: 6px; }
+							&.updated_at { position: absolute; right: 30px; width: 120px; height: 30px; line-height: 30px; text-align: right; }
 							&.draggy { left: 0px; }
 							&.delete { right: 0px; }
 						}
@@ -179,11 +183,6 @@ body {
 						background-color: $gray_light;
 					}
 					
-				}
-				
-				&.inactive {
-					text-decoration: line-through; color: $gray;
-					a { color: $gray; }
 				}
 			}
 			&.objects {
