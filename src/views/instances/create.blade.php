@@ -58,6 +58,7 @@
 			<div class="form-group">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
+			    	<a class="image_upload" style="width:{{ $field->width }}px; height:{{ $field->height }};"></a>
 					{{ Form::hidden($field->name, false) }}
 			    </div>
 			</div>

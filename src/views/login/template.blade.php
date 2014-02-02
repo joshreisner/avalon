@@ -19,7 +19,7 @@
 		{{ HTML::script('/packages/joshreisner/avalon/js/jquery.ui.widget.js') }}
 		{{ HTML::script('/packages/joshreisner/avalon/js/jquery-file-upload/jquery.fileupload.js') }}
 		{{ HTML::script('/packages/joshreisner/avalon/js/bootstrap.js') }}
-		{{ HTML::script('/packages/joshreisner/avalon/js/redactor.js') }}		
+		{{ HTML::script('/packages/joshreisner/avalon/js/redactor.min.js') }}		
 		{{ HTML::script('/packages/joshreisner/avalon/js/jscolor/jscolor.js') }}
 		{{ HTML::script('/packages/joshreisner/avalon/js/main.js') }}
 	</body>

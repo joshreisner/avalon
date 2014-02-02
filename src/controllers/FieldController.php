@@ -125,6 +125,7 @@ class FieldController extends \BaseController {
 						}
 						break;
 
+					case 'image':
 					case 'slug':
 					case 'string':
 					case 'url':
@@ -254,7 +255,7 @@ class FieldController extends \BaseController {
 
 		if ($field->type == 'checkboxes') {
 			Schema::dropIfExists($field->name);
-		} else {
+		} elseif (Schema::hasColumn($table->name, $field->name)) {
 			Schema::table($table->name, function($table) use ($field) {
 				$table->dropColumn($field->name);
 			});
@@ -288,16 +289,16 @@ class FieldController extends \BaseController {
 		db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT FIRST');
 		$last = 'id';
 		foreach ($fields as $field) {
-			db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN ' . $field->name . ' ' . self::type($field->type) . ' AFTER ' . $last);
+			db::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN `' . $field->name . '` ' . self::type($field->type) . ' AFTER ' . $last);
 			$last = $field->name;
 		}
 
 		//if there are non-system columns, reorder
-		db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN created_at DATETIME NOT NULL AFTER ' . $last);
-		db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN updated_at DATETIME NOT NULL AFTER created_at');
-		db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN updated_by INT 		AFTER updated_at');
-		db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN deleted_at DATETIME AFTER updated_by');
-		db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN precedence INT 		NOT NULL AFTER deleted_at');
+		db::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN created_at DATETIME NOT NULL AFTER ' . $last);
+		db::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN updated_at DATETIME NOT NULL AFTER created_at');
+		db::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN updated_by INT 			   AFTER updated_at');
+		db::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN deleted_at DATETIME 		   AFTER updated_by');
+		db::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN precedence INT 	  NOT NULL AFTER deleted_at');
 
 		/*if (Schema::hasColumn($object->name, 'subsequence')) {
 			db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN subsequence INT AFTER precedence');
@@ -321,6 +322,7 @@ class FieldController extends \BaseController {
 			case 'select':
 				return 'INTEGER';
 
+			case 'image':
 			case 'slug':
 			case 'string':
 			case 'url':

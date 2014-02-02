@@ -7,6 +7,7 @@
 @section('main')
 
 	{{ Breadcrumbs::leave(array(
+		URL::action('ObjectController@index')=>Lang::get('avalon::messages.objects'),
 		URL::action('UserController@index')=>Lang::get('avalon::messages.users'),
 		Lang::get('avalon::messages.users_edit'),
 		)) }}
