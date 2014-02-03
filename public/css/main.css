@@ -6975,6 +6975,17 @@ body {
           width: 30px;
           height: 30px;
           margin: -5px; }
+      body .main table tr th.image, body .main table tr td.image {
+        width: 100px; }
+        body .main table tr th.image a, body .main table tr td.image a {
+          display: block;
+          text-align: center; }
+          body .main table tr th.image a img, body .main table tr td.image a img {
+            display: block;
+            max-width: 120px;
+            max-height: 100px;
+            width: auto;
+            height: auto; }
       body .main table tr.group td {
         padding-top: 34px;
         color: #555555;

@@ -30,7 +30,7 @@
 			<?php
 			$table = new Table;
 			$table->rows($instances);
-			foreach ($fields as $field) $table->column($field->name, $field->type, $field->title);
+			foreach ($fields as $field) $table->column($field->name, $field->type, $field->title, $field->width, $field->height);
 			$table->column('updated_at', 'updated_at', Lang::get('avalon::messages.site_updated_at'));
 			$table->deletable();
 			if (!empty($object->group_by_field)) $table->groupBy('group');

@@ -10,8 +10,8 @@ class Table {
 
 
 	//add a column.  $trans is translation file key
-	public function column($key, $type, $head) {
-		self::$columns[] = array('key'=>$key, 'type'=>$type, 'head'=>$head);
+	public function column($key, $type, $head, $width=false, $height=false) {
+		self::$columns[] = array('key'=>$key, 'type'=>$type, 'head'=>$head, 'width'=>$width, 'height'=>$height);
 		return $this;
 	}
 
@@ -71,6 +71,8 @@ class Table {
 					$value = '<i class="glyphicon glyphicon-align-justify"></i>';
 				} elseif ($column['type'] == 'delete') {
 					$value = '<a href="' . $row->delete . '">' . (!$row->deleted_at ? '<i class="glyphicon glyphicon-ok-circle"></i>' : '<i class="glyphicon glyphicon-remove-circle"></i>') . '</a>';
+				} elseif ($column['type'] == 'image') {
+					$value = '<a href="' . $row->link . '"><img src="' . $row->{$column['key']} . '" width="' . $column['width'] . '" height="' . $column['height'] . '"></a>';
 				} else {
 					$value = Str::limit(strip_tags($row->{$column['key']}));
 					if ($column['type'] == 'updated_at') {
