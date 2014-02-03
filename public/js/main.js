@@ -152,40 +152,46 @@ $(function() {
 		});
 	});
 
-	function make_slug(str, len) {
-		str = str.trim().toLowerCase();
-		str = str.replace(/[^a-z0-9]+/g, '-');
-		str = str.replace(/^-|-$/g, '');
-		
-		if (len && (str.length > len)) str = str.substr(0, len);
-		
-		if (str.substr(str.length - 1) == '-') str = str.substr(0, (str.length - 1));
+	//single image upload
+	$("div.image_upload").each(function(){
+		var offset = $(this).offset();
+		var width = $(this).width();
+		var height = $(this).height();
+		var field_id = $(this).attr('id').substr(6);
+		$("<form class='upload upload_image'><input type='hidden' name='field_id' value='" + field_id + "'><input type='file' name='image'></form>").appendTo("body").css({
+			top: offset.top, 
+			left: offset.left,
+			width: width,
+			height: height,
+			display: 'block'
+		});
+	});
 
-		return str;
-	}
-
-	function random_string(len) {
-		var str = '';
-		var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-		for (var i = 0; i < len; i++) str += characters.charAt(Math.floor(Math.random() * characters.length));
-		return str;
-	}
-
-	function file_name(str) {
-		if (str.indexOf('.') == -1) return false;
-		var fileparts = str.split('.');
-		var extension = fileparts.pop();
-		if (extension == 'jpeg') extension = 'jpg'; //hate jpeg
-		var okfiletypes = new Array('jpg', 'png', 'gif');
-		if ($.inArray(extension, okfiletypes) == -1) {
-			alert('extension ' + extension + ' is invalid for this field.  Please use jpg, png or gif.');
-			return false; //throw error?
+	$("form.upload_image input").fileupload({
+		url: 				"/login/upload/image",
+		type: 				"POST",
+		dataType: 			"text", 
+		acceptFileTypes : 	/(\.|\/)(jpg|gif|png)$/i,
+		autoUpload: 		true,
+		add: function(e, data) {
+			data.submit();
+		},
+		fail: function(e, data) {
+			window.console.log('fail ' + data.jqXHR.responseText);
+		},
+		done: function(e, data) {
+			var filename = data.jqXHR.responseText;
+			var field_id = $(this).parent().find("input[name=field_id]").val();
+			console.log(filename + " " + field_id);
+			$("div#image_" + field_id)
+				.css('backgroundImage', 'url(' + filename + ')')
+				.addClass("filled")
+				.next()
+				.val(filename);
 		}
-		var filename = 'images/' + make_slug(fileparts.join('.'), 20) + '-' + random_string(5) + '.' + extension;
-		return filename;
-	}
+	});
 
-	//multiple images upload
+	/*multiple images upload
 	var well = $(".control-group.images .controls");
 	var images = new Array();
 	$("input#image_upload").fileupload({
@@ -231,40 +237,5 @@ $(function() {
 		e = e || event;
 		e.preventDefault();
 	}, false);
-
-});
-
-$(window).load(function(){
-	
-	//single image upload
-	$("img.upload").each(function(){
-		var offset = $(this).offset();
-		var width = $(this).width();
-		var height = $(this).height();
-		$("<form class='upload upload_image' name='" + $(this).attr("alt") + "'><input type='hidden' name='field_id' value='" + $(this).attr("data-field") + "'><input type='file' name='image'></form>").appendTo("body").css({
-			top: offset.top, 
-			left: offset.left,
-			width: width,
-			height: height,
-			display: 'block'
-		});
-	});
-
-	$("form.upload_image input").fileupload({
-		url: 				"/login/upload/image",
-		type: 				"POST",
-		dataType: 			"text", 
-		acceptFileTypes : 	/(\.|\/)(jpg|gif|png)$/i,
-		autoUpload: 		true,
-		add: function(e, data) {
-			data.submit();
-		},
-		fail: function(e, data) {
-			window.console.log('fail ' + data.jqXHR.responseText);
-		},
-		done: function(e, data) {
-			window.console.log('done ' + data.jqXHR.responseText);
-			console.log($(this).parent().attr('name'));
-		}
-	});
+	*/
 });

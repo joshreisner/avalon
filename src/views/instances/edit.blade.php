@@ -57,10 +57,12 @@
 		@elseif ($field->type == 'image')
 			<div class="form-group">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
-			    <div class="col-sm-10">
+				<div class="col-sm-10">
+					<div class="image_upload @if (!empty($instance->{$field->name})) filled@endif" id="image_{{ $field->id }}" style="width:{{ $field->screen_width }}px; height:{{ $field->screen_height }}px; line-height:{{ $field->screen_height }}px; background-image: url({{ $instance->{$field->name} }});">
+						{{ $field->width }} &times; {{ $field->height }}
+					</div>
 					{{ Form::hidden($field->name, $instance->{$field->name}) }}
-					<img src="{{ $instance->{$field->name} }}" class="upload" data-field="{{ $field->id }}" alt="{{ $field->name }}">
-			    </div>
+				</div>
 			</div>
 		@elseif ($field->type == 'integer')
 			<div class="form-group">

@@ -82,6 +82,8 @@ class InstanceController extends \BaseController {
 					'column_name'=>$related_column->name,
 				);
 				if ($field->type == 'select' && !$field->required) $options[$field->name]['options'] = array(''=>'') + $options[$field->name]['options'];
+			} elseif ($field->type == 'image') {
+				list($field->screen_width, $field->screen_height) = self::getImageDimensions($field->width, $field->height);
 			}
 		}
 
@@ -168,7 +170,8 @@ class InstanceController extends \BaseController {
 				} elseif ($field->type == 'select' && !$field->required) {
 					$options[$field->name]['options'] = array(''=>'') + $options[$field->name]['options'];
 				}
-
+			} elseif ($field->type == 'image') {
+				list($field->screen_width, $field->screen_height) = self::getImageDimensions($field->width, $field->height);
 			} elseif ($field->type == 'slug') {
 				if (empty($field->help)) $field->help = Lang::get('avalon::messages.fields_slug_help');
 
@@ -348,6 +351,34 @@ class InstanceController extends \BaseController {
 		if (is_integer($table_name)) $table_name = DB::table('avalon_objects')->where('id', $table_name)->pluck('name');
 		return Str::singular($table_name) . '_id';
 	}	
+
+	//get display size for create and edit views
+	private static function getImageDimensions($width=false, $height=false) {
+
+		//too wide?
+		if ($width && $width > Config::get('avalon::image_max_width')) {
+			if ($height) $height *= Config::get('avalon::image_max_width') / $width;
+			$width = Config::get('avalon::image_max_width');
+		}
+
+		//too tall?
+		if ($height && $height > Config::get('avalon::image_max_height')) {
+			if ($width) $width *= Config::get('avalon::image_max_height') / $height;
+			$height = Config::get('avalon::image_max_height');
+		}
+
+		//not specified?
+		if (!$width) $width = Config::get('avalon::image_default_width');
+		if (!$height) $height = Config::get('avalon::image_default_height');
+
+		//too large?
+		if ($width * $height > Config::get('avalon::image_max_area')) {
+			$width *= Config::get('avalon::image_max_area') / $width * $height;
+			$height *= Config::get('avalon::image_max_area') / $width * $height;
+		}
+
+		return array($width, $height);
+	}
 
 	/* public function redactor_s3() {
 

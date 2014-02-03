@@ -9,7 +9,7 @@ Route::get('/'  . Config::get('avalon::prefix') . '/change/{email}/{token}', 'Lo
 Route::post('/' . Config::get('avalon::prefix') . '/change', 'LoginController@postChange');
 
 //protected routes
-Route::group(array('before'=>'avalon_auth', 'prefix'=>Config::get('avalon::prefix')), function()
+Route::group(array('before'=>'avalon_auth', 'prefix'=>Config::get('avalon::route_prefix')), function()
 {
 	Route::get('logout',					'LoginController@getLogout');
 
