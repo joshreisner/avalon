@@ -1,12 +1,12 @@
 <?php
 
 //unprotected routes
-Route::get('/'  . Config::get('avalon::prefix'),			 'LoginController@getIndex');
-Route::post('/' . Config::get('avalon::prefix'), 			 'LoginController@postIndex');
-Route::get('/'  . Config::get('avalon::prefix') . '/reset',  'LoginController@getReset');
-Route::post('/' . Config::get('avalon::prefix') . '/reset',  'LoginController@postReset');
-Route::get('/'  . Config::get('avalon::prefix') . '/change/{email}/{token}', 'LoginController@getChange');
-Route::post('/' . Config::get('avalon::prefix') . '/change', 'LoginController@postChange');
+Route::get('/'  . Config::get('avalon::route_prefix'),			 'LoginController@getIndex');
+Route::post('/' . Config::get('avalon::route_prefix'), 			 'LoginController@postIndex');
+Route::get('/'  . Config::get('avalon::route_prefix') . '/reset',  'LoginController@getReset');
+Route::post('/' . Config::get('avalon::route_prefix') . '/reset',  'LoginController@postReset');
+Route::get('/'  . Config::get('avalon::route_prefix') . '/change/{email}/{token}', 'LoginController@getChange');
+Route::post('/' . Config::get('avalon::route_prefix') . '/change', 'LoginController@postChange');
 
 //protected routes
 Route::group(array('before'=>'avalon_auth', 'prefix'=>Config::get('avalon::route_prefix')), function()

@@ -6768,10 +6768,11 @@ html {
   height: 100%; }
 
 body {
-  margin-top: 24px;
   height: 100%; }
   body h1, body h2, body h3, body h4, body h5, body h6 {
     font-family: inherit; }
+  body .container {
+    padding-top: 24px; }
   body.login {
     background-color: #cccccc; }
     body.login div.modal {

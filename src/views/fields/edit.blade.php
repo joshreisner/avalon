@@ -79,7 +79,7 @@
 		<div class="col-sm-offset-2 col-sm-10">
 			<div class="checkbox">
 				<label>
-					{{ Form::checkbox('required', 'on', $field->required) }} {{ Lang::get('avalon::messages.fields_required') }}
+					{{ Form::checkbox('required', 'on', $field->required, array('disabled')) }} {{ Lang::get('avalon::messages.fields_required') }}
 				</label>
 			</div>
 		</div>
