@@ -72,16 +72,27 @@ class InstanceController extends \BaseController {
 		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->orderBy('precedence')->get();
 		$options = array();
 		
-		//load options for checkboxes or selects
 		foreach ($fields as $field) {
 			if (($field->type == 'checkboxes') || ($field->type == 'select')) {
-				$related_table = DB::table('avalon_objects')->where('id', $field->related_object_id)->first();
-				$related_column = DB::table('avalon_fields')->where('object_id', $field->related_object_id)->where('type', 'string')->first();
-				$options[$field->name] = array(
-					'options'=>DB::table($related_table->name)->orderBy($related_table->order_by, $related_table->direction)->lists($related_column->name, 'id'),
-					'column_name'=>$related_column->name,
-				);
-				if ($field->type == 'select' && !$field->required) $options[$field->name]['options'] = array(''=>'') + $options[$field->name]['options'];
+
+				//load options for checkboxes or selects
+				$related_object = DB::table('avalon_objects')->where('id', $field->related_object_id)->first();
+				$related_field  = DB::table('avalon_fields')->where('object_id', $field->related_object_id)->where('type', 'string')->first();
+				$field->options = DB::table($related_object->name)->orderBy($related_object->order_by, $related_object->direction)->lists($related_field->name, 'id');
+
+				//indent nested selects
+				if ($field->type == 'select' && !empty($related_object->group_by_field)) {
+					$grouped_field = DB::table('avalon_fields')->where('id', $related_object->group_by_field)->first();
+					if ($grouped_field->object_id == $grouped_field->related_object_id) {
+
+					}
+				}
+
+				//select might be nullable
+				if ($field->type == 'select' && !$field->required) {
+					$field->options = array(''=>'') + $field->options;
+				}
+
 			} elseif ($field->type == 'image') {
 				list($field->screen_width, $field->screen_height) = self::getImageDimensions($field->width, $field->height);
 			}
@@ -90,7 +101,6 @@ class InstanceController extends \BaseController {
 		return View::make('avalon::instances.create', array(
 			'object'=>$object, 
 			'fields'=>$fields,
-			'options'=>$options,
 		));
 	}
 
@@ -148,7 +158,6 @@ class InstanceController extends \BaseController {
 		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
 		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->orderBy('precedence')->get();
 		$instance = DB::table($object->name)->where('id', $instance_id)->first();
-		$options = array();
 
 		//format instance values for form
 		foreach ($fields as $field) {
@@ -157,18 +166,15 @@ class InstanceController extends \BaseController {
 			} elseif (($field->type == 'checkboxes') || ($field->type == 'select')) {
 				$related_table = DB::table('avalon_objects')->where('id', $field->related_object_id)->first();
 				$related_column = DB::table('avalon_fields')->where('object_id', $field->related_object_id)->where('type', 'string')->first();
-				$options[$field->name] = array(
-					'options'=>DB::table($related_table->name)->orderBy($related_table->order_by, $related_table->direction)->lists($related_column->name, 'id'),
-					'column_name'=>$related_column->name,
-				);
+				$field->options = DB::table($related_table->name)->orderBy($related_table->order_by, $related_table->direction)->lists($related_column->name, 'id');
 
 				if ($field->type == 'checkboxes') { //get values
 					$key = self::getKey($field->related_object_id);
 					$values = DB::table($field->name)->where(self::getKey($object->name), $instance_id)->get();
 					foreach ($values as &$value) $value = $value->{$key};
-					$options[$field->name]['values'] = $values;
+					//$options[$field->name]['values'] = $values;
 				} elseif ($field->type == 'select' && !$field->required) {
-					$options[$field->name]['options'] = array(''=>'') + $options[$field->name]['options'];
+					//$options[$field->name]['options'] = array(''=>'') + $options[$field->name]['options'];
 				}
 			} elseif ($field->type == 'image') {
 				list($field->screen_width, $field->screen_height) = self::getImageDimensions($field->width, $field->height);
@@ -190,7 +196,6 @@ class InstanceController extends \BaseController {
 			'object'=>$object,
 			'fields'=>$fields,
 			'instance'=>$instance,
-			'options'=>$options,
 		));
 	}
 	

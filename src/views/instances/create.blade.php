@@ -19,9 +19,9 @@
 			<div class="form-group">
 			    <label class="control-label col-sm-2">{{ $field->title }}</label>
 			    <div class="checkbox">
-			    	@foreach ($options[$field->name]['options'] as $checkbox)
+			    	@foreach ($field->options as $option_id=>$option_value)
 					<label class="checkbox">
-						<input type="checkbox" name="{{ $field->name }}[]" value="{{ $checkbox->id }}"> {{ $checkbox->{$options[$field->name]['column_name']} }}
+						<input type="checkbox" name="{{ $field->name }}[]" value="{{ $option_id }}"> {{ $option_value }}
 					</label>
 					@endforeach
 				</div>
@@ -75,7 +75,7 @@
 			<div class="form-group">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
-					{{ Form::select($field->name, $options[$field->name]['options'], null, array('class'=>'form-control ' . $field->type . ($field->required ? ' required' : ''))) }}
+					{{ Form::select($field->name, $field->options, null, array('class'=>'form-control ' . $field->type . ($field->required ? ' required' : ''))) }}
 			    </div>
 			</div>
 		@elseif ($field->type == 'slug')
