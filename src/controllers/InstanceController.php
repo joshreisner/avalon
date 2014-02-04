@@ -84,7 +84,22 @@ class InstanceController extends \BaseController {
 				if ($field->type == 'select' && !empty($related_object->group_by_field)) {
 					$grouped_field = DB::table('avalon_fields')->where('id', $related_object->group_by_field)->first();
 					if ($grouped_field->object_id == $grouped_field->related_object_id) {
-
+						$field->options = $parents = array();
+						$options = DB::table($related_object->name)->orderBy($related_object->order_by, $related_object->direction)->get();
+						foreach ($options as $option) {
+							if (!empty($option->{$grouped_field->name})) {
+								//calculate indent
+								if (in_array($option->{$grouped_field->name}, $parents)) {
+									$parents = array_slice($parents, 0, array_search($option->{$grouped_field->name}, $parents) + 1);
+								} else {
+									$parents[] = $option->{$grouped_field->name};
+								}
+								$option->{$related_field->name} = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', count($parents)) . $option->{$related_field->name};
+							} elseif (count($parents)) {
+								$parents = array();
+							}
+							$field->options[$option->id] = $option->{$related_field->name};
+						}
 					}
 				}
 
@@ -164,18 +179,40 @@ class InstanceController extends \BaseController {
 			if ($field->type == 'datetime') {
 				if (!empty($instance->{$field->name})) $instance->{$field->name} = date('Y-m-d\TH:i:s', strtotime($instance->{$field->name}));
 			} elseif (($field->type == 'checkboxes') || ($field->type == 'select')) {
-				$related_table = DB::table('avalon_objects')->where('id', $field->related_object_id)->first();
-				$related_column = DB::table('avalon_fields')->where('object_id', $field->related_object_id)->where('type', 'string')->first();
-				$field->options = DB::table($related_table->name)->orderBy($related_table->order_by, $related_table->direction)->lists($related_column->name, 'id');
 
-				if ($field->type == 'checkboxes') { //get values
-					$key = self::getKey($field->related_object_id);
-					$values = DB::table($field->name)->where(self::getKey($object->name), $instance_id)->get();
-					foreach ($values as &$value) $value = $value->{$key};
-					//$options[$field->name]['values'] = $values;
-				} elseif ($field->type == 'select' && !$field->required) {
-					//$options[$field->name]['options'] = array(''=>'') + $options[$field->name]['options'];
+				//load options for checkboxes or selects
+				$related_object = DB::table('avalon_objects')->where('id', $field->related_object_id)->first();
+				$related_field  = DB::table('avalon_fields')->where('object_id', $field->related_object_id)->where('type', 'string')->first();
+				$field->options = DB::table($related_object->name)->orderBy($related_object->order_by, $related_object->direction)->lists($related_field->name, 'id');
+
+				//indent nested selects
+				if ($field->type == 'select' && !empty($related_object->group_by_field)) {
+					$grouped_field = DB::table('avalon_fields')->where('id', $related_object->group_by_field)->first();
+					if ($grouped_field->object_id == $grouped_field->related_object_id) {
+						$field->options = $parents = array();
+						$options = DB::table($related_object->name)->orderBy($related_object->order_by, $related_object->direction)->get();
+						foreach ($options as $option) {
+							if (!empty($option->{$grouped_field->name})) {
+								//calculate indent
+								if (in_array($option->{$grouped_field->name}, $parents)) {
+									$parents = array_slice($parents, 0, array_search($option->{$grouped_field->name}, $parents) + 1);
+								} else {
+									$parents[] = $option->{$grouped_field->name};
+								}
+								$option->{$related_field->name} = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', count($parents)) . $option->{$related_field->name};
+							} elseif (count($parents)) {
+								$parents = array();
+							}
+							$field->options[$option->id] = $option->{$related_field->name};
+						}
+					}
 				}
+
+				//select might be nullable
+				if ($field->type == 'select' && !$field->required) {
+					$field->options = array(''=>'') + $field->options;
+				}
+
 			} elseif ($field->type == 'image') {
 				list($field->screen_width, $field->screen_height) = self::getImageDimensions($field->width, $field->height);
 			} elseif ($field->type == 'slug') {
@@ -285,18 +322,18 @@ class InstanceController extends \BaseController {
 					//updated_at, updated_by?
 				));
 			}
+			return 'done reordering linear';
 		} else {
 			$instances = explode('&', Input::get('order'));
 			$precedence = 1;
 			foreach ($instances as $instance) {
 				list($garbage, $instance_id) = explode('=', $instance);
-				if (!empty($id)) {
+				if (!empty($instance_id)) {
 					DB::table($object->name)->where('id', $instance_id)->update(array('precedence'=>$precedence++));
 				}
 			}
+			return 'done reordering linear';
 		}
-
-		//return 'done reordering';
 	}
 	
 	//soft delete

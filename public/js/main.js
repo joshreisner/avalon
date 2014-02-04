@@ -23,9 +23,9 @@ $(function() {
 		onDragClass: 'dragging',
 		onDrop: function(table, row) {
 			$.post($(table).attr('data-draggable-url'), { order: $(table).tableDnDSerialize() }, function(data){
-				//window.console.log('sent post and data was ' + data);
+				window.console.log('success with ' + data);
 			}).fail(function() { 
-				//window.console.log('error');
+				window.console.log('error');
 			});
 		}
 	});

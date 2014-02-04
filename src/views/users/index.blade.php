@@ -12,7 +12,7 @@
 		)) }}
 
 	<div class="btn-group">
-		<a class="btn btn-default" href="{{ URL::action('UserController@create') }}"><i class="glyphicon glyphicon-plus"></i> {{ Lang::get('avalon::messages.users_create') }}</a>
+		<a class="btn btn-default" id="create" href="{{ URL::action('UserController@create') }}"><i class="glyphicon glyphicon-plus"></i> {{ Lang::get('avalon::messages.users_create') }}</a>
 	</div>
 
 	{{ Table::rows($users)
@@ -28,4 +28,27 @@
 
 @section('side')
 	<p>{{ Lang::get('avalon::messages.users_help') }}</p>
+@endsection
+
+@section('script')
+	<script>
+	$(document).keypress(function(e){
+		if (e.which == 99) {
+			location.href = $("a#create").addClass("active").attr("href");
+		}
+	});
+
+	@if (Session::has('user_id'))
+		var $el = $("table tr#{{ Session::get('user_id') }}");
+		$el
+			.after("<div class='highlight'/>")
+			.next()
+            .width($el.width())
+            .height($el.height())
+            .css("marginTop", -$el.height())
+			.fadeOut(500, function(){
+				$("div.highlight").remove();
+			});
+	@endif
+	</script>
 @endsection

@@ -162,7 +162,7 @@ class FieldController extends \BaseController {
 		}
 
 		//save field info to fields table
-		DB::table('avalon_fields')->insert(array(
+		$field_id = DB::table('avalon_fields')->insertGetId(array(
 			'title'				=>Input::get('title'),
 			'name'				=>$field_name,
 			'type'				=>$type,
@@ -180,7 +180,7 @@ class FieldController extends \BaseController {
 
 		self::organizeTable($object_id);
 		
-		return Redirect::action('FieldController@index', $object_id);
+		return Redirect::action('FieldController@index', $object_id)->with('field_id', $field_id);
 	}
 	
 	//show edit form
@@ -245,7 +245,7 @@ class FieldController extends \BaseController {
 			'updated_at'		=>new DateTime,
 		));
 		
-		return Redirect::action('FieldController@index', $object_id);
+		return Redirect::action('FieldController@index', $object_id)->with('field_id', $field_id);
 	}
 	
 	//delete field & remove from database

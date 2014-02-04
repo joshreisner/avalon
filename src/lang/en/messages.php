@@ -8,7 +8,7 @@ return array(
     'account_css'				=> 'Custom CSS',
 
 	'fields'					=> 'Fields',
-	'fields_create'				=> 'Create',
+	'fields_create'				=> 'Create New Field',
 	'fields_created_at'			=> 'Created',
 	'fields_create_help'		=> 'There are bunch of rules that will eventually be implemented in JS.  For the time being, a related field must be selected when adding a slug field.',
 	'fields_edit'				=> 'Edit',
