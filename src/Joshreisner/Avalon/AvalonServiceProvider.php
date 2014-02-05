@@ -99,6 +99,28 @@ class AvalonServiceProvider extends ServiceProvider {
 			//relationships
 			$relationships = array();
 
+			//to the related object
+			$related_fields = \DB::table('avalon_fields')
+					->where('object_id', $object->id)
+					->where('related_object_id', '<>', $object->id)
+					->whereNotNull('related_object_id')
+					->join('avalon_objects', 'avalon_fields.related_object_id', '=', 'avalon_objects.id')
+					->select(
+						'avalon_fields.type as type',
+						'avalon_fields.name as field_name',
+						'avalon_objects.name as object_name', 
+						'avalon_objects.model', 
+						'avalon_objects.order_by',
+						'avalon_objects.direction'
+					)->get();
+			foreach ($related_fields as $field) {
+				if ($field->type == 'select') {
+					$relationships[] = 'public function ' . $field->object_name . '() {
+						return $this->belongsTo("' . $field->model . '", "' . $field->field_name . '");
+					}';
+				}
+			}
+
 			//from the related object
 			$related_fields = \DB::table('avalon_fields')
 					->where('related_object_id', $object->id)
