@@ -9,7 +9,7 @@ class ObjectController extends \BaseController {
 	
 	//display list for home page
 	public function index() {
-		$objects = DB::table('avalon_objects')->orderBy('list_grouping')->orderBy('title')->get();
+		$objects = DB::table(Config::get('avalon::db_prefix') .'objects')->orderBy('list_grouping')->orderBy('title')->get();
 		foreach ($objects as &$object) {
 			$object->link = URL::action('InstanceController@index', $object->id);
 			if ($object->count == 0) $object->instance_count = '';
@@ -51,7 +51,7 @@ class ObjectController extends \BaseController {
 		if ($order_by == 'precedence') $direction = 'asc';
 
 		//create entry in objects table for new object
-		$object_id = DB::table('avalon_objects')->insertGetId(array(
+		$object_id = DB::table(Config::get('avalon::db_prefix') .'objects')->insertGetId(array(
 			'title'			=> $title,
 			'name'			=> $name,
 			'model'			=> $model,
@@ -63,7 +63,7 @@ class ObjectController extends \BaseController {
 		));
 		
 		//create title field for table by default
-		DB::table('avalon_fields')->insert(array(
+		DB::table(Config::get('avalon::db_prefix') .'fields')->insert(array(
 			'title'			=> 'Title',
 			'name'			=> 'title',
 			'type'			=> 'string',
@@ -92,7 +92,7 @@ class ObjectController extends \BaseController {
 	public function edit($object_id) {
 
 		//get order by select data
-		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->orderBy('precedence')->get();
+		$fields = DB::table(Config::get('avalon::db_prefix') .'fields')->where('object_id', $object_id)->orderBy('precedence')->get();
 		$order_by = array();
 		foreach ($fields as $field) $order_by[$field->name] = $field->title;
 		$order_by = array(
@@ -105,11 +105,11 @@ class ObjectController extends \BaseController {
 		);
 
 		return View::make('avalon::objects.edit', array(
-			'object'=>DB::table('avalon_objects')->where('id', $object_id)->first(), 
+			'object'=>DB::table(Config::get('avalon::db_prefix') .'objects')->where('id', $object_id)->first(), 
 			'order_by'=>$order_by,
 			'direction'=>self::$direction,
-			'dependencies'=>DB::table('avalon_fields')->where('related_object_id', $object_id)->count(),
-			'group_by_field'=>array(''=>'') + DB::table('avalon_fields')->where('object_id', $object_id)->where('type', 'select')->lists('title', 'id'),
+			'dependencies'=>DB::table(Config::get('avalon::db_prefix') .'fields')->where('related_object_id', $object_id)->count(),
+			'group_by_field'=>array(''=>'') + DB::table(Config::get('avalon::db_prefix') .'fields')->where('object_id', $object_id)->where('type', 'select')->lists('title', 'id'),
 			'list_groupings'=>self::getGroupings(),
 		));
 	}
@@ -118,7 +118,7 @@ class ObjectController extends \BaseController {
 	public function update($object_id) {
 
 		//rename table if necessary
-		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
+		$object = DB::table(Config::get('avalon::db_prefix') .'objects')->where('id', $object_id)->first();
 		$new_name = Str::slug(Input::get('name'), '_');
 		if ($object->name != $new_name) Schema::rename($object->name, $new_name);
 		
@@ -153,7 +153,7 @@ class ObjectController extends \BaseController {
 		}*/
 
 		//update objects table
-		DB::table('avalon_objects')->where('id', $object_id)->update(array(
+		DB::table(Config::get('avalon::db_prefix') .'objects')->where('id', $object_id)->update(array(
 			'title'				=>Input::get('title'),
 			'name'				=>$new_name,
 			'model'				=>Input::get('model'),
@@ -171,16 +171,16 @@ class ObjectController extends \BaseController {
 	
 	//destroy object
 	public function destroy($object_id) {
-		Schema::dropIfExists(DB::table('avalon_objects')->where('id', $object_id)->pluck('name'));
-		DB::table('avalon_objects')->where('id', $object_id)->delete();
-		DB::table('avalon_fields')->where('object_id', $object_id)->delete();
-		DB::table('avalon_object_links')->where('object_id', $object_id)->orWhere('linked_id', $object_id)->delete();
+		Schema::dropIfExists(DB::table(Config::get('avalon::db_prefix') .'objects')->where('id', $object_id)->pluck('name'));
+		DB::table(Config::get('avalon::db_prefix') .'objects')->where('id', $object_id)->delete();
+		DB::table(Config::get('avalon::db_prefix') .'fields')->where('object_id', $object_id)->delete();
+		DB::table(Config::get('avalon::db_prefix') .'object_links')->where('object_id', $object_id)->orWhere('linked_id', $object_id)->delete();
 		return Redirect::action('ObjectController@index');
 	}
 
 	//for list_grouping typeaheads
 	private static function getGroupings() {
-		$groupings = DB::table('avalon_objects')->where('list_grouping', '<>', '')->distinct()->orderBy('list_grouping')->lists('list_grouping');
+		$groupings = DB::table(Config::get('avalon::db_prefix') .'objects')->where('list_grouping', '<>', '')->distinct()->orderBy('list_grouping')->lists('list_grouping');
 		foreach ($groupings as &$grouping) $grouping = '"' . str_replace('"', '', $grouping) . '"';
 		return '[' . implode(',', $groupings) . ']';
 	}

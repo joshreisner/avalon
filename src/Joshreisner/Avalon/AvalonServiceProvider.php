@@ -84,26 +84,28 @@ class AvalonServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
+		//have to get config in a special way
+		$db_prefix = \Config::get('packages/joshreisner/avalon/config.db_prefix');
 
 		//register avalon objects as models for yr application
-		foreach (\DB::table('avalon_objects')->get() as $object) {
+		foreach (\DB::table($db_prefix .'objects')->get() as $object) {
 
 			//relationships
 			$relationships = array();
 
 			//to the related object
-			$related_fields = \DB::table('avalon_fields')
+			$related_fields = \DB::table($db_prefix . 'fields')
 					->where('object_id', $object->id)
 					->where('related_object_id', '<>', $object->id)
 					->whereNotNull('related_object_id')
-					->join('avalon_objects', 'avalon_fields.related_object_id', '=', 'avalon_objects.id')
+					->join($db_prefix . 'objects', $db_prefix . 'fields.related_object_id', '=', $db_prefix . 'objects.id')
 					->select(
-						'avalon_fields.type as type',
-						'avalon_fields.name as field_name',
-						'avalon_objects.name as object_name', 
-						'avalon_objects.model', 
-						'avalon_objects.order_by',
-						'avalon_objects.direction'
+						$db_prefix . 'fields.type as type',
+						$db_prefix . 'fields.name as field_name',
+						$db_prefix . 'objects.name as object_name', 
+						$db_prefix . 'objects.model', 
+						$db_prefix . 'objects.order_by',
+						$db_prefix . 'objects.direction'
 					)->get();
 			foreach ($related_fields as $field) {
 				if ($field->type == 'select') {
@@ -114,16 +116,16 @@ class AvalonServiceProvider extends ServiceProvider {
 			}
 
 			//from the related object
-			$related_fields = \DB::table('avalon_fields')
+			$related_fields = \DB::table($db_prefix . 'fields')
 					->where('related_object_id', $object->id)
-					->join('avalon_objects', 'avalon_fields.object_id', '=', 'avalon_objects.id')
+					->join($db_prefix . 'objects', $db_prefix . 'fields.object_id', '=', $db_prefix . 'objects.id')
 					->select(
-						'avalon_fields.type as type',
-						'avalon_fields.name as field_name',
-						'avalon_objects.name as object_name', 
-						'avalon_objects.model', 
-						'avalon_objects.order_by',
-						'avalon_objects.direction'
+						$db_prefix . 'fields.type as type',
+						$db_prefix . 'fields.name as field_name',
+						$db_prefix . 'objects.name as object_name', 
+						$db_prefix . 'objects.model', 
+						$db_prefix . 'objects.order_by',
+						$db_prefix . 'objects.direction'
 					)->get();
 			foreach ($related_fields as $field) {
 				if ($field->type == 'select') {
@@ -138,17 +140,17 @@ class AvalonServiceProvider extends ServiceProvider {
 			}
 
 			//also need many-to-many from the object
-			$related_fields = \DB::table('avalon_fields')
+			$related_fields = \DB::table($db_prefix . 'fields')
 					->where('object_id', $object->id)
 					->whereIn('type', array('checkboxes'))
-					->join('avalon_objects', 'avalon_fields.related_object_id', '=', 'avalon_objects.id')
+					->join($db_prefix . 'objects', $db_prefix . 'fields.related_object_id', '=', $db_prefix . 'objects.id')
 					->select(
-						'avalon_fields.type as type',
-						'avalon_fields.name as field_name',
-						'avalon_objects.name as object_name', 
-						'avalon_objects.model', 
-						'avalon_objects.order_by',
-						'avalon_objects.direction'
+						$db_prefix . 'fields.type as type',
+						$db_prefix . 'fields.name as field_name',
+						$db_prefix . 'objects.name as object_name', 
+						$db_prefix . 'objects.model', 
+						$db_prefix . 'objects.order_by',
+						$db_prefix . 'objects.direction'
 					)->get();
 			foreach ($related_fields as $field) {
 				$relationships[] = 'public function ' . $field->object_name . '() {
