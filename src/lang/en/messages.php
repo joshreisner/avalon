@@ -2,11 +2,6 @@
 
 return array(
 
-    'account_edit'				=> 'Site Settings',
-    'account_edit_help'			=> 'Title will go on the login screen and in the browser title.<br><br>Custom CSS allows you to override Avalon\'s styles from an external stylesheet. Specify a local URL, such as /assets/css/avalon.css',
-    'account_title'				=> 'Title',
-    'account_css'				=> 'Custom CSS',
-
 	'fields'					=> 'Fields',
 	'fields_create'				=> 'Create New Field',
 	'fields_created_at'			=> 'Created',

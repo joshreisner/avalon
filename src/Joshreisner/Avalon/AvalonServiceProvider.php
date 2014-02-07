@@ -75,12 +75,6 @@ class AvalonServiceProvider extends ServiceProvider {
 		    return $input;
 		});
 
-		\View::composer('*', function($view)
-		{
-		    $view->with('account', \DB::table('avalon')->where('id', 1)->first());
-		});
-
-
 	}
 
 	/**
@@ -90,8 +84,6 @@ class AvalonServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-
-		if (!\Schema::hasTable('avalon')) return;
 
 		//register avalon objects as models for yr application
 		foreach (\DB::table('avalon_objects')->get() as $object) {

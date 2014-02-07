@@ -1,7 +1,7 @@
 @extends('avalon::login.template')
 
 @section('title')
-	{{ $account->title }}
+	{{ Lang::get('avalon::messages.site_welcome') }}
 @endsection
 
 @section('main')
@@ -11,7 +11,7 @@
 		<div class="modal-dialog">
 		    <div class="modal-content">
 				<div class="modal-header">
-					<h2 class="modal-title">{{ $account->title }}</h2>
+					<h2 class="modal-title">{{ Lang::get('avalon::messages.site_welcome') }}</h2>
 				</div>
 				<div class="modal-body">
 					<div class="form-group">

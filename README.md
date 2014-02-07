@@ -7,9 +7,11 @@ Eventually this will become a Laravel 4 CMS gui package and will have a video an
 
 Install Instructions:
 
-* add "joshreisner/avalon": "*" to composer.json
-* add 'Joshreisner\Avalon\AvalonServiceProvider', to the $providers array in config/app.php
 * make sure you have your database connected (only mysql tested)
-* php artisan migrate --package=joshreisner/avalon
-* php artisan asset:publish
+* set up email (for new users and password resets)
+* add 'Joshreisner\Avalon\AvalonServiceProvider', to the $providers array in config/app.php
+$ $ composer require "joshreisner/avalon:*"
+* $ php artisan config:publish joshreisner/avalon
+* $ php artisan migrate --package=joshreisner/avalon
+* $ php artisan asset:publish
 

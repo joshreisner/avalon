@@ -11,13 +11,7 @@ class AvalonCreateTables extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('avalon', function($table){
-			$table->increments('id');
-			$table->string('title');
-			$table->string('css')->nullable();
-		});
-		
-		Schema::create('avalon_fields', function($table){
+		Schema::create(Config::get('avalon::db_prefix') . 'fields', function($table){
 			$table->increments('id');
 			$table->integer('object_id');
 			$table->string('type');
@@ -35,17 +29,17 @@ class AvalonCreateTables extends Migration {
 			$table->integer('precedence');
 		});
 		
-		Schema::create('avalon_object_links', function($table){
+		Schema::create(Config::get('avalon::db_prefix') . 'object_links', function($table){
 			$table->integer('object_id');
 			$table->integer('linked_id');
 		});
 		
-		Schema::create('avalon_object_user', function($table){
+		Schema::create(Config::get('avalon::db_prefix') . 'object_user', function($table){
 			$table->integer('object_id');
 			$table->integer('user_id');
 		});
 
-		Schema::create('avalon_objects', function($table){
+		Schema::create(Config::get('avalon::db_prefix') . 'objects', function($table){
 			$table->increments('id');
 			$table->string('title');
 			$table->string('name');
@@ -63,7 +57,7 @@ class AvalonCreateTables extends Migration {
 			$table->integer('updated_by');
 		});
 		
-		Schema::create('avalon_users', function($table){
+		Schema::create(Config::get('avalon::db_prefix') . 'users', function($table){
 			$table->increments('id');
 			$table->string('firstname');
 			$table->string('lastname');
@@ -85,16 +79,15 @@ class AvalonCreateTables extends Migration {
 	 */
 	public function down()
 	{
-		//clear out user-defined object tables
-		$objects = DB::table('avalon_objects')->get();
+		//remove all user-created object tables
+		$objects = DB::table(Config::get('avalon::db_prefix') . 'objects')->get();
 		foreach ($objects as $object) Schema::dropIfExists($object->name);
 		
-		Schema::dropIfExists('avalon');
-		Schema::dropIfExists('avalon_fields');
-		Schema::dropIfExists('avalon_object_links');
-		Schema::dropIfExists('avalon_object_user');
-		Schema::dropIfExists('avalon_objects');
-		Schema::dropIfExists('avalon_users');
+		Schema::dropIfExists(Config::get('avalon::db_prefix') . 'fields');
+		Schema::dropIfExists(Config::get('avalon::db_prefix') . 'object_links');
+		Schema::dropIfExists(Config::get('avalon::db_prefix') . 'object_user');
+		Schema::dropIfExists(Config::get('avalon::db_prefix') . 'objects');
+		Schema::dropIfExists(Config::get('avalon::db_prefix') . 'users');
 	}
 
 }

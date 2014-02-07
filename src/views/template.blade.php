@@ -4,8 +4,8 @@
 		<title>@yield('title')</title>
 		<meta charset="UTF-8">
 		{{ HTML::style('/packages/joshreisner/avalon/css/main.css') }}
-		@if (!empty($account->css))
-		{{ HTML::style($account->css) }}
+		@if (Config::has('avalon::css'))
+		{{ HTML::style(Config::get('avalon::css')) }}
 		@endif
 	</head>
 	<body>

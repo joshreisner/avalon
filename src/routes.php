@@ -13,9 +13,6 @@ Route::group(array('before'=>'avalon_auth', 'prefix'=>Config::get('avalon::route
 {
 	Route::get('logout',					'LoginController@getLogout');
 
-	Route::get('/settings', 				'AccountController@edit');
-	Route::post('/settings', 				'AccountController@update');
-	
 	Route::resource('objects',				'ObjectController');
 	Route::resource('objects.fields',		'FieldController');
 	Route::resource('objects.instances',	'InstanceController');
