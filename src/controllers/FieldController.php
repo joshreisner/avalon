@@ -2,28 +2,50 @@
 
 class FieldController extends \BaseController {
 
-	private static $types = array(
-		//'checkboxes'	=>'Checkboxes',
-		'color'			=>'Color',
-		'date'			=>'Date',
-		'datetime'		=>'Date + Time',
-		'html'			=>'HTML',
-		'image'			=>'Image',
-		//'images'		=>'Images',
-		'integer'		=>'Integer',
-		'select'		=>'Select',
-		'slug'			=>'Slug',
-		'string'		=>'String',
-		'text'			=>'Text',
-		'time'			=>'Time',
-		'url'			=>'URL',
-	);
+	private static function types() {
+
+		return array(
+			//'checkboxes'	=>'Checkboxes',
+			Lang::get('avalon::messages.fields_types_cat_dates')=> array(
+				'date'			=>Lang::get('avalon::messages.fields_types_date'),
+				'datetime'		=>Lang::get('avalon::messages.fields_types_datetime'),
+				'time'			=>Lang::get('avalon::messages.fields_types_time'),
+			),
+			Lang::get('avalon::messages.fields_types_cat_files')=>array(
+				'image'			=>Lang::get('avalon::messages.fields_types_image'),
+				//'images'		=>'Images',
+				//'file'		=>'File',
+				//'files'		=>'Files',
+			),
+			Lang::get('avalon::messages.fields_types_cat_strings')=> array(
+				'html'			=>Lang::get('avalon::messages.fields_types_html'),
+				'slug'			=>Lang::get('avalon::messages.fields_types_slug'),
+				'string'		=>Lang::get('avalon::messages.fields_types_string'),
+				'text'			=>Lang::get('avalon::messages.fields_types_text'),
+				'url'			=>Lang::get('avalon::messages.fields_types_url'),
+			),
+			Lang::get('avalon::messages.fields_types_cat_numbers')=> array(
+				'integer'		=>Lang::get('avalon::messages.fields_types_integer'),
+				//'money'		=>'Money',
+				//'decimal'		=>'Decimal',
+			),
+			Lang::get('avalon::messages.fields_types_cat_relationships')=>array(
+				//'checkboxes'	=>Lang::get('avalon::messages.fields_types_checkboxes'),
+				'select'		=>Lang::get('avalon::messages.fields_types_select'),
+			),
+			Lang::get('avalon::messages.fields_types_cat_misc')=>array(
+				'color'			=>Lang::get('avalon::messages.fields_types_color'),
+			),
+		);
+	}
 	
-	private static $visibility = array(
-		'list'=>'Show in List',
-		'normal'=>'Normal',
-		'hidden'=>'Hidden',
-	);
+	private static function visibility() {
+		return array(
+			'list'	=>Lang::get('avalon::messages.fields_visibility_list'),
+			'normal'=>Lang::get('avalon::messages.fields_visibility_normal'),
+			'Hidden'=>Lang::get('avalon::messages.fields_visibility_hidden'),
+		);
+	}
 
 	//show a list of an object's fields
 	public function index($object_id) {
@@ -31,11 +53,11 @@ class FieldController extends \BaseController {
 		$fields = DB::table(Config::get('avalon::db_prefix') . 'fields')->where('object_id', $object_id)->orderBy('precedence')->get();
 		foreach ($fields as &$field) {
 			$field->link = URL::action('FieldController@edit', array($object->id, $field->id));
+			$field->type = Lang::get('avalon::messages.fields_types_' . $field->type);
 		}
 		return View::make('avalon::fields.index', array(
 			'object'=>$object,
 			'fields'=>$fields,
-			'types'=>self::$types,
 		));
 	}
 	
@@ -54,11 +76,11 @@ class FieldController extends \BaseController {
 				->lists('title', 'id');
 
 		return View::make('avalon::fields.create', array(
-			'object'=>$object,
-			'types'=>self::$types,
-			'related_fields'=>array(''=>'') + $related_fields,
-			'related_objects'=>array(''=>'') + $related_objects,
-			'visibility'=>self::$visibility,
+			'object'			=>$object,
+			'related_fields'	=>array(''=>'') + $related_fields,
+			'related_objects'	=>array(''=>'') + $related_objects,
+			'visibility'		=>self::visibility(),
+			'types'				=>self::types(),
 		));
 	}
 	
@@ -200,12 +222,12 @@ class FieldController extends \BaseController {
 				->lists('title', 'id');
 
 		return View::make('avalon::fields.edit', array(
-			'object'=>$object,
-			'field'=>$field,
-			'related_fields'=>$related_fields,
-			'related_objects'=>$related_objects,
-			'visibility'=>self::$visibility,
-			'types'=>self::$types,
+			'object'			=>$object,
+			'field'				=>$field,
+			'related_fields'	=>$related_fields,
+			'related_objects'	=>$related_objects,
+			'visibility'		=>self::visibility(),
+			'types'				=>self::types(),
 		));
 	}
 	

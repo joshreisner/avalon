@@ -11,12 +11,13 @@ Route::post('/' . Config::get('avalon::route_prefix') . '/change',	'LoginControl
 //protected routes
 Route::group(array('before'=>'auth', 'prefix'=>Config::get('avalon::route_prefix')), function(){
 	
-	//all users
+	//all authenticated users
 	Route::get('logout', 'LoginController@getLogout');
 	Route::resource('objects.instances', 'InstanceController');
 	Route::post('/objects/{object_id}/instances/reorder', 'InstanceController@reorder');
 	Route::get('/objects/{object_id}/instances/{instance_id}/delete', 'InstanceController@delete');
-	Route::resource('objects', 'ObjectController'); //need to unprotect only index
+	Route::get('/objects', 'ObjectController@index'); 
+	Route::post('/upload/image', 'FileController@image');
 
 	//only admins
 	Route::group(array('before'=>'admin'), function(){
@@ -26,14 +27,17 @@ Route::group(array('before'=>'auth', 'prefix'=>Config::get('avalon::route_prefix
 
 	//only programmers
 	Route::group(array('before'=>'programmer'), function(){
+
+		//these would fit neatly in a resource controller except that index can be accessed by any user
+		Route::get('/objects/create', 'ObjectController@create'); 
+		Route::post('/objects', 'ObjectController@store'); 
+		Route::get('/objects/{id}/edit', 'ObjectController@edit'); 
+		Route::put('/objects/{id}', 'ObjectController@update'); 
+		Route::delete('/objects/{id}', 'ObjectController@destroy'); 
+
 		Route::resource('objects.fields', 'FieldController');
 		Route::post('/objects/{object_id}/fields/reorder', 'FieldController@reorder');
 	});
-
-	//under construction: uploads
-	//Route::any('/upload/file/to/s3', 'InstanceController@redactor_s3');
-	//Route::post('/objects/{object_id}/instances/{instance_id}/upload/image', 'InstanceController@upload_image');
-	Route::post('/upload/image', 'UploadController@image');
 
 });
 

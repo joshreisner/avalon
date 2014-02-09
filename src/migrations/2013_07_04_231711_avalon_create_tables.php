@@ -29,6 +29,22 @@ class AvalonCreateTables extends Migration {
 			$table->integer('precedence');
 		});
 		
+		Schema::create(Config::get('avalon::db_prefix') . 'files', function($table){
+			$table->increments('id');
+			$table->integer('field_id');
+			$table->integer('instance_id')->nullable();
+			$table->string('title');
+			$table->string('extension', 8);
+			$table->string('url');
+			$table->integer('width')->nullable();
+			$table->integer('height')->nullable();
+			$table->integer('size');
+			$table->boolean('writable')->default(0);
+			$table->dateTime('updated_at');
+			$table->integer('updated_by');
+			$table->integer('precedence');
+		});
+
 		Schema::create(Config::get('avalon::db_prefix') . 'object_links', function($table){
 			$table->integer('object_id');
 			$table->integer('linked_id');
