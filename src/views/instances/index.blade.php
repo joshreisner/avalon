@@ -12,8 +12,10 @@
 		)) }}
 
 	<div class="btn-group">
+		@if (Auth::user()->role < 2)
 		<a class="btn btn-default" href="{{ URL::action('ObjectController@edit', $object->id) }}"><i class="glyphicon glyphicon-cog"></i> {{ Lang::get('avalon::messages.objects_edit', array('title'=>$object->title)) }}</a>
 		<a class="btn btn-default" href="{{ URL::action('FieldController@index', $object->id) }}"><i class="glyphicon glyphicon-list"></i> {{ Lang::get('avalon::messages.fields') }}</a>
+		@endif
 		<a class="btn btn-default" id="create" href="{{ URL::action('InstanceController@create', $object->id) }}"><i class="glyphicon glyphicon-plus"></i> {{ Lang::get('avalon::messages.instances_create') }}</a>
 	</div>
 

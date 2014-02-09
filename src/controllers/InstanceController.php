@@ -128,7 +128,7 @@ class InstanceController extends \BaseController {
 		$inserts = array(
 			'created_at'=>new DateTime,
 			'updated_at'=>new DateTime,
-			'updated_by'=>Session::get('avalon_id'),
+			'updated_by'=>Auth::user()->id,
 			'precedence'=>DB::table($object->name)->max('precedence') + 1
 		);
 		
@@ -145,7 +145,7 @@ class InstanceController extends \BaseController {
 		DB::table(Config::get('avalon::db_prefix') . 'objects')->where('id', $object_id)->update(array(
 			'count'=>DB::table($object->name)->whereNull('deleted_at')->count(),
 			'updated_at'=>new DateTime,
-			'updated_by'=>Session::get('avalon_id')
+			'updated_by'=>Auth::user()->id
 		));
 
 		//handle any checkboxes, had to wait for instance_id
@@ -244,7 +244,7 @@ class InstanceController extends \BaseController {
 		//metadata
 		$updates = array(
 			'updated_at'=>new DateTime,
-			'updated_by'=>Session::get('avalon_id'),
+			'updated_by'=>Auth::user()->id,
 		);
 		
 		//run loop through the fields
@@ -276,7 +276,7 @@ class InstanceController extends \BaseController {
 		DB::table(Config::get('avalon::db_prefix') . 'objects')->where('id', $object_id)->update(array(
 			'count'=>DB::table($object->name)->whereNull('deleted_at')->count(),
 			'updated_at'=>new DateTime,
-			'updated_by'=>Session::get('avalon_id')
+			'updated_by'=>Auth::user()->id
 		));
 		
 		return Redirect::action('InstanceController@index', $object_id)->with('instance_id', $instance_id);
@@ -346,14 +346,14 @@ class InstanceController extends \BaseController {
 		DB::table($object->name)->where('id', $instance_id)->update(array(
 			'deleted_at'=>$deleted_at,
 			'updated_at'=>new DateTime,
-			'updated_by'=>Session::get('avalon_id'),
+			'updated_by'=>Auth::user()->id,
 		));
 
 		//update object meta
 		DB::table(Config::get('avalon::db_prefix') . 'objects')->where('id', $object_id)->update(array(
 			'count'=>DB::table($object->name)->whereNull('deleted_at')->count(),
 			'updated_at'=>new DateTime,
-			'updated_by'=>Session::get('avalon_id'),
+			'updated_by'=>Auth::user()->id,
 		));
 
 		$updated = DB::table($object->name)->where('id', $instance_id)->pluck('updated_at');

@@ -8,7 +8,7 @@ class LoginController extends \BaseController {
 		if (!DB::table(Config::get('avalon::db_prefix') . 'users')->count()) return View::make('avalon::login.install');
 
 		//already logged in
-		if (Session::has('avalon_id')) return Redirect::action('ObjectController@index');
+		if (Auth::check()) return Redirect::action('ObjectController@index');
 		
 		//not logged in
 		return View::make('avalon::login.index');
@@ -19,18 +19,13 @@ class LoginController extends \BaseController {
 		//regular login
 		if (DB::table(Config::get('avalon::db_prefix') . 'users')->count()) {
 			//attempt auth
-			if ($user = DB::table(Config::get('avalon::db_prefix') . 'users')->whereNull('deleted_at')->where('email', Input::get('email'))->select('id', 'password')->first()) {
-				if (Hash::check(Input::get('password'), $user->password)) {
-					//log in with supplied credentials
-					Session::put('avalon_id', $user->id);
-					DB::table(Config::get('avalon::db_prefix') . 'users')->where('id', $user->id)->update(array(
-						'last_login'=>new DateTime
-					));
+			if (Auth::attempt(array('email'=>Input::get('email'), 'password'=>Input::get('password')), true)) {
 
-					//redirect::intended does not seem to be working
-					if (Session::has('pre_login_url')) return Redirect::to(Session::get('pre_login_url'));
-					return Redirect::action('ObjectController@index');
-				}
+				DB::table(Config::get('avalon::db_prefix') . 'users')->where('id', Auth::user()->id)->update(array(
+					'last_login'=>new DateTime
+				));
+
+				return Redirect::intended(URL::action('ObjectController@index'));
 			}
 			return Redirect::action('LoginController@getIndex');
 		} 
@@ -49,14 +44,14 @@ class LoginController extends \BaseController {
 		//show that user created self
 		DB::table(Config::get('avalon::db_prefix') . 'users')->where('id', $user_id)->update(array('updated_by'=>$user_id));
 		
-		Session::put('avalon_id', $user_id);
+		Auth::loginUsingId($user_id);
 		
 		return Redirect::action('ObjectController@index');
 	}
 	
 	//logout
 	public function getLogout() {
-		Session::forget('avalon_id');
+		Auth::logout();
 		return Redirect::action('LoginController@getIndex');
 	}
 

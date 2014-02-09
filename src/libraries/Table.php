@@ -81,6 +81,8 @@ class Table {
 						$value = Dates::time($value);
 					} elseif ($column['type'] == 'date') {
 						$value = Dates::absolute($value);
+					} elseif ($column['type'] == 'date-relative') {
+						$value = Dates::relative($value);
 					} elseif ($column['type'] == 'datetime') {
 						$value = Dates::absolute($value);
 					}

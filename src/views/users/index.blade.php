@@ -18,7 +18,7 @@
 	{{ Table::rows($users)
 		->column('name', 'string', Lang::get('avalon::messages.users_name'))
 		->column('role', 'string', Lang::get('avalon::messages.users_role'))
-		->column('last_login', 'date', Lang::get('avalon::messages.users_last_login'))
+		->column('last_login', 'date-relative', Lang::get('avalon::messages.users_last_login'))
 		->column('updated_at', 'updated_at', Lang::get('avalon::messages.site_updated_at'))
 		->deletable()
 		->draw()

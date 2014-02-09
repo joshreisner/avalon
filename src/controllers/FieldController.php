@@ -27,8 +27,8 @@ class FieldController extends \BaseController {
 
 	//show a list of an object's fields
 	public function index($object_id) {
-		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
-		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->orderBy('precedence')->get();
+		$object = DB::table(Config::get('avalon::db_prefix') . 'objects')->where('id', $object_id)->first();
+		$fields = DB::table(Config::get('avalon::db_prefix') . 'fields')->where('object_id', $object_id)->orderBy('precedence')->get();
 		foreach ($fields as &$field) {
 			$field->link = URL::action('FieldController@edit', array($object->id, $field->id));
 		}
@@ -41,15 +41,15 @@ class FieldController extends \BaseController {
 	
 	//show create form
 	public function create($object_id) {
-		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
+		$object = DB::table(Config::get('avalon::db_prefix') . 'objects')->where('id', $object_id)->first();
 
-		$related_fields = DB::table('avalon_fields')
+		$related_fields = DB::table(Config::get('avalon::db_prefix') . 'fields')
 				->where('object_id', $object->id)
 				->where('type', 'string')
 				->orderBy('precedence')
 				->lists('title', 'id');
 
-		$related_objects = DB::table('avalon_objects')
+		$related_objects = DB::table(Config::get('avalon::db_prefix') . 'objects')
 				->orderBy('title')
 				->lists('title', 'id');
 
@@ -67,12 +67,12 @@ class FieldController extends \BaseController {
 		$type		= Input::get('type');
 		$required	= Input::has('required') ? 1 : 0;
 		
-		$table_name = DB::table('avalon_objects')->where('id', $object_id)->pluck('name');
+		$table_name = DB::table(Config::get('avalon::db_prefix') . 'objects')->where('id', $object_id)->pluck('name');
 
 		if ($type == 'checkboxes') {
 			//use field_name to store joining table
 			$columns = array(
-				Str::singular(DB::table('avalon_objects')->where('id', Input::get('related_object_id'))->pluck('name')), 
+				Str::singular(DB::table(Config::get('avalon::db_prefix') . 'objects')->where('id', Input::get('related_object_id'))->pluck('name')), 
 				Str::singular($table_name)
 			);
 			sort($columns);
@@ -162,7 +162,7 @@ class FieldController extends \BaseController {
 		}
 
 		//save field info to fields table
-		$field_id = DB::table('avalon_fields')->insertGetId(array(
+		$field_id = DB::table(Config::get('avalon::db_prefix') . 'fields')->insertGetId(array(
 			'title'				=>Input::get('title'),
 			'name'				=>$field_name,
 			'type'				=>$type,
@@ -173,8 +173,8 @@ class FieldController extends \BaseController {
 			'related_field_id'	=>Input::has('related_field_id') ? Input::get('related_field_id') : null,
 			'related_object_id'	=>Input::has('related_object_id') ? Input::get('related_object_id') : null,
 			'required'			=>$required,
-			'precedence'		=>DB::table('avalon_fields')->where('object_id', $object_id)->max('precedence') + 1,
-			'updated_by'		=>Session::get('avalon_id'),
+			'precedence'		=>DB::table(Config::get('avalon::db_prefix') . 'fields')->where('object_id', $object_id)->max('precedence') + 1,
+			'updated_by'		=>Auth::user()->id,
 			'updated_at'		=>new DateTime,
 		));
 
@@ -185,17 +185,17 @@ class FieldController extends \BaseController {
 	
 	//show edit form
 	public function edit($object_id, $field_id) {
-		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
-		$field = DB::table('avalon_fields')->where('id', $field_id)->first();
+		$object = DB::table(Config::get('avalon::db_prefix') . 'objects')->where('id', $object_id)->first();
+		$field = DB::table(Config::get('avalon::db_prefix') . 'fields')->where('id', $field_id)->first();
 
-		$related_fields = array(''=>'') + DB::table('avalon_fields')
+		$related_fields = array(''=>'') + DB::table(Config::get('avalon::db_prefix') . 'fields')
 				->where('object_id', $field->object_id)
 				->where('id', '<>', $field->id)
 				->where('type', 'string')
 				->orderBy('precedence')
 				->lists('title', 'id');
 
-		$related_objects = array(''=>'') + DB::table('avalon_objects')
+		$related_objects = array(''=>'') + DB::table(Config::get('avalon::db_prefix') . 'objects')
 				->orderBy('title')
 				->lists('title', 'id');
 
@@ -211,10 +211,10 @@ class FieldController extends \BaseController {
 	
 	//save edits to database
 	public function update($object_id, $field_id) {
-		$table_name = DB::table('avalon_objects')->where('id', $object_id)->pluck('name');
+		$table_name = DB::table(Config::get('avalon::db_prefix') . 'objects')->where('id', $object_id)->pluck('name');
 		$field_name = Str::slug(Input::get('name'), '_');
 		$required	= Input::has('required') ? 1 : 0;
-		$field = DB::table('avalon_fields')->where('id', $field_id)->first();
+		$field = DB::table(Config::get('avalon::db_prefix') . 'fields')->where('id', $field_id)->first();
 
 		//rename column if necessary		
 		if ($field->name != $field_name) {
@@ -232,7 +232,7 @@ class FieldController extends \BaseController {
 		}
 
 		//related field and object
-		DB::table('avalon_fields')->where('id', $field_id)->update(array(
+		DB::table(Config::get('avalon::db_prefix') . 'fields')->where('id', $field_id)->update(array(
 			'title'				=>Input::get('title'),
 			'name'				=>$field_name,
 			'visibility'		=>Input::get('visibility'),
@@ -241,7 +241,7 @@ class FieldController extends \BaseController {
 			'related_field_id'	=>Input::has('related_field_id') ? Input::get('related_field_id') : null,
 			'related_object_id'	=>Input::has('related_object_id') ? Input::get('related_object_id') : null,
 			'required'			=>$required,
-			'updated_by'		=>Session::get('avalon_id'),
+			'updated_by'		=>Auth::user()->id,
 			'updated_at'		=>new DateTime,
 		));
 		
@@ -250,8 +250,8 @@ class FieldController extends \BaseController {
 	
 	//delete field & remove from database
 	public function destroy($object_id, $field_id) {
-		$table = DB::table('avalon_objects')->where('id', $object_id)->first();
-		$field = DB::table('avalon_fields')->where('id', $field_id)->first();
+		$table = DB::table(Config::get('avalon::db_prefix') . 'objects')->where('id', $object_id)->first();
+		$field = DB::table(Config::get('avalon::db_prefix') . 'fields')->where('id', $field_id)->first();
 
 		if ($field->type == 'checkboxes') {
 			Schema::dropIfExists($field->name);
@@ -261,7 +261,7 @@ class FieldController extends \BaseController {
 			});
 		}
 		
-		DB::table('avalon_fields')->where('id', $field_id)->delete();
+		DB::table(Config::get('avalon::db_prefix') . 'fields')->where('id', $field_id)->delete();
 		return Redirect::action('FieldController@index', $object_id);
 	}
 	
@@ -272,7 +272,7 @@ class FieldController extends \BaseController {
 		foreach ($fields as $field) {
 			list($garbage, $id) = explode('=', $field);
 			if (!empty($id)) {
-				DB::table('avalon_fields')->where('id', $id)->update(array('precedence'=>$precedence));
+				DB::table(Config::get('avalon::db_prefix') . 'fields')->where('id', $id)->update(array('precedence'=>$precedence));
 				$precedence++;
 			}
 		}
@@ -282,8 +282,8 @@ class FieldController extends \BaseController {
 
 	private static function organizeTable($object_id) {
 		//reorder actual table fields
-		$object = DB::table('avalon_objects')->where('id', $object_id)->first();
-		$fields = DB::table('avalon_fields')->where('object_id', $object_id)->orderBy('precedence')->get();
+		$object = DB::table(Config::get('avalon::db_prefix') . 'objects')->where('id', $object_id)->first();
+		$fields = DB::table(Config::get('avalon::db_prefix') . 'fields')->where('object_id', $object_id)->orderBy('precedence')->get();
 		$system = array('created_at', 'updated_at', 'updated_by', 'deleted_at', 'precedence');
 
 		db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT FIRST');

@@ -59,7 +59,7 @@ class ObjectController extends \BaseController {
 			'direction'		=> $direction,
 			'list_grouping'	=> Input::get('list_grouping'),
 			'updated_at'	=> new DateTime,
-			'updated_by'	=> Session::get('avalon_id'),
+			'updated_by'	=> Auth::user()->id,
 		));
 		
 		//create title field for table by default
@@ -71,7 +71,7 @@ class ObjectController extends \BaseController {
 			'required'		=> 1,
 			'object_id'		=> $object_id,
 			'updated_at'	=> new DateTime,
-			'updated_by'	=> Session::get('avalon_id'),
+			'updated_by'	=> Auth::user()->id,
 			'precedence'	=> 1
 		));
 		

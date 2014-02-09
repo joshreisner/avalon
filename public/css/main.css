@@ -6964,6 +6964,10 @@ body {
         white-space: nowrap; }
       body .main table tr th.integer, body .main table tr td.integer {
         text-align: right; }
+      body .main table tr th.date-relative, body .main table tr td.date-relative {
+        text-align: right;
+        white-space: nowrap;
+        width: 120px; }
       body .main table tr th.updated_at, body .main table tr td.updated_at {
         text-align: right;
         white-space: nowrap;

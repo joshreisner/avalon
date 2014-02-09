@@ -10,10 +10,14 @@
 		Lang::get('avalon::messages.objects'),
 		)) }}
 
+	@if (Auth::user()->role < 3)
 	<div class="btn-group">
 		<a class="btn btn-default" href="{{ URL::action('UserController@index') }}"><i class="glyphicon glyphicon-user"></i> {{ Lang::get('avalon::messages.users') }}</a>
+		@if (Auth::user()->role < 2)
 		<a class="btn btn-default" href="{{ URL::action('ObjectController@create') }}"><i class="glyphicon glyphicon-plus"></i> {{ Lang::get('avalon::messages.objects_create') }}</a>
+		@endif
 	</div>
+	@endif
 
 	@if (count($objects))
 		{{ Table::rows($objects)
