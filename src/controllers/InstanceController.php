@@ -175,7 +175,7 @@ class InstanceController extends \BaseController {
 		$instance = DB::table($object->name)->where('id', $instance_id)->first();
 
 		//format instance values for form
-		foreach ($fields as $field) {
+		foreach ($fields as &$field) {
 			if ($field->type == 'datetime') {
 				if (!empty($instance->{$field->name})) $instance->{$field->name} = date('Y-m-d\TH:i:s', strtotime($instance->{$field->name}));
 			} elseif (($field->type == 'checkboxes') || ($field->type == 'select')) {
@@ -215,9 +215,8 @@ class InstanceController extends \BaseController {
 
 			} elseif ($field->type == 'image') {
 				list($field->screen_width, $field->screen_height) = self::getImageDimensions($field->width, $field->height);
+				$instance->{$field->name} = DB::table(Config::get('avalon::db_prefix') . 'files')->where('id', $instance->{$field->name})->first();
 			} elseif ($field->type == 'slug') {
-				if (empty($field->help)) $field->help = Lang::get('avalon::messages.fields_slug_help');
-
 				if ($field->required && empty($instance->{$field->name}) && $field->related_field_id) {
 					//slugify related field to populate this one
 					foreach ($fields as $related_field) {

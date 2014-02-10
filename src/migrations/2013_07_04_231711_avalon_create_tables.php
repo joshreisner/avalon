@@ -33,7 +33,9 @@ class AvalonCreateTables extends Migration {
 			$table->increments('id');
 			$table->integer('field_id');
 			$table->integer('instance_id')->nullable();
-			$table->string('title');
+			$table->string('host')->nullable();
+			$table->string('path')->nullable();
+			$table->string('name');
 			$table->string('extension', 8);
 			$table->string('url');
 			$table->integer('width')->nullable();

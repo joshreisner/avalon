@@ -23,9 +23,9 @@ $(function() {
 		onDragClass: 'dragging',
 		onDrop: function(table, row) {
 			$.post($(table).attr('data-draggable-url'), { order: $(table).tableDnDSerialize() }, function(data){
-				window.console.log('success with ' + data);
+				//window.console.log('success with ' + data);
 			}).fail(function() { 
-				window.console.log('error');
+				//window.console.log('error');
 			});
 		}
 	});
@@ -145,10 +145,10 @@ $(function() {
 	//typeaheads	
 	$("input.typeahead").each(function(){
 		var $this = $(this);
-		console.log('hi');
+		//console.log('hi');
 		$.getJSON($this.attr("data-typeahead"), function(data){
 		    $this.typeahead({ source:data });
-			console.log('there' + data);
+			//console.log('there' + data);
 		});
 	});
 
@@ -170,24 +170,24 @@ $(function() {
 	$("form.upload_image input").fileupload({
 		url: 				"/login/upload/image",
 		type: 				"POST",
-		dataType: 			"text", 
+		dataType: 			"json", 
 		acceptFileTypes : 	/(\.|\/)(jpg|gif|png)$/i,
 		autoUpload: 		true,
 		add: function(e, data) {
 			data.submit();
 		},
 		fail: function(e, data) {
-			window.console.log('fail ' + data.jqXHR.responseText);
+			//window.console.log('fail ' + data.jqXHR.responseText);
 		},
 		done: function(e, data) {
-			var filename = data.jqXHR.responseText;
+			//var file_id = data.jqXHR.responseText;
 			var field_id = $(this).parent().find("input[name=field_id]").val();
-			console.log(filename + " " + field_id);
+			//console.log(data);
 			$("div#image_" + field_id)
-				.css('backgroundImage', 'url(' + filename + ')')
+				.css('backgroundImage', 'url(' + data.result.url + ')')
 				.addClass("filled")
 				.next()
-				.val(filename);
+				.val(data.result.file_id);
 		}
 	});
 

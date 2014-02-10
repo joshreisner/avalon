@@ -1,43 +1,57 @@
 <?php
 
-class UploadController extends \BaseController {
+class FileController extends \BaseController {
 
 	public function image() {
 		if (Input::hasFile('image') && Input::has('field_id')) {
 
 			//get field info
-			$field 	= DB::table('avalon_fields')->where('id', Input::get('field_id'))->first();
-			$object = DB::table('avalon_objects')->where('id', $field->object_id)->first();
-			$unique	= Str::random();
+			$field 	= DB::table(Config::get('avalon::db_prefix') . 'fields')->where('id', Input::get('field_id'))->first();
+			$object = DB::table(Config::get('avalon::db_prefix') . 'objects')->where('id', $field->object_id)->first();
+			$unique	= Str::random(5);
 
-			//make file name
-			$dir 	= '/' . implode('/', array(
+			//make path
+			$path = '/' . implode('/', array(
 				'packages',
 				'joshreisner',
 				'avalon',
-				'uploads',
+				'files',
 				$object->name,
 				$field->name,
 				$unique,
 			));
 
-			mkdir(public_path() . $dir, 0777, true);
+			//also make path in the filesystem
+			mkdir(public_path() . $path, 0777, true);
 
-			$file = $dir . '/' . Str::slug(Input::file('image')->getClientOriginalName(), '-');
-
-			//handle extension if exists
-			if ($ext = strtolower(Input::file('image')->getClientOriginalExtension())) {
-				$file_length = strlen($file);
-				$ext_length = strlen($ext);
-				if (substr($file, $file_length - $ext_length, $ext_length) == $ext) {
-					$file = substr($file, 0, $file_length - $ext_length);
-				}
-				$file .= '.' . $ext;
+			//get name and extension
+			$name = Str::slug(Input::file('image')->getClientOriginalName(), '-');
+			if ($extension = strtolower(Input::file('image')->getClientOriginalExtension())) {
+				$name = substr($name, 0, strlen($name) - strlen($extension));
 			}
 
+			//process and save image
 			Intervention\Image\Image::make(file_get_contents(Input::file('image')))
 				->resize($field->width, $field->height, true)
-				->save(public_path() . '/' . $file);
+				->save(public_path() . $path . '/' . $name . '.' . $extension);
+
+			$size = filesize(public_path() . $path . '/' . $name . '.' . $extension);
+
+			//insert record for image
+			$file_id = DB::table(Config::get('avalon::db_prefix') . 'files')->insertGetId(array(
+				'field_id'	=>$field->id,
+				'path'		=>$path,
+				'name'		=>$name,
+				'extension'	=>$extension,
+				'url'		=>$path . '/' . $name . '.' . $extension,
+				'width'		=>$field->width,
+				'height'	=>$field->height,
+				'size'		=>$size,
+				'writable'	=>1,
+				'updated_by'=>Auth::user()->id,
+				'updated_at'=>new DateTime,
+				'precedence'=>DB::table(Config::get('avalon::db_prefix') . 'files')->where('field_id', $field->id)->max('precedence') + 1,
+			));
 
 			/*push it over to s3
 			$target = Str::random() . '/' . Input::file('image')->getClientOriginalName();
@@ -51,7 +65,7 @@ class UploadController extends \BaseController {
 			return 'https://s3.amazonaws.com/' . $bucket . '/' . $target;
 			*/
 
-			return $file;
+			return json_encode(array('file_id'=>$file_id, 'url'=>$path . '/' . $name . '.' . $extension));
 		} elseif (!Input::hasFile('image')) {
 			return 'no image';
 		} elseif (!Input::hasFile('field_id')) {

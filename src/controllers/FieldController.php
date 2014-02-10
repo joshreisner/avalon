@@ -108,6 +108,8 @@ class FieldController extends \BaseController {
 			});
 		} else {
 			$field_name = Str::slug(Input::get('title'), '_');
+
+			//add _id suffix to foreign key columns (convention)
 			if ($type == 'select' && !Str::endsWith($field_name, '_id')) $field_name .= '_id';
 
 			//add new column
@@ -138,6 +140,7 @@ class FieldController extends \BaseController {
 						}
 						break;
 
+					case 'image':
 					case 'integer':
 					case 'select':
 						if ($required) {
@@ -147,7 +150,6 @@ class FieldController extends \BaseController {
 						}
 						break;
 
-					case 'image':
 					case 'slug':
 					case 'string':
 					case 'url':
@@ -340,11 +342,11 @@ class FieldController extends \BaseController {
 			case 'datetime':
 				return 'DATETIME';
 
+			case 'image':
 			case 'integer':
 			case 'select':
 				return 'INTEGER';
 
-			case 'image':
 			case 'slug':
 			case 'string':
 			case 'url':
