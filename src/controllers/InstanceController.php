@@ -162,8 +162,12 @@ class InstanceController extends \BaseController {
 						));
 					}
 				}
+			} elseif ($field->type == 'image') {
+				DB::table(Config::get('avalon::db_prefix') . 'files')->where('id', Input::get($field->name))->update(array('instance_id'=>$instance_id));
 			}
 		}
+
+		FileController::cleanup();
 		
 		return Redirect::action('InstanceController@index', $object_id)->with('instance_id', $instance_id);
 	}
@@ -262,13 +266,26 @@ class InstanceController extends \BaseController {
 						));
 					}
 				}
-			} elseif ($field->type == 'images') {
+			} elseif ($field->type == 'image') {
+				DB::table(Config::get('avalon::db_prefix') . 'files')
+					->where('id', Input::get($field->name))
+					->update(array('instance_id'=>$instance_id));
 
+				if ($files = DB::table(Config::get('avalon::db_prefix') . 'files')
+					->where('field_id', $field->id)
+					->where('instance_id', $instance_id)
+					->where('id', '<>', Input::get($field->name))
+					->get()) {
+					FileController::cleanup($files);
+				}
+				$updates[$field->name] = Input::get($field->name);
 			} else {
 				$updates[$field->name] = self::sanitize($field);
 			}
 		}
 		
+		FileController::cleanup();
+
 		DB::table($object->name)->where('id', $instance_id)->update($updates);
 		
 		//update object meta

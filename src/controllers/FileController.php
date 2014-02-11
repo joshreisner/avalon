@@ -75,4 +75,25 @@ class FileController extends \BaseController {
 		}
 	}
 
+	//todo amazon?
+	public static function cleanup($files=false) {
+
+		//by default, remove all non-instanced files
+		if (!$files) $files = DB::table(Config::get('avalon::db_prefix') . 'files')->whereNull('instance_id')->get();
+		
+		//try to physically remove
+		$ids = array();
+		foreach ($files as $file) {
+			$ids[] = $file->id;
+			if ($file->writable) {
+				@unlink(public_path() . $file->path . '/' . $file->name . '.' . $file->extension);
+				@rmdir(public_path() . $file->path);
+			}
+		}
+
+		//remove records
+		if (!empty($ids)) {
+			DB::table(Config::get('avalon::db_prefix') . 'files')->whereIn('id', $ids)->delete();
+		}
+	}
 }
