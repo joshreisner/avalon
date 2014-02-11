@@ -15,8 +15,15 @@ class InstanceController extends \BaseController {
 			->orWhere('id', $object->group_by_field)
 			->orderBy('precedence')->get();
 		$selects = array($object->name . '.id', $object->name . '.updated_at', $object->name . '.deleted_at');
-		foreach ($fields as $field) $selects[] = $object->name . '.' . $field->name;
-		$instances = DB::table($object->name)->select($selects);
+		$instances = DB::table($object->name);
+		foreach ($fields as $field) {
+			$selects[] = $object->name . '.' . $field->name;
+			if ($field->type == 'image') {
+				$instances->leftJoin(Config::get('avalon::db_prefix') . 'files', $object->name . '.' . $field->name, '=', Config::get('avalon::db_prefix') . 'files.id');
+				$selects[] = Config::get('avalon::db_prefix') . 'files.url as ' . $field->name . '_url';
+			}
+		}
+		$instances->select($selects);
 
 		//group by field?
 		if (!empty($object->group_by_field)) {

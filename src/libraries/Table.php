@@ -72,7 +72,7 @@ class Table {
 				} elseif ($column['type'] == 'delete') {
 					$value = '<a href="' . $row->delete . '">' . (!$row->deleted_at ? '<i class="glyphicon glyphicon-ok-circle"></i>' : '<i class="glyphicon glyphicon-remove-circle"></i>') . '</a>';
 				} elseif ($column['type'] == 'image') {
-					$value = '<a href="' . $row->link . '"><img src="' . $row->{$column['key']} . '" width="' . $column['width'] . '" height="' . $column['height'] . '"></a>';
+					$value = '<a href="' . $row->link . '"><img src="' . $row->{$column['key'] . '_url'} . '" width="' . $column['width'] . '" height="' . $column['height'] . '"></a>';
 				} else {
 					$value = Str::limit(strip_tags($row->{$column['key']}));
 					if ($column['type'] == 'updated_at') {
