@@ -2,10 +2,6 @@
 
 use Illuminate\Support\ServiceProvider;
 
-class AvalonUpload extends \Eloquent {
-	protected $table = 'avalon_uploads';
-}
-
 class AvalonServiceProvider extends ServiceProvider {
 
 	/**
@@ -87,6 +83,10 @@ class AvalonServiceProvider extends ServiceProvider {
 		//have to get config in a special way
 		$db_prefix = \Config::get('packages/joshreisner/avalon/config.db_prefix');
 
+		eval('class AvalonFile extends Eloquent {
+				protected $table = \'' . $db_prefix . 'files\';
+			}');
+
 		//register avalon objects as models for yr application
 		foreach (\DB::table($db_prefix .'objects')->get() as $object) {
 
@@ -158,6 +158,17 @@ class AvalonServiceProvider extends ServiceProvider {
 				}';
 			}
 
+			$images = \DB::table($db_prefix . 'fields')
+				->where('object_id', $object->id)
+				->whereIn('type', array('image'))
+				->select('name')
+				->get();
+			foreach ($images as $image)	 {
+				$relationships[] = 'public function ' . substr($image->name, 0, -3) . '() {
+					return $this->hasOne("AvalonFile", "id", "' . $image->name . '");
+				}';
+			}
+
 			//define model
 			eval('class ' . $object->model . ' extends Eloquent {
 				protected $table = "' . $object->name . '";
@@ -174,11 +185,7 @@ class AvalonServiceProvider extends ServiceProvider {
 			        });
 				}
 
-				' /* save this for later
-				public function uploads() {
-					return $this->hasMany("AvalonUpload", "instance_id")->where("table", "' . $object->name . '");
-				}
-				'*/ . implode(' ', $relationships) . '
+				' . implode(' ', $relationships) . '
 			}');
 		}
 

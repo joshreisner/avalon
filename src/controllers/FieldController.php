@@ -109,8 +109,8 @@ class FieldController extends \BaseController {
 		} else {
 			$field_name = Str::slug(Input::get('title'), '_');
 
-			//add _id suffix to foreign key columns (convention)
-			if ($type == 'select' && !Str::endsWith($field_name, '_id')) $field_name .= '_id';
+			//add _id suffix to foreign key columns (convention, also relationship eg hasOne() conflict)
+			if (in_array($type, array('select', 'image')) && !Str::endsWith($field_name, '_id')) $field_name .= '_id';
 
 			//add new column
 			Schema::table($table_name, function($table) use ($type, $field_name, $required) {
