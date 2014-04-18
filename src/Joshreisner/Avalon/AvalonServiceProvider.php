@@ -83,12 +83,14 @@ class AvalonServiceProvider extends ServiceProvider {
 		//have to get config in a special way
 		$db_prefix = \Config::get('packages/joshreisner/avalon/config.db_prefix');
 
+		if (!\Schema::hasTable($db_prefix . 'objects')) return;
+
 		eval('class AvalonFile extends Eloquent {
 				protected $table = \'' . $db_prefix . 'files\';
 			}');
 
 		//register avalon objects as models for yr application
-		foreach (\DB::table($db_prefix .'objects')->get() as $object) {
+		foreach (\DB::table($db_prefix . 'objects')->get() as $object) {
 
 			//relationships
 			$relationships = array();
