@@ -7,6 +7,8 @@ class InstanceController extends \BaseController {
 
 	//show list of instances for an object
 	public function index($object_id) {
+
+		//get more info about the object
 		$object = DB::table(Config::get('avalon::db_prefix') . 'objects')->where('id', $object_id)->first();
 		$object->nested = false;
 		$fields = DB::table(Config::get('avalon::db_prefix') . 'fields')
@@ -33,6 +35,11 @@ class InstanceController extends \BaseController {
 				//nested object
 				$object->nested = true;
 			} else {
+				//pull group_by_field out of the list of fields so it's not a column in the table
+				foreach ($fields as $key=>$field) {
+					if ($field->id == $object->group_by_field) unset($fields[$key]);
+				}
+
 				$instances = $instances->
 					join($grouped_object->name, $object->name . '.' . $grouped_field->name, '=', $grouped_object->name . '.id')
 					->orderBy($grouped_object->name . '.' . $grouped_object->order_by, $grouped_object->direction)
