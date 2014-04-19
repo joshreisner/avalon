@@ -18,9 +18,9 @@
 		@if ($field->type == 'checkboxes')
 			<div class="form-group checkboxes">
 			    <label class="control-label col-sm-2">{{ $field->title }}</label>
-			    <div class="checkbox">
+			    <div class="col-sm-10">
 			    	@foreach ($field->options as $option_id=>$option_value)
-					<label class="checkbox">
+					<label class="checkbox-inline">
 						<input type="checkbox" name="{{ $field->name }}[]" value="{{ $option_id }}" @if (in_array($option_id, $instance->{$field->name})) checked="checked"@endif> {{ $option_value }}
 					</label>
 					@endforeach

@@ -16,7 +16,7 @@ $danger			: #f2dede;
 html { height: 100%; }
 
 body {
-	height: 100%;
+	height: 100%; 
 
 	h1, h2, h3, h4, h5, h6 { font-family: inherit; }
 
@@ -40,7 +40,8 @@ body {
 	}
 	
 	form {
-		margin-bottom: $margin;
+		margin-bottom: $margin; 
+		
 		.form-group {
 			/* label sup { display: none; } */
 
@@ -54,6 +55,10 @@ body {
 
 			div.checkbox { padding-top: 4px; }
 
+			.checkbox-inline {
+				margin-left: 0; margin-right: 20px; min-width: 152px;
+			}
+			
 			.redactor_box {
 				border: 1px solid $gray; border-radius: $field_radius;
 				ul.redactor_toolbar { 
@@ -80,16 +85,6 @@ body {
 			&:last-child { margin-bottom: 0; }
 			&.has-error {
 				.help-inline { display: none !important; }
-			}
-
-			&.checkboxes {
-				.controls {
-					padding-top: 5px; overflow: auto; max-height: 300px;
-					label.checkbox { 
-						width: 152px; float: left; 
-						&:first-child { padding-top: 0; }
-					}
-				}
 			}
 		}
 

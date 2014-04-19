@@ -18,11 +18,12 @@
 		@if ($field->type == 'checkboxes')
 			<div class="form-group">
 			    <label class="control-label col-sm-2">{{ $field->title }}</label>
-			    <div class="checkbox">
+			    <div class="col-sm-10">
 			    	@foreach ($field->options as $option_id=>$option_value)
-					<label class="checkbox">
-						<input type="checkbox" name="{{ $field->name }}[]" value="{{ $option_id }}"> {{ $option_value }}
-					</label>
+						<label class="checkbox-inline">
+							<input type="checkbox" name="{{ $field->name }}[]" value="{{ $option_id }}">
+							{{ $option_value }}
+						</label>
 					@endforeach
 				</div>
 			</div>

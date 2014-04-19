@@ -231,6 +231,13 @@ class InstanceController extends \BaseController {
 					$field->options = array(''=>'') + $field->options;
 				}
 
+				//get checkbox values todo make a function for consistently getting these checkbox column names
+				if ($field->type == 'checkboxes') {
+					$table_key = Str::singular($object->name) . '_id';
+					$foreign_key = Str::singular($related_object->name) . '_id';
+					$instance->{$field->name} = DB::table($field->name)->where($table_key, $instance->id)->lists($foreign_key);
+				}
+
 			} elseif ($field->type == 'image') {
 				list($field->screen_width, $field->screen_height) = self::getImageDimensions($field->width, $field->height);
 				$instance->{$field->name} = DB::table(Config::get('avalon::db_prefix') . 'files')->where('id', $instance->{$field->name})->first();

@@ -32,6 +32,7 @@ return array(
 	'fields_types_cat_relationships'=> 'Relationships',
 	'fields_types_cat_strings'		=> 'Strings',
 
+	'fields_types_checkboxes'	=> 'Checkboxes',
 	'fields_types_color'		=> 'Color',
 	'fields_types_date' 		=> 'Date',
 	'fields_types_datetime'		=> 'Date + Time',

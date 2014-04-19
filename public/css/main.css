@@ -6813,6 +6813,10 @@ body {
         max-width: 200px; }
       body form .form-group div.checkbox {
         padding-top: 4px; }
+      body form .form-group .checkbox-inline {
+        margin-left: 0;
+        margin-right: 20px;
+        min-width: 152px; }
       body form .form-group .redactor_box {
         border: 1px solid #cccccc;
         border-radius: 4px; }
@@ -6845,15 +6849,6 @@ body {
         margin-bottom: 0; }
       body form .form-group.has-error .help-inline {
         display: none !important; }
-      body form .form-group.checkboxes .controls {
-        padding-top: 5px;
-        overflow: auto;
-        max-height: 300px; }
-        body form .form-group.checkboxes .controls label.checkbox {
-          width: 152px;
-          float: left; }
-          body form .form-group.checkboxes .controls label.checkbox:first-child {
-            padding-top: 0; }
     body form.upload {
       position: absolute; }
       body form.upload input {

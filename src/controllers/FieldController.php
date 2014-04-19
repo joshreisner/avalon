@@ -5,7 +5,6 @@ class FieldController extends \BaseController {
 	private static function types() {
 
 		return array(
-			//'checkboxes'	=>'Checkboxes',
 			Lang::get('avalon::messages.fields_types_cat_dates')=> array(
 				'date'			=>Lang::get('avalon::messages.fields_types_date'),
 				'datetime'		=>Lang::get('avalon::messages.fields_types_datetime'),
@@ -30,7 +29,7 @@ class FieldController extends \BaseController {
 				//'decimal'		=>'Decimal',
 			),
 			Lang::get('avalon::messages.fields_types_cat_relationships')=>array(
-				//'checkboxes'	=>Lang::get('avalon::messages.fields_types_checkboxes'),
+				'checkboxes'	=>Lang::get('avalon::messages.fields_types_checkboxes'),
 				'select'		=>Lang::get('avalon::messages.fields_types_select'),
 			),
 			Lang::get('avalon::messages.fields_types_cat_misc')=>array(
@@ -307,7 +306,7 @@ class FieldController extends \BaseController {
 	private static function organizeTable($object_id) {
 		//reorder actual table fields
 		$object = DB::table(Config::get('avalon::db_prefix') . 'objects')->where('id', $object_id)->first();
-		$fields = DB::table(Config::get('avalon::db_prefix') . 'fields')->where('object_id', $object_id)->orderBy('precedence')->get();
+		$fields = DB::table(Config::get('avalon::db_prefix') . 'fields')->where('object_id', $object_id)->where('type', '<>', 'checkboxes')->orderBy('precedence')->get();
 		$system = array('created_at', 'updated_at', 'updated_by', 'deleted_at', 'precedence');
 
 		db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT FIRST');
