@@ -41,7 +41,7 @@ class InstanceController extends \BaseController {
 				}
 
 				$instances = $instances->
-					join($grouped_object->name, $object->name . '.' . $grouped_field->name, '=', $grouped_object->name . '.id')
+					leftJoin($grouped_object->name, $object->name . '.' . $grouped_field->name, '=', $grouped_object->name . '.id')
 					->orderBy($grouped_object->name . '.' . $grouped_object->order_by, $grouped_object->direction)
 					->addSelect($grouped_object->name . '.title as group');
 			}
