@@ -402,6 +402,9 @@ class InstanceController extends \BaseController {
 	private function sanitize($field) {
 		$value = Input::get($field->name);
 
+		//format date fields
+		if ($field->type == 'date') $value = date('Y-m-d', strtotime($value));
+
 		//format slug fields
 		if ($field->type == 'slug') $value = Str::slug($value);
 

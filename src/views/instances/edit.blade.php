@@ -37,7 +37,11 @@
 			<div class="form-group">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
-					{{ Form::date($field->name, $instance->{$field->name}, array('class'=>'form-control ' . $field->type . ($field->required ? ' required' : ''))) }}
+		            <div class="input-group date" data-date-format="MM/DD/YYYY">
+		                <span class="input-group-addon"><span class="glyphicon glyphicon-date"></span></span>
+		                <input type="text" class="form-control  @if ($field->required) required@endif" value="{{ date('m/d/Y', strtotime($instance->{$field->name})) }}" name="{{ $field->name }}">
+		            </div>			    	
+					<!--{{ Form::date($field->name, $instance->{$field->name}, array('class'=>'form-control ' . $field->type . ($field->required ? ' required' : ''))) }}-->
 			    </div>
 			</div>
 		@elseif ($field->type == 'datetime')

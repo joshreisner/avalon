@@ -1,4 +1,5 @@
 /vendor
+/public/bower_components
 composer.phar
 composer.lock
 .DS_Store

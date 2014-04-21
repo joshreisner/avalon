@@ -1,0 +1,19 @@
+{
+  "name": "avalon",
+  "version": "0.0.0",
+  "homepage": "https://github.com/joshreisner/avalon",
+  "authors": [
+    "Josh Reisner <josh@joshreisner.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "eonasdan-bootstrap-datetimepicker": "~3.0.0"
+  }
+}

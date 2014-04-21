@@ -17,6 +17,12 @@ $(function() {
 	//autoselect first text element that's not a color (they get messed up when they're autoselected)
 	$('form input[type=text]:not(.color)').first().focus();
 
+	//datetimepicker
+	$('.input-group.date').datetimepicker({
+        pickTime: false
+    });
+
+
 	//draggable tables
 	$('table.draggable').tableDnD({
 		dragHandle: '.draggy',
