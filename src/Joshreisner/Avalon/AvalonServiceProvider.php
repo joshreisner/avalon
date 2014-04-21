@@ -171,12 +171,25 @@ class AvalonServiceProvider extends ServiceProvider {
 				}';
 			}
 
+			$dates = \DB::table($db_prefix . 'fields')
+				->where('object_id', $object->id)
+				->whereIn('type', array('date', 'datetime'))
+				->lists('name');
+			foreach ($dates as &$date) $date = '\'' . $date . '\'';
+			$dates = implode(',', $dates);
+
+
 			//define model
 			eval('class ' . $object->model . ' extends Eloquent {
 				protected $table = "' . $object->name . '";
 				protected $guarded = array();
 			    protected $softDelete = true;
 				public $object_id = "' . $object->id . '";
+
+				public function getDates()
+				{
+				    return array(' . $dates . ');
+				}
 
 				public static function boot() {
 			        static::creating(function($object)
