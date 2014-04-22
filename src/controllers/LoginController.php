@@ -5,7 +5,7 @@ class LoginController extends \BaseController {
 	//show login page if not logged in
 	public function getIndex() {
 		//show install form
-		if (!DB::table(Config::get('avalon::db_prefix') . 'users')->count()) return View::make('avalon::login.install');
+		if (!DB::table(Config::get('avalon::db_users'))->count()) return View::make('avalon::login.install');
 
 		//already logged in
 		if (Auth::check()) return Redirect::action('ObjectController@index');
@@ -17,11 +17,11 @@ class LoginController extends \BaseController {
 	//handle a post to the login or install form
 	public function postIndex() {
 		//regular login
-		if (DB::table(Config::get('avalon::db_prefix') . 'users')->count()) {
+		if (DB::table(Config::get('avalon::db_users'))->count()) {
 			//attempt auth
 			if (Auth::attempt(array('email'=>Input::get('email'), 'password'=>Input::get('password')), true)) {
 
-				DB::table(Config::get('avalon::db_prefix') . 'users')->where('id', Auth::user()->id)->update(array(
+				DB::table(Config::get('avalon::db_users'))->where('id', Auth::user()->id)->update(array(
 					'last_login'=>new DateTime
 				));
 
@@ -31,7 +31,7 @@ class LoginController extends \BaseController {
 		} 
 		
 		//make user
-		$user_id = DB::table(Config::get('avalon::db_prefix') . 'users')->insertGetId(array(
+		$user_id = DB::table(Config::get('avalon::db_users'))->insertGetId(array(
 			'firstname'		=> Input::get('firstname'),
 			'lastname'		=> Input::get('lastname'),
 			'email'			=> Input::get('email'),
@@ -42,7 +42,7 @@ class LoginController extends \BaseController {
 		));
 		
 		//show that user created self
-		DB::table(Config::get('avalon::db_prefix') . 'users')->where('id', $user_id)->update(array('updated_by'=>$user_id));
+		DB::table(Config::get('avalon::db_users'))->where('id', $user_id)->update(array('updated_by'=>$user_id));
 		
 		Auth::loginUsingId($user_id);
 		
@@ -64,7 +64,7 @@ class LoginController extends \BaseController {
 	public function postReset() {
 
 		//get user
-		if (!$user = DB::table(Config::get('avalon::db_prefix') . 'users')->whereNull('deleted_at')->where('email', Input::get('email'))->first()) {
+		if (!$user = DB::table(Config::get('avalon::db_users'))->whereNull('deleted_at')->where('email', Input::get('email'))->first()) {
 			return Redirect::action('LoginController@getReset')->with(array(
 				'error'=>Lang::get('avalon::messages.users_password_reset_error')
 			));
@@ -72,7 +72,7 @@ class LoginController extends \BaseController {
 
 		//set new token every time
 		$token = Str::random();
-		DB::table(Config::get('avalon::db_prefix') . 'users')->where('id', $user->id)->update(array('token'=>$token));
+		DB::table(Config::get('avalon::db_users'))->where('id', $user->id)->update(array('token'=>$token));
 
 		//reset link
 		$link = URL::action('LoginController@getChange', array('token'=>$token, 'email'=>$user->email));
@@ -89,7 +89,7 @@ class LoginController extends \BaseController {
 	//reset password form
 	public function getChange($email, $token) {
 		//todo check email / token combo
-		if (!$user = DB::table(Config::get('avalon::db_prefix') . 'users')->whereNull('deleted_at')->where('email', $email)->where('token', $token)->first()) {
+		if (!$user = DB::table(Config::get('avalon::db_users'))->whereNull('deleted_at')->where('email', $email)->where('token', $token)->first()) {
 			return Redirect::action('LoginController@getReset')->with(array(
 				'error'=>Lang::get('avalon::messages.users_password_change_error')
 			));
@@ -103,14 +103,14 @@ class LoginController extends \BaseController {
 
 	//send reset email
 	public function postChange() {
-		if (!$user = DB::table(Config::get('avalon::db_prefix') . 'users')->whereNull('deleted_at')->where('email', Input::get('email'))->where('token', Input::get('token'))->first()) {
+		if (!$user = DB::table(Config::get('avalon::db_users'))->whereNull('deleted_at')->where('email', Input::get('email'))->where('token', Input::get('token'))->first()) {
 			return Redirect::action('LoginController@getReset')->with(array(
 				'error'=>Lang::get('avalon::messages.users_password_change_error')
 			));
 		}
 
 		//successfully used reset token, time for it to die
-		DB::table(Config::get('avalon::db_prefix') . 'users')->where('id', $user->id)->update(array(
+		DB::table(Config::get('avalon::db_users'))->where('id', $user->id)->update(array(
 			'token'=>null,
 			'password'=>Hash::make(Input::get('password')),
 			'last_login'=>new DateTime,

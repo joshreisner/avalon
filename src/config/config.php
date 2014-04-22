@@ -6,7 +6,12 @@ return array(
 	//'css'					=> '/assets/css/avalon.css', 
 
 	//prefix all table names
-	'db_prefix'				=> 'avalon_',
+	'db_fields'				=> 'avalon_fields',
+	'db_files'				=> 'avalon_files',
+	'db_object_links'		=> 'avalon_object_links',
+	'db_object_user'		=> 'avalon_object_user',
+	'db_objects'			=> 'avalon_objects',
+	'db_users'				=> 'users',
 
 	//specify image display size in the instance.create and .edit views
 	'image_default_width'	=> 220,

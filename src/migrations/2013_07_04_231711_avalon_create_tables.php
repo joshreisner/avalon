@@ -11,7 +11,7 @@ class AvalonCreateTables extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create(Config::get('avalon::db_prefix') . 'fields', function($table){
+		Schema::create(Config::get('avalon::db_fields'), function($table){
 			$table->increments('id');
 			$table->integer('object_id');
 			$table->string('type');
@@ -29,7 +29,7 @@ class AvalonCreateTables extends Migration {
 			$table->integer('precedence');
 		});
 		
-		Schema::create(Config::get('avalon::db_prefix') . 'files', function($table){
+		Schema::create(Config::get('avalon::db_files'), function($table){
 			$table->increments('id');
 			$table->integer('field_id');
 			$table->integer('instance_id')->nullable();
@@ -47,17 +47,17 @@ class AvalonCreateTables extends Migration {
 			$table->integer('precedence');
 		});
 
-		Schema::create(Config::get('avalon::db_prefix') . 'object_links', function($table){
+		Schema::create(Config::get('avalon::db_object_links'), function($table){
 			$table->integer('object_id');
 			$table->integer('linked_id');
 		});
 		
-		Schema::create(Config::get('avalon::db_prefix') . 'object_user', function($table){
+		Schema::create(Config::get('avalon::db_object_user'), function($table){
 			$table->integer('object_id');
 			$table->integer('user_id');
 		});
 
-		Schema::create(Config::get('avalon::db_prefix') . 'objects', function($table){
+		Schema::create(Config::get('avalon::db_objects'), function($table){
 			$table->increments('id');
 			$table->string('title');
 			$table->string('name');
@@ -75,7 +75,7 @@ class AvalonCreateTables extends Migration {
 			$table->integer('updated_by');
 		});
 		
-		Schema::create(Config::get('avalon::db_prefix') . 'users', function($table){
+		Schema::create(Config::get('avalon::db_users'), function($table){
 			$table->increments('id');
 			$table->string('firstname');
 			$table->string('lastname');
@@ -98,15 +98,12 @@ class AvalonCreateTables extends Migration {
 	 */
 	public function down()
 	{
-		//remove all user-created object tables
-		$objects = DB::table(Config::get('avalon::db_prefix') . 'objects')->get();
-		foreach ($objects as $object) Schema::dropIfExists($object->name);
-		
-		Schema::dropIfExists(Config::get('avalon::db_prefix') . 'fields');
-		Schema::dropIfExists(Config::get('avalon::db_prefix') . 'object_links');
-		Schema::dropIfExists(Config::get('avalon::db_prefix') . 'object_user');
-		Schema::dropIfExists(Config::get('avalon::db_prefix') . 'objects');
-		Schema::dropIfExists(Config::get('avalon::db_prefix') . 'users');
+		Schema::dropIfExists(Config::get('avalon::db_fields'));
+		Schema::dropIfExists(Config::get('avalon::db_files'));
+		Schema::dropIfExists(Config::get('avalon::db_object_links'));
+		Schema::dropIfExists(Config::get('avalon::db_object_user'));
+		Schema::dropIfExists(Config::get('avalon::db_objects'));
+		Schema::dropIfExists(Config::get('avalon::db_users'));
 	}
 
 }

@@ -81,33 +81,35 @@ class AvalonServiceProvider extends ServiceProvider {
 	public function register()
 	{
 		//have to get config in a special way
-		$db_prefix = \Config::get('packages/joshreisner/avalon/config.db_prefix');
+		$db_fields	= \Config::get('packages/joshreisner/avalon/config.db_fields');
+		$db_files	= \Config::get('packages/joshreisner/avalon/config.db_files');
+		$db_objects = \Config::get('packages/joshreisner/avalon/config.db_objects');
 
-		if (!\Schema::hasTable($db_prefix . 'objects')) return;
+		if (!\Schema::hasTable($db_objects)) return;
 
 		eval('class AvalonFile extends Eloquent {
-				protected $table = \'' . $db_prefix . 'files\';
+				protected $table = \'' . $db_files . '\';
 			}');
 
 		//register avalon objects as models for yr application
-		foreach (\DB::table($db_prefix . 'objects')->get() as $object) {
+		foreach (\DB::table($db_objects)->get() as $object) {
 
 			//relationships
 			$relationships = array();
 
 			//to the related object
-			$related_fields = \DB::table($db_prefix . 'fields')
+			$related_fields = \DB::table($db_fields)
 					->where('object_id', $object->id)
 					->where('related_object_id', '<>', $object->id)
 					->whereNotNull('related_object_id')
-					->join($db_prefix . 'objects', $db_prefix . 'fields.related_object_id', '=', $db_prefix . 'objects.id')
+					->join($db_objects, $db_fields . '.related_object_id', '=', $db_objects . '.id')
 					->select(
-						$db_prefix . 'fields.type as type',
-						$db_prefix . 'fields.name as field_name',
-						$db_prefix . 'objects.name as object_name', 
-						$db_prefix . 'objects.model', 
-						$db_prefix . 'objects.order_by',
-						$db_prefix . 'objects.direction'
+						$db_fields . '.type as type',
+						$db_fields . '.name as field_name',
+						$db_objects . '.name as object_name', 
+						$db_objects . '.model', 
+						$db_objects . '.order_by',
+						$db_objects . '.direction'
 					)->get();
 			foreach ($related_fields as $field) {
 				if ($field->type == 'select') {
@@ -118,16 +120,16 @@ class AvalonServiceProvider extends ServiceProvider {
 			}
 
 			//from the related object
-			$related_fields = \DB::table($db_prefix . 'fields')
+			$related_fields = \DB::table($db_fields)
 					->where('related_object_id', $object->id)
-					->join($db_prefix . 'objects', $db_prefix . 'fields.object_id', '=', $db_prefix . 'objects.id')
+					->join($db_objects, $db_fields . '.object_id', '=', $db_objects . '.id')
 					->select(
-						$db_prefix . 'fields.type as type',
-						$db_prefix . 'fields.name as field_name',
-						$db_prefix . 'objects.name as object_name', 
-						$db_prefix . 'objects.model', 
-						$db_prefix . 'objects.order_by',
-						$db_prefix . 'objects.direction'
+						$db_fields . '.type as type',
+						$db_fields . '.name as field_name',
+						$db_objects . '.name as object_name', 
+						$db_objects . '.model', 
+						$db_objects . '.order_by',
+						$db_objects . '.direction'
 					)->get();
 			foreach ($related_fields as $field) {
 				if ($field->type == 'select') {
@@ -142,17 +144,17 @@ class AvalonServiceProvider extends ServiceProvider {
 			}
 
 			//also need many-to-many from the object
-			$related_fields = \DB::table($db_prefix . 'fields')
+			$related_fields = \DB::table($db_fields)
 					->where('object_id', $object->id)
 					->whereIn('type', array('checkboxes'))
-					->join($db_prefix . 'objects', $db_prefix . 'fields.related_object_id', '=', $db_prefix . 'objects.id')
+					->join($db_objects, $db_fields . '.related_object_id', '=', $db_objects . '.id')
 					->select(
-						$db_prefix . 'fields.type as type',
-						$db_prefix . 'fields.name as field_name',
-						$db_prefix . 'objects.name as object_name', 
-						$db_prefix . 'objects.model', 
-						$db_prefix . 'objects.order_by',
-						$db_prefix . 'objects.direction'
+						$db_fields . '.type as type',
+						$db_fields . '.name as field_name',
+						$db_objects . '.name as object_name', 
+						$db_objects . '.model', 
+						$db_objects . '.order_by',
+						$db_objects . '.direction'
 					)->get();
 			foreach ($related_fields as $field) {
 				$relationships[] = 'public function ' . $field->object_name . '() {
@@ -160,7 +162,7 @@ class AvalonServiceProvider extends ServiceProvider {
 				}';
 			}
 
-			$images = \DB::table($db_prefix . 'fields')
+			$images = \DB::table($db_fields)
 				->where('object_id', $object->id)
 				->whereIn('type', array('image'))
 				->select('name')
@@ -171,7 +173,7 @@ class AvalonServiceProvider extends ServiceProvider {
 				}';
 			}
 
-			$dates = \DB::table($db_prefix . 'fields')
+			$dates = \DB::table($db_fields)
 				->where('object_id', $object->id)
 				->whereIn('type', array('date', 'datetime'))
 				->lists('name');
