@@ -22,6 +22,7 @@ $(function() {
         pickTime: false
     });
 
+	$('.input-group.datetime').datetimepicker();
 
 	//draggable tables
 	$('table.draggable').tableDnD({

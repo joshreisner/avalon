@@ -39,7 +39,7 @@
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
 		            <div class="input-group date" data-date-format="MM/DD/YYYY">
-		                <span class="input-group-addon"><span class="glyphicon glyphicon-date"></span></span>
+		                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 		                @if ($field->required)
 		                <input type="text" class="form-control required" value="{{ date('m/d/Y') }}" name="{{ $field->name }}">
 		               	@else
@@ -53,7 +53,15 @@
 			<div class="form-group">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
-					{{ Form::datetime($field->name, $field->required ? date('Y-m-d\TH:i:s') : null, array('class'=>'form-control ' . $field->type . ($field->required ? ' required' : ''))) }}
+		            <div class="input-group datetime" data-date-format="MM/DD/YYYY hh:mm A">
+		                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+		                @if ($field->required)
+		                <input type="text" class="form-control required" value="{{ date('m/d/Y h:i A') }}" name="{{ $field->name }}">
+		               	@else
+		                <input type="text" class="form-control" name="{{ $field->name }}">
+		               	@endif
+		            </div>
+					<!--{{ Form::datetime($field->name, $field->required ? date('Y-m-d\TH:i:s') : null, array('class'=>'form-control ' . $field->type . ($field->required ? ' required' : ''))) }}-->
 			    </div>
 			</div>
 		@elseif ($field->type == 'html')

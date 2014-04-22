@@ -405,6 +405,9 @@ class InstanceController extends \BaseController {
 		//format date fields
 		if ($field->type == 'date') $value = date('Y-m-d', strtotime($value));
 
+		//format date fields
+		if ($field->type == 'datetime') $value = date('Y-m-d H:i:s', strtotime($value));
+
 		//format slug fields
 		if ($field->type == 'slug') $value = Str::slug($value);
 
