@@ -400,7 +400,7 @@ class InstanceController extends \BaseController {
 
 	//sanitize field values before inserting
 	private function sanitize($field) {
-		$value = Input::get($field->name);
+		$value = trim(Input::get($field->name));
 
 		//format date fields
 		if ($field->type == 'date') $value = date('Y-m-d', strtotime($value));
@@ -412,7 +412,7 @@ class InstanceController extends \BaseController {
 		if ($field->type == 'slug') $value = Str::slug($value);
 
 		//add each field if not present
-		if (empty($value) && !$field->required) $value = null;
+		if (empty($value) && ($value !== '0') && !$field->required) $value = null;
 
 		return $value;
 	}
