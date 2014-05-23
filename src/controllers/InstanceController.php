@@ -239,8 +239,12 @@ class InstanceController extends \BaseController {
 				}
 
 			} elseif ($field->type == 'image') {
-				list($field->screen_width, $field->screen_height) = self::getImageDimensions($field->width, $field->height);
 				$instance->{$field->name} = DB::table(Config::get('avalon::db_files'))->where('id', $instance->{$field->name})->first();
+				if ($instance->{$field->name}->width && $instance->{$field->name}->height) {
+					$field->width = $instance->{$field->name}->width;
+					$field->height = $instance->{$field->name}->height;
+				}
+				list($field->screen_width, $field->screen_height) = self::getImageDimensions($field->width, $field->height);
 			} elseif ($field->type == 'slug') {
 				if ($field->required && empty($instance->{$field->name}) && $field->related_field_id) {
 					//slugify related field to populate this one

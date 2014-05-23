@@ -31,9 +31,17 @@ class FileController extends \BaseController {
 			}
 
 			//process and save image
-			Intervention\Image\Image::make(file_get_contents(Input::file('image')))
-				->resize($field->width, $field->height, true)
-				->save(public_path() . $path . '/' . $name . '.' . $extension);
+			if ($field->width || $field->height) {
+				Intervention\Image\Image::make(file_get_contents(Input::file('image')))
+					->resize($field->width, $field->height, true)
+					->save(public_path() . $path . '/' . $name . '.' . $extension);
+			} else {
+				Intervention\Image\Image::make(file_get_contents(Input::file('image')))
+					->save(public_path() . $path . '/' . $name . '.' . $extension);
+				list($width, $height, $type, $attr) = getimagesize(public_path() . $path . '/' . $name . '.' . $extension);
+				$field->width = $width;
+				$field->height = $height;
+			}
 
 			$size = filesize(public_path() . $path . '/' . $name . '.' . $extension);
 
@@ -65,7 +73,12 @@ class FileController extends \BaseController {
 			return 'https://s3.amazonaws.com/' . $bucket . '/' . $target;
 			*/
 
-			return json_encode(array('file_id'=>$file_id, 'url'=>$path . '/' . $name . '.' . $extension));
+			return json_encode(array(
+				'file_id'=>$file_id, 
+				'url'=>$path . '/' . $name . '.' . $extension,
+				'width'=>$field->width,
+				'height'=>$field->height,
+			));
 		} elseif (!Input::hasFile('image')) {
 			return 'no image';
 		} elseif (!Input::hasFile('field_id')) {

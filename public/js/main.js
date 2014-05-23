@@ -189,10 +189,17 @@ $(function() {
 		done: function(e, data) {
 			//var file_id = data.jqXHR.responseText;
 			var field_id = $(this).parent().find("input[name=field_id]").val();
+
+			//set dimensions
+			$(this).parent().width(data.result.width).height(data.result.height);
+
+
 			//console.log(data);
 			$("div#image_" + field_id)
 				.css('backgroundImage', 'url(' + data.result.url + ')')
 				.addClass("filled")
+				.width(data.result.width)
+				.height(data.result.height)
 				.next()
 				.val(data.result.file_id);
 		}
