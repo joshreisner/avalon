@@ -31,7 +31,7 @@ class FileController extends \BaseController {
 			}
 
 			//process and save image
-			if ($field->width || $field->height) {
+			if (!empty($field->width) || !empty($field->height)) {
 				Intervention\Image\Image::make(file_get_contents(Input::file('image')))
 					->resize($field->width, $field->height, true)
 					->save(public_path() . $path . '/' . $name . '.' . $extension);
