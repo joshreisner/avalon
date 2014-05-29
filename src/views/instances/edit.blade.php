@@ -72,7 +72,7 @@
 				<div class="col-sm-10">
 					@if (empty($instance->{$field->name}))
 					<div class="image_upload" id="image_{{ $field->id }}" style="width:{{ $field->screen_width }}px; height:{{ $field->screen_height }}px; line-height:{{ $field->screen_height }}px;">
-						{{ $field->width }} &times; {{ $field->height }}
+						{{ $field->width or '&infin;' }} &times; {{ $field->height or '&infin;' }}
 					</div>
 					{{ Form::hidden($field->name, null) }}
 					@else
