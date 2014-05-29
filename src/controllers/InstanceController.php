@@ -334,6 +334,8 @@ class InstanceController extends \BaseController {
 			'updated_by'=>Auth::user()->id
 		));
 		
+		if (Input::has('return_to')) return Redirect::to(Input::get('return_to'));
+
 		return Redirect::action('InstanceController@index', $object_id)->with('instance_id', $instance_id);
 	}
 	

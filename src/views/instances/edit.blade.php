@@ -14,6 +14,10 @@
 
 	{{ Form::open(array('class'=>'form-horizontal', 'url'=>URL::action('InstanceController@update', array($object->id, $instance->id)), 'method'=>'put')) }}
 	
+	@if (Input::has('return_to'))
+	{{ Form::hidden('return_to', Input::get('return_to')) }}
+	@endif
+
 	@foreach ($fields as $field)
 		@if ($field->type == 'checkboxes')
 			<div class="form-group checkboxes">
@@ -134,7 +138,11 @@
 	<div class="form-group">
 	    <div class="col-sm-10 col-sm-offset-2">
 			{{ Form::submit(Lang::get('avalon::messages.site_save'), array('class'=>'btn btn-primary')) }}
+			@if (Input::has('return_to'))
+			{{ HTML::link(Input::get('return_to'), Lang::get('avalon::messages.site_cancel'), array('class'=>'btn btn-default')) }}
+			@else
 			{{ HTML::link(URL::action('InstanceController@index', $object->id), Lang::get('avalon::messages.site_cancel'), array('class'=>'btn btn-default')) }}
+			@endif
 	    </div>
 	</div>
 
