@@ -1,6 +1,18 @@
 <?php
+use Intervention\Image\ImageManagerStatic as Image;
 
 class FileController extends \BaseController {
+
+
+	/**
+	 * test image functionality
+	 */
+	public function test() {
+		Image::make(file_get_contents('/Users/joshreisner/Desktop/headshot.jpg'))
+			->fit(200, 200)
+			->save(public_path() . '/test.jpg');
+		return '<img src="/test.jpg" width="200" height="200">';
+	}
 
 	public function image() {
 		if (Input::hasFile('image') && Input::has('field_id')) {
@@ -32,11 +44,11 @@ class FileController extends \BaseController {
 
 			//process and save image
 			if (!empty($field->width) || !empty($field->height)) {
-				Intervention\Image\Image::make(file_get_contents(Input::file('image')))
+				Image::make(file_get_contents(Input::file('image')))
 					->fit($field->width, $field->height)
 					->save(public_path() . $path . '/' . $name . '.' . $extension);
 			} else {
-				Intervention\Image\Image::make(file_get_contents(Input::file('image')))
+				Image::make(file_get_contents(Input::file('image')))
 					->save(public_path() . $path . '/' . $name . '.' . $extension);
 				list($width, $height, $type, $attr) = getimagesize(public_path() . $path . '/' . $name . '.' . $extension);
 				$field->width = $width;

@@ -18,6 +18,8 @@ Route::group(array('before'=>'auth', 'prefix'=>Config::get('avalon::route_prefix
 	Route::get('/objects/{object_id}/instances/{instance_id}/delete', 'InstanceController@delete');
 	Route::get('/objects', 'ObjectController@index'); 
 	Route::post('/upload/image', 'FileController@image');
+	
+	Route::get('/image/test', 'FileController@test');
 
 	//only admins
 	Route::group(array('before'=>'admin'), function(){
