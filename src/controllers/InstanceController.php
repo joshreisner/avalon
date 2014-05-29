@@ -254,7 +254,7 @@ class InstanceController extends \BaseController {
 
 			} elseif ($field->type == 'image') {
 				$instance->{$field->name} = DB::table(Config::get('avalon::db_files'))->where('id', $instance->{$field->name})->first();
-				if ($instance->{$field->name}->width && $instance->{$field->name}->height) {
+				if (!empty($instance->{$field->name}->width) && !empty($instance->{$field->name}->height)) {
 					$field->width = $instance->{$field->name}->width;
 					$field->height = $instance->{$field->name}->height;
 				}
