@@ -45,7 +45,7 @@ class FileController extends \BaseController {
 			//process and save image
 			if (!empty($field->width) || !empty($field->height)) {
 				Image::make(file_get_contents(Input::file('image')))
-					->fit($field->width, $field->height)
+					->fit((int)$field->width, (int)$field->height)
 					->save(public_path() . $path . '/' . $name . '.' . $extension);
 			} else {
 				Image::make(file_get_contents(Input::file('image')))
