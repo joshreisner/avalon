@@ -5,32 +5,45 @@ use Illuminate\Foundation\Application;
 
 class InstanceController extends \BaseController {
 
-	//show list of instances for an object
+	# Show list of instances for an object
 	public function index($object_id) {
 
-		//get more info about the object
+		# Get more info about the object
 		$object = DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->first();
-		$object->nested = false;
 		$fields = DB::table(Config::get('avalon::db_fields'))
 			->where('object_id', $object_id)
 			->where('visibility', 'list')
 			->orWhere('id', $object->group_by_field)
 			->orderBy('precedence')->get();
-		$selects = array($object->name . '.id', $object->name . '.updated_at', $object->name . '.deleted_at');
+
+		# Start query
 		$instances = DB::table($object->name);
+
+		# Build select statement
+		$selects = array($object->name . '.id', $object->name . '.updated_at', $object->name . '.deleted_at');
 		foreach ($fields as $field) {
-			$selects[] = $object->name . '.' . $field->name;
-			if ($field->type == 'image') {
-				$instances->leftJoin(Config::get('avalon::db_files'), $object->name . '.' . $field->name, '=', Config::get('avalon::db_files') . '.id');
-				$selects[] = Config::get('avalon::db_files') . '.url as ' . $field->name . '_url';
+			if ($field->type == 'checkboxes') {
+				$related_object = self::getRelatedObject($field->related_object_id);
+				$selects[] = DB::raw('(SELECT GROUP_CONCAT(' . $related_object->name . '.' . $related_object->field->name . ' SEPARATOR ", ") 
+					FROM ' . $related_object->name . ' 
+					JOIN ' . $field->name . ' ON ' . $related_object->name . '.id = ' . $field->name . '.' . self::getKey($related_object->name) . '
+					WHERE ' . $field->name . '.' . self::getKey($object->name) . ' = ' . $object->name . '.id 
+					ORDER BY ' . $related_object->name . '.' . $related_object->field->name . ') as ' . $field->name);
+			} else {
+				$selects[] = $object->name . '.' . $field->name;
+				if ($field->type == 'image') {
+					$instances->leftJoin(Config::get('avalon::db_files'), $object->name . '.' . $field->name, '=', Config::get('avalon::db_files') . '.id');
+					$selects[] = Config::get('avalon::db_files') . '.url as ' . $field->name . '_url';
+				}
 			}
 		}
 		$instances->select($selects);
 
-		//group by field?
+		# Handle group-by fields
+		$object->nested = false;
 		if (!empty($object->group_by_field)) {
 			$grouped_field = DB::table(Config::get('avalon::db_fields'))->where('id', $object->group_by_field)->first();
-			$grouped_object = DB::table(Config::get('avalon::db_objects'))->where('id', $grouped_field->related_object_id)->first();
+			$grouped_object = self::getRelatedObject($grouped_field->related_object_id);
 			if ($grouped_object->id == $object->id) {
 				//nested object
 				$object->nested = true;
@@ -40,39 +53,42 @@ class InstanceController extends \BaseController {
 					if ($field->id == $object->group_by_field) unset($fields[$key]);
 				}
 
-				$instances = $instances->
-					leftJoin($grouped_object->name, $object->name . '.' . $grouped_field->name, '=', $grouped_object->name . '.id')
+				$instances
+					->leftJoin($grouped_object->name, $object->name . '.' . $grouped_field->name, '=', $grouped_object->name . '.id')
 					->orderBy($grouped_object->name . '.' . $grouped_object->order_by, $grouped_object->direction)
-					->addSelect($grouped_object->name . '.title as group');
+					->addSelect($grouped_object->name . '.' . $grouped_object->field->name . ' as group');
 			}
 		}
 
-		$instances = $instances->orderBy($object->name . '.' . $object->order_by, $object->direction)->get();
+		# Set the order and direction
+		$instances->orderBy($object->name . '.' . $object->order_by, $object->direction);
+
+		# Run query and save
+		$instances = $instances->get();
 		
-		//per-type modifications to table output
+		# Set Avalon URLs on each instance
 		foreach ($instances as &$instance) {
 			$instance->link = URL::action('InstanceController@edit', array($object->id, $instance->id));
 			$instance->delete = URL::action('InstanceController@delete', array($object->id, $instance->id));
 		}
 		
+		# If it's a nested object, nest-ify the resultset
 		if ($object->nested) {
 			$list = array();
 			foreach ($instances as &$instance) {
 				$instance->children = array();
 				if (empty($instance->{$grouped_field->name})) { //$grouped_field->name is for ex parent_id
 					$list[] = $instance;
-					//echo 'empty';
 				} elseif (self::nestedNodeExists($list, $instance->{$grouped_field->name}, $instance)) {
 					//attached child to parent node
-					//echo 'exists';
 				} else {
-					//an error occurred, because a parent exists but is not in the tree
-					//echo 'error';
+					//an error occurred; a parent should exist but is not yet present
 				}
 			}
 			$instances = $list;
 		}
 
+		# Return HTML view
 		return View::make('avalon::instances.index', array(
 			'object'=>$object, 
 			'fields'=>$fields, 
@@ -90,9 +106,8 @@ class InstanceController extends \BaseController {
 			if (($field->type == 'checkboxes') || ($field->type == 'select')) {
 
 				//load options for checkboxes or selects
-				$related_object = DB::table(Config::get('avalon::db_objects'))->where('id', $field->related_object_id)->first();
-				$related_field  = DB::table(Config::get('avalon::db_fields'))->where('object_id', $field->related_object_id)->where('type', 'string')->first();
-				$field->options = DB::table($related_object->name)->orderBy($related_object->order_by, $related_object->direction)->lists($related_field->name, 'id');
+				$related_object = self::getRelatedObject($field->related_object_id);
+				$field->options = DB::table($related_object->name)->orderBy($related_object->order_by, $related_object->direction)->lists($related_object->field->name, 'id');
 
 				//indent nested selects
 				if ($field->type == 'select' && !empty($related_object->group_by_field)) {
@@ -108,11 +123,11 @@ class InstanceController extends \BaseController {
 								} else {
 									$parents[] = $option->{$grouped_field->name};
 								}
-								$option->{$related_field->name} = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', count($parents)) . $option->{$related_field->name};
+								$option->{$related_object->field->name} = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', count($parents)) . $option->{$related_object->field->name};
 							} elseif (count($parents)) {
 								$parents = array();
 							}
-							$field->options[$option->id] = $option->{$related_field->name};
+							$field->options[$option->id] = $option->{$related_object->field->name};
 						}
 					}
 				}
@@ -199,9 +214,8 @@ class InstanceController extends \BaseController {
 			} elseif (($field->type == 'checkboxes') || ($field->type == 'select')) {
 
 				//load options for checkboxes or selects
-				$related_object = DB::table(Config::get('avalon::db_objects'))->where('id', $field->related_object_id)->first();
-				$related_field  = DB::table(Config::get('avalon::db_fields'))->where('object_id', $field->related_object_id)->where('type', 'string')->first();
-				$field->options = DB::table($related_object->name)->orderBy($related_object->order_by, $related_object->direction)->lists($related_field->name, 'id');
+				$related_object = self::getRelatedObject($field->related_object_id);
+				$field->options = DB::table($related_object->name)->orderBy($related_object->order_by, $related_object->direction)->lists($related_object->field->name, 'id');
 
 				//indent nested selects
 				if ($field->type == 'select' && !empty($related_object->group_by_field)) {
@@ -217,11 +231,11 @@ class InstanceController extends \BaseController {
 								} else {
 									$parents[] = $option->{$grouped_field->name};
 								}
-								$option->{$related_field->name} = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', count($parents)) . $option->{$related_field->name};
+								$option->{$related_object->field->name} = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', count($parents)) . $option->{$related_object->field->name};
 							} elseif (count($parents)) {
 								$parents = array();
 							}
-							$field->options[$option->id] = $option->{$related_field->name};
+							$field->options[$option->id] = $option->{$related_object->field->name};
 						}
 					}
 				}
@@ -323,7 +337,7 @@ class InstanceController extends \BaseController {
 		return Redirect::action('InstanceController@index', $object_id)->with('instance_id', $instance_id);
 	}
 	
-	//remove object from db - todo check key/constraints
+	# Remove object from db - todo check key/constraints
 	public function destroy($object_id, $instance_id) {
 		$object = DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->first();
 		DB::table($object->name)->where('id', $instance_id)->delete();
@@ -336,7 +350,7 @@ class InstanceController extends \BaseController {
 		return Redirect::action('InstanceController@index', $object_id);
 	}
 	
-	//reorder fields by drag-and-drop
+	# Reorder fields by drag-and-drop
 	public function reorder($object_id) {
 		$object = DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->first();
 
@@ -377,7 +391,7 @@ class InstanceController extends \BaseController {
 		}
 	}
 	
-	//soft delete
+	# Soft delete
 	public function delete($object_id, $instance_id) {
 		$object = DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->first();
 		
@@ -402,7 +416,7 @@ class InstanceController extends \BaseController {
 		return Dates::relative($updated);
 	}
 
-	//sanitize field values before inserting
+	# Sanitize field values before inserting
 	private function sanitize($field) {
 		$value = trim(Input::get($field->name));
 
@@ -421,7 +435,7 @@ class InstanceController extends \BaseController {
 		return $value;
 	}
 
-	//recursively assemble nested tree
+	# Recursively assemble nested tree
 	private function nestedNodeExists(&$array, $parent_id, $child) {
 		foreach ($array as &$a) {
 			if ($a->id == $parent_id) {
@@ -434,14 +448,20 @@ class InstanceController extends \BaseController {
 		return false;
 	}
 
-	//return a foreign key column name for a given table name or object_id
-	//needs to be public because called from AvalonServiceProvider::boot
+	# Return a foreign key column name for a given table name or object_id (public for AvalonServiceProvider::boot)
 	public static function getKey($table_name) {
 		if (ctype_digit(strval($table_name))) $table_name = DB::table(Config::get('avalon::db_objects'))->where('id', $table_name)->pluck('name');
 		return Str::singular($table_name) . '_id';
-	}	
+	}
 
-	//get display size for create and edit views
+	# Get related object with the first string field name
+	private static function getRelatedObject($related_object_id) {
+		$related = DB::table(Config::get('avalon::db_objects'))->where('id', $related_object_id)->first();
+		$related->field = DB::table(Config::get('avalon::db_fields'))->where('object_id', $related_object_id)->where('type', 'string')->first();
+		return $related;
+	}
+
+	# Get display size for create and edit views
 	private static function getImageDimensions($width=false, $height=false) {
 
 		//too wide?
