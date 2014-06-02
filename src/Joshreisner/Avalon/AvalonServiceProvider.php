@@ -178,14 +178,18 @@ class AvalonServiceProvider extends ServiceProvider {
 				->whereIn('type', array('date', 'datetime'))
 				->lists('name');
 			foreach ($dates as &$date) $date = '\'' . $date . '\'';
+			$dates[] = '\'deleted_at\'';
 			$dates = implode(',', $dates);
 
 
 			//define model
-			eval('class ' . $object->model . ' extends Eloquent {
+			eval('
+			use Illuminate\Database\Eloquent\SoftDeletingTrait;
+
+			class ' . $object->model . ' extends Eloquent {
+			    use SoftDeletingTrait;
 				protected $table = "' . $object->name . '";
 				protected $guarded = array();
-			    protected $softDelete = true;
 				public $object_id = "' . $object->id . '";
 
 				public function getDates()
