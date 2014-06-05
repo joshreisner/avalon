@@ -123,6 +123,7 @@ $(function() {
 	//redactor fields
 	$('textarea.html').redactor({
 		minHeight: 200,
+		maxHeight: 500,
 		buttonsAdd: ['|', 'button1'],
         buttonsCustom: {
             button1: {
