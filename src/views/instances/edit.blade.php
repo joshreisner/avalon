@@ -12,7 +12,7 @@
 		Lang::get('avalon::messages.instances_edit'),
 		)) }}
 
-	{{ Form::open(array('class'=>'form-horizontal', 'url'=>URL::action('InstanceController@update', array($object->id, $instance->id)), 'method'=>'put')) }}
+	{{ Form::open(array('class'=>'form-horizontal ' . $object->name, 'url'=>URL::action('InstanceController@update', array($object->id, $instance->id)), 'method'=>'put')) }}
 	
 	@if (Input::has('return_to'))
 	{{ Form::hidden('return_to', Input::get('return_to')) }}
@@ -31,14 +31,14 @@
 				</div>
 			</div>
 		@elseif ($field->type == 'color')
-			<div class="form-group">
+			<div class="form-group {{ $field->type }}">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
 					{{ Form::text($field->name, $instance->{$field->name}, array('class'=>'form-control ' . $field->type . ' {hash:true,caps:false}' . ($field->required ? ' required' : ''))) }}
 			    </div>
 			</div>
 		@elseif ($field->type == 'date')
-			<div class="form-group">
+			<div class="form-group {{ $field->type }}">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
 		            <div class="input-group date" data-date-format="MM/DD/YYYY">
@@ -48,7 +48,7 @@
 			    </div>
 			</div>
 		@elseif ($field->type == 'datetime')
-			<div class="form-group">
+			<div class="form-group {{ $field->type }}">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
 		            <div class="input-group datetime" data-date-format="MM/DD/YYYY hh:mm A">
@@ -58,14 +58,14 @@
 			    </div>
 			</div>
 		@elseif ($field->type == 'html')
-			<div class="form-group">
+			<div class="form-group {{ $field->type }}">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
 					{{ Form::textarea($field->name, $instance->{$field->name}, array('class'=>'form-control ' . $field->type . ($field->required ? ' required' : ''))) }}
 			    </div>
 			</div>
 		@elseif ($field->type == 'image')
-			<div class="form-group">
+			<div class="form-group {{ $field->type }}">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 				<div class="col-sm-10">
 					@if (empty($instance->{$field->name}))
@@ -82,49 +82,49 @@
 				</div>
 			</div>
 		@elseif ($field->type == 'integer')
-			<div class="form-group">
+			<div class="form-group {{ $field->type }}">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
 					{{ Form::integer($field->name, $instance->{$field->name}, array('class'=>'form-control ' . $field->type . ($field->required ? ' required' : ''))) }}
 			    </div>
 			</div>
 		@elseif ($field->type == 'select')
-			<div class="form-group">
+			<div class="form-group {{ $field->type }}">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
 					{{ Form::select($field->name, $field->options, $instance->{$field->name}, array('class'=>'form-control ' . $field->type . ($field->required ? ' required' : ''))) }}
 			    </div>
 			</div>
 		@elseif ($field->type == 'slug')
-			<div class="form-group">
+			<div class="form-group {{ $field->type }}">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
 					{{ Form::text($field->name, $instance->{$field->name}, array('class'=>'form-control ' . $field->type . ($field->required ? ' required' : ''))) }}
 			    </div>
 			</div>
 		@elseif ($field->type == 'string')
-			<div class="form-group">
+			<div class="form-group {{ $field->type }}">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
 					{{ Form::text($field->name, $instance->{$field->name}, array('class'=>'form-control ' . $field->type . ($field->required ? ' required' : ''))) }}
 			    </div>
 			</div>
 		@elseif ($field->type == 'text')
-			<div class="form-group">
+			<div class="form-group {{ $field->type }}">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
 					{{ Form::textarea($field->name, $instance->{$field->name}, array('class'=>'form-control ' . $field->type . ($field->required ? ' required' : ''))) }}
 			    </div>
 			</div>
 		@elseif ($field->type == 'time')
-			<div class="form-group">
+			<div class="form-group {{ $field->type }}">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
 					{{ Form::time($field->name, $instance->{$field->name}, array('class'=>'form-control ' . $field->type . ($field->required ? ' required' : ''))) }}
 			    </div>
 			</div>
 		@elseif ($field->type == 'url')
-			<div class="form-group">
+			<div class="form-group {{ $field->type }}">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
 					{{ Form::url($field->name, $instance->{$field->name}, array('class'=>'form-control ' . $field->type . ($field->required ? ' required' : ''))) }}

@@ -22,6 +22,8 @@ body {
 
 	.container { padding-top: $margin; }
 
+	.string { color: inherit; } /*overriding var_dumpling*/
+
 	&.login { 
 		background-color: $gray;
 		div.modal {

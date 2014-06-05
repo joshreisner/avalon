@@ -2,8 +2,8 @@
 
 return array(
 	
-	//specify a local stylesheet
-	//'css'					=> '/assets/css/avalon.css', 
+	//specify custom stylesheets
+	//'css'					=> array('/assets/css/avalon.css'), 
 
 	//prefix all table names
 	'db_fields'				=> 'avalon_fields',
