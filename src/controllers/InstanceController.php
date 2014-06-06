@@ -292,11 +292,15 @@ class InstanceController extends \BaseController {
 		//run loop through the fields
 		foreach ($fields as $field) {
 			if ($field->type == 'checkboxes') {
-				//figure out schema, loop through and save all the checkboxes
+				
+				# Figure out schema
 				$object_column = self::getKey($object->name);
 				$remote_column = self::getKey($field->related_object_id);
+
+				# Clear old values
 				DB::table($field->name)->where($object_column, $instance_id)->delete();
 
+				# Loop through and save all the checkboxes
 				if (Input::has($field->name)) {
 					foreach (Input::get($field->name) as $related_id) {
 						DB::table($field->name)->insert(array(
@@ -305,20 +309,25 @@ class InstanceController extends \BaseController {
 						));
 					}
 				}
-			} elseif ($field->type == 'image') {
-				DB::table(Config::get('avalon::db_files'))
-					->where('id', Input::get($field->name))
-					->update(array('instance_id'=>$instance_id));
 
-				if ($files = DB::table(Config::get('avalon::db_files'))
-					->where('field_id', $field->id)
-					->where('instance_id', $instance_id)
-					->where('id', '<>', Input::get($field->name))
-					->get()) {
-					FileController::cleanup($files);
+			} else{
+				if ($field->type == 'image') {
+
+					# Capture the uploaded file by setting the reverse-lookup
+					DB::table(Config::get('avalon::db_files'))
+						->where('id', Input::get($field->name))
+						->update(array('instance_id'=>$instance_id));
+
+					# Delete any images formerly attached to this instance
+					if ($files = DB::table(Config::get('avalon::db_files'))
+						->where('field_id', $field->id)
+						->where('instance_id', $instance_id)
+						->where('id', '<>', Input::get($field->name))
+						->get()) {
+						FileController::cleanup($files);
+					}
 				}
-				$updates[$field->name] = Input::get($field->name);
-			} else {
+
 				$updates[$field->name] = self::sanitize($field);
 			}
 		}
