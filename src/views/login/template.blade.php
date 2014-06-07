@@ -5,7 +5,9 @@
 		<meta charset="UTF-8">
 		{{ HTML::style('/packages/joshreisner/avalon/css/main.css') }}
 		@if (Config::has('avalon::css'))
-		{{ HTML::style(Config::get('avalon::css')) }}
+			@foreach (Config::get('avalon::css') as $stylesheet)
+			{{ HTML::style($stylesheet) }}
+			@endforeach
 		@endif
 	</head>
 	<body class="login">
