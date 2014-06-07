@@ -163,7 +163,9 @@ body {
 					&.draggy, &.delete { width: 18px; text-align: center; }
 					&.center { text-align: center; }
 					&.date { text-align: right; white-space: nowrap; }
-					&.datetime { text-align: right; white-space: nowrap; }
+					&.datetime { 
+						text-align: left; white-space: nowrap; 
+					}
 					&.integer { text-align: right; }
 					&.date-relative { text-align: right; white-space: nowrap; width: 120px; }
 					&.updated_at { text-align: right; white-space: nowrap; width: 120px; }
@@ -182,6 +184,7 @@ body {
 							}							
 						}
 					}
+					&:first-child { text-align: left; }
 				}
 				
 				&.group {
