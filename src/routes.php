@@ -20,7 +20,7 @@ Route::group(array('before'=>'auth', 'prefix'=>Config::get('avalon::route_prefix
 	Route::get('/objects/{object_id}/instances', 'InstanceController@index');
 	Route::get('/objects/{object_id}/instances/create/{linked_id?}', 'InstanceController@create');
 	Route::post('/objects/{object_id}/instances/reorder', 'InstanceController@reorder');
-	Route::post('/objects/{object_id}/instances/{instance_id}/{linked_id?}', 'InstanceController@store');
+	Route::post('/objects/{object_id}/instances/{linked_id?}', 'InstanceController@store');
 	Route::get('/objects/{object_id}/instances/edit/{instance_id}/{linked_id?}', 'InstanceController@edit');
 	Route::put('/objects/{object_id}/instances/{instance_id}/{linked_id?}', 'InstanceController@update');
 	Route::delete('/objects/{object_id}/instances/{instance_id}', 'InstanceController@destroy');
