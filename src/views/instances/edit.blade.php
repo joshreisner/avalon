@@ -12,14 +12,16 @@
 		Lang::get('avalon::messages.instances_edit'),
 		)) }}
 
-	{{ Form::open(array('class'=>'form-horizontal ' . $object->name, 'url'=>URL::action('InstanceController@update', array($object->id, $instance->id)), 'method'=>'put')) }}
+	{{ Form::open(array('class'=>'form-horizontal ' . $object->name, 'url'=>URL::action('InstanceController@update', array($object->id, $instance->id, $linked_id)), 'method'=>'put')) }}
 	
 	@if (Input::has('return_to'))
-	{{ Form::hidden('return_to', Input::get('return_to')) }}
+		{{ Form::hidden('return_to', Input::get('return_to')) }}
 	@endif
 
 	@foreach ($fields as $field)
-		@if ($field->type == 'checkboxes')
+		@if ($linked_id && $field->id == $object->group_by_field)
+			{{ Form::hidden($field->name, $linked_id) }}
+		@elseif ($field->type == 'checkboxes')
 			<div class="form-group checkboxes">
 			    <label class="control-label col-sm-2">{{ $field->title }}</label>
 			    <div class="col-sm-10">
@@ -152,7 +154,7 @@
 		<h3>Related {{ $link['object']->title }}</h3>
 
 		<div class="btn-group">
-			<a class="btn btn-default" id="create" href="{{ URL::action('InstanceController@create', $link['object']->id) }}"><i class="glyphicon glyphicon-plus"></i> {{ Lang::get('avalon::messages.instances_create') }}</a>
+			<a class="btn btn-default" id="create" href="{{ URL::action('InstanceController@create', array($link['object']->id, $instance->id)) }}"><i class="glyphicon glyphicon-plus"></i> {{ Lang::get('avalon::messages.instances_create') }}</a>
 		</div>
 		
 		{{ InstanceController::table($link['object'], $link['fields'], $link['instances']) }}
@@ -169,4 +171,21 @@
 	<button type="submit" class="btn btn-default btn-xs">{{ Lang::get('avalon::messages.instances_destroy') }}</button>
 	{{ Form::close() }}
 
+@endsection
+
+@section('script')
+	<script>
+	@if (Session::has('instance_id'))
+		var $el = $("table tr#{{ Session::get('instance_id') }}");
+		$el
+			.after("<div class='highlight'/>")
+			.next()
+            .width($el.width())
+            .height($el.height())
+            .css("marginTop", -$el.height())
+			.fadeOut(500, function(){
+				$("div.highlight").remove();
+			});
+	@endif
+	</script>
 @endsection

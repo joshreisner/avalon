@@ -12,10 +12,16 @@
 		Lang::get('avalon::messages.instances_create'),
 		)) }}
 
-	{{ Form::open(array('class'=>'form-horizontal', 'url'=>URL::action('InstanceController@store', $object->id))) }}
+	{{ Form::open(array('class'=>'form-horizontal', 'url'=>URL::action('InstanceController@store', array($object->id, $linked_id)))) }}
 	
+	@if (Input::has('return_to'))
+		{{ Form::hidden('return_to', Input::get('return_to')) }}
+	@endif
+
 	@foreach ($fields as $field)
-		@if ($field->type == 'checkboxes')
+		@if ($linked_id && $field->id == $object->group_by_field)
+			{{ Form::hidden($field->name, $linked_id) }}
+		@elseif ($field->type == 'checkboxes')
 			<div class="form-group">
 			    <label class="control-label col-sm-2">{{ $field->title }}</label>
 			    <div class="col-sm-10">

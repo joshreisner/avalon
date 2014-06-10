@@ -13,12 +13,19 @@ Route::group(array('before'=>'auth', 'prefix'=>Config::get('avalon::route_prefix
 	
 	//all authenticated users
 	Route::get('logout', 'LoginController@getLogout');
-	Route::resource('objects.instances', 'InstanceController');
-	Route::post('/objects/{object_id}/instances/reorder', 'InstanceController@reorder');
-	Route::get('/objects/{object_id}/instances/{instance_id}/delete', 'InstanceController@delete');
 	Route::get('/objects', 'ObjectController@index'); 
 	Route::post('/upload/image', 'FileController@image');
 	
+	//complex instance routing, optionally with linked_id for related objects
+	Route::get('/objects/{object_id}/instances', 'InstanceController@index');
+	Route::get('/objects/{object_id}/instances/create/{linked_id?}', 'InstanceController@create');
+	Route::post('/objects/{object_id}/instances/reorder', 'InstanceController@reorder');
+	Route::post('/objects/{object_id}/instances/{instance_id}/{linked_id?}', 'InstanceController@store');
+	Route::get('/objects/{object_id}/instances/edit/{instance_id}/{linked_id?}', 'InstanceController@edit');
+	Route::put('/objects/{object_id}/instances/{instance_id}/{linked_id?}', 'InstanceController@update');
+	Route::delete('/objects/{object_id}/instances/{instance_id}', 'InstanceController@destroy');
+	Route::get('/objects/{object_id}/instances/{instance_id}/delete', 'InstanceController@delete');
+
 	Route::get('/image/test', 'FileController@test');
 
 	//only admins

@@ -7,7 +7,7 @@ class InstanceController extends \BaseController {
 
 	# Show list of instances for an object
 	# $group_by_id is for when coming from a linked object
-	public function index($object_id, $group_by_id=false) {
+	public function index($object_id, $linked_id=false) {
 
 		# Get more info about the object
 		$object = DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->first();
@@ -49,15 +49,21 @@ class InstanceController extends \BaseController {
 				//nested object
 				$object->nested = true;
 			} else {
-				//pull group_by_field out of the list of fields so it's not a column in the table
+				# Pull group_by_field out of the list of fields so it's not a column in the table
 				foreach ($fields as $key=>$field) {
 					if ($field->id == $object->group_by_field) unset($fields[$key]);
 				}
-
+				
+				# Include group_by_field in resultset
 				$instances
 					->leftJoin($grouped_object->name, $object->name . '.' . $grouped_field->name, '=', $grouped_object->name . '.id')
 					->orderBy($grouped_object->name . '.' . $grouped_object->order_by, $grouped_object->direction)
 					->addSelect($grouped_object->name . '.' . $grouped_object->field->name . ' as group');
+	
+				# If $linked_id, limit scope to just $linked_id
+				if ($linked_id) {
+					$instances->where($grouped_field->name, $linked_id);
+				}
 			}
 		}
 
@@ -69,7 +75,7 @@ class InstanceController extends \BaseController {
 		
 		# Set Avalon URLs on each instance
 		foreach ($instances as &$instance) {
-			$instance->link = URL::action('InstanceController@edit', array($object->id, $instance->id));
+			$instance->link = URL::action('InstanceController@edit', array($object->id, $instance->id, $linked_id));
 			$instance->delete = URL::action('InstanceController@delete', array($object->id, $instance->id));
 		}
 		
@@ -96,14 +102,17 @@ class InstanceController extends \BaseController {
 		);
 
 		# Return array to edit()
-		if ($group_by_id) return $return;
+		if ($linked_id) {
+			$object->group_by_field = false; //hacky, but easiest way to remove grouping
+			return $return;
+		}
 
 		# Return HTML view
 		return View::make('avalon::instances.index', $return);
 	}
 
 	//show create form for an object instance
-	public function create($object_id) {
+	public function create($object_id, $linked_id=false) {
 		$object = DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->first();
 		$fields = DB::table(Config::get('avalon::db_fields'))->where('object_id', $object_id)->orderBy('precedence')->get();
 		$options = array();
@@ -151,11 +160,12 @@ class InstanceController extends \BaseController {
 		return View::make('avalon::instances.create', array(
 			'object'=>$object, 
 			'fields'=>$fields,
+			'linked_id'=>$linked_id,
 		));
 	}
 
 	//save a new object instance to the database
-	public function store($object_id) {
+	public function store($object_id, $linked_id=false) {
 		$object = DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->first();
 		$fields = DB::table(Config::get('avalon::db_fields'))->where('object_id', $object_id)->get();
 		
@@ -204,11 +214,21 @@ class InstanceController extends \BaseController {
 
 		FileController::cleanup();
 		
+		//if there's a manual return string specified, go there
+		if (Input::has('return_to')) return Redirect::to(Input::get('return_to'));
+
+		//otherwise, if we're coming from a related object, go there
+		if ($linked_id) {
+			$related_field = DB::table(Config::get('avalon::db_fields'))->where('id', $object->group_by_field)->first();
+			return Redirect::action('InstanceController@edit', array($related_field->related_object_id, $linked_id))->with('instance_id', $instance_id);
+		}
+
+		//otherwise, return to instance index
 		return Redirect::action('InstanceController@index', $object_id)->with('instance_id', $instance_id);
 	}
 	
 	//show edit form
-	public function edit($object_id, $instance_id) {
+	public function edit($object_id, $instance_id, $linked_id=false) {
 		$object = DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->first();
 		$fields = DB::table(Config::get('avalon::db_fields'))->where('object_id', $object_id)->orderBy('precedence')->get();
 		$instance = DB::table($object->name)->where('id', $instance_id)->first();
@@ -280,7 +300,7 @@ class InstanceController extends \BaseController {
 		# Get linked objects
 		$links = DB::table(Config::get('avalon::db_object_links'))->where('object_id', $object_id)->lists('linked_id');
 		foreach ($links as &$link) {
-			$link = self::index($link, $instance_id);
+			$link = self::index($link, $instance_id, $linked_id);
 		}
 
 		return View::make('avalon::instances.edit', array(
@@ -288,11 +308,12 @@ class InstanceController extends \BaseController {
 			'fields'=>$fields,
 			'instance'=>$instance,
 			'links'=>$links,
+			'linked_id'=>$linked_id,
 		));
 	}
 	
 	//save edits to database
-	public function update($object_id, $instance_id) {
+	public function update($object_id, $instance_id, $linked_id=false) {
 		$object = DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->first();
 		$fields = DB::table(Config::get('avalon::db_fields'))->where('object_id', $object_id)->get();
 		
@@ -356,8 +377,16 @@ class InstanceController extends \BaseController {
 			'updated_by'=>Auth::user()->id
 		));
 		
+		//if there's a manual return string specified, go there
 		if (Input::has('return_to')) return Redirect::to(Input::get('return_to'));
 
+		//otherwise, if we're coming from a related object, go there
+		if ($linked_id) {
+			$related_field = DB::table(Config::get('avalon::db_fields'))->where('id', $object->group_by_field)->first();
+			return Redirect::action('InstanceController@edit', array($related_field->related_object_id, $linked_id))->with('instance_id', $instance_id);
+		}
+
+		//otherwise, return to instance index
 		return Redirect::action('InstanceController@index', $object_id)->with('instance_id', $instance_id);
 	}
 	
@@ -401,7 +430,7 @@ class InstanceController extends \BaseController {
 					//updated_at, updated_by?
 				));
 			}
-			return 'done reordering linear';
+			return 'done reordering nested';
 		} else {
 			$instances = explode('&', Input::get('order'));
 			$precedence = 1;
