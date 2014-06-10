@@ -6941,6 +6941,8 @@ body {
               left: 0px; }
             body .main div.nested ul li div.nested_row div.delete {
               right: 0px; }
+    body .main div.related {
+      border-top: 2px dashed #cccccc; }
     body .main table {
       margin: -6px 0 24px; }
       body .main table tbody {

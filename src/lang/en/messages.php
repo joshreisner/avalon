@@ -80,6 +80,7 @@ return array(
 	'objects_model'				=> 'Model',
 	'objects_name'				=> 'Table Name',
 	'objects_order_by'			=> 'Order By',
+	'objects_related'			=> 'Related',
 	'objects_singleton'			=> 'Singleton',
 	'objects_title'				=> 'Title',
 	'objects_title_help'		=> 'Make this plural, please.',

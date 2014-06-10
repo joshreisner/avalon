@@ -154,6 +154,10 @@ body {
 			}
 		}
 
+		div.related {
+			border-top: 2px dashed $gray; 
+		}
+
 		table {
 			margin: -6px 0 $margin;
 			tbody { border-top: 0; }

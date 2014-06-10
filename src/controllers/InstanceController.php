@@ -6,7 +6,8 @@ use Illuminate\Foundation\Application;
 class InstanceController extends \BaseController {
 
 	# Show list of instances for an object
-	public function index($object_id) {
+	# $group_by_id is for when coming from a linked object
+	public function index($object_id, $group_by_id=false) {
 
 		# Get more info about the object
 		$object = DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->first();
@@ -88,12 +89,17 @@ class InstanceController extends \BaseController {
 			$instances = $list;
 		}
 
-		# Return HTML view
-		return View::make('avalon::instances.index', array(
+		$return = array(
 			'object'=>$object, 
 			'fields'=>$fields, 
 			'instances'=>$instances,
-		));
+		);
+
+		# Return array to edit()
+		if ($group_by_id) return $return;
+
+		# Return HTML view
+		return View::make('avalon::instances.index', $return);
 	}
 
 	//show create form for an object instance
@@ -270,11 +276,18 @@ class InstanceController extends \BaseController {
 				}
 			}
 		}
-		
+
+		# Get linked objects
+		$links = DB::table(Config::get('avalon::db_object_links'))->where('object_id', $object_id)->lists('linked_id');
+		foreach ($links as &$link) {
+			$link = self::index($link, $instance_id);
+		}
+
 		return View::make('avalon::instances.edit', array(
 			'object'=>$object,
 			'fields'=>$fields,
 			'instance'=>$instance,
+			'links'=>$links,
 		));
 	}
 	
@@ -470,6 +483,20 @@ class InstanceController extends \BaseController {
 		$related = DB::table(Config::get('avalon::db_objects'))->where('id', $related_object_id)->first();
 		$related->field = DB::table(Config::get('avalon::db_fields'))->where('object_id', $related_object_id)->where('type', 'string')->first();
 		return $related;
+	}
+
+	# Draw an instance table, used both by index and by edit > linked
+	public static function table($object, $fields, $instances) {
+		$table = new Table;
+		$table->rows($instances);
+		foreach ($fields as $field) {
+			$table->column($field->name, $field->type, $field->title, $field->width, $field->height);
+		}
+		$table->column('updated_at', 'updated_at', Lang::get('avalon::messages.site_updated_at'));
+		$table->deletable();
+		if (!empty($object->group_by_field)) $table->groupBy('group');
+		if ($object->order_by == 'precedence') $table->draggable(URL::action('InstanceController@reorder', $object->id));
+		return $table->draw();
 	}
 
 	# Get display size for create and edit views

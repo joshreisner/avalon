@@ -56,6 +56,7 @@
 		</div>
 	</div>
 		
+	<!-- (not implemented yet)
 	<div class="form-group">
 		<div class="col-sm-offset-2 col-sm-10">
 			<div class="checkbox">
@@ -65,12 +66,26 @@
 			</div>
 		</div>
 	</div>
+	-->
 
 	@if (count($group_by_field))
 	<div class="form-group">
 		{{ Form::label('group_by_field', Lang::get('avalon::messages.objects_group_by'), array('class'=>'control-label col-sm-2')) }}
 		<div class="col-sm-10">
-			{{ Form::select('group_by_field', $group_by_field, $object->group_by_field, array('class'=>'form-control')) }}			
+			{{ Form::select('group_by_field', $group_by_field, $object->group_by_field, array('class'=>'form-control')) }}
+		</div>
+	</div>
+	@endif
+
+	@if (count($related_objects))
+	<div class="form-group">
+		{{ Form::label('group_by_field', Lang::get('avalon::messages.objects_related'), array('class'=>'control-label col-sm-2')) }}
+		<div class="col-sm-10">
+			@foreach ($related_objects as $related_object_id=>$related_object_title)
+			<label class="checkbox-inline">
+				{{ Form::checkbox('related_objects[]', $related_object_id, in_array($related_object_id, $links)) }} {{ $related_object_title }}
+			</label>
+			@endforeach
 		</div>
 	</div>
 	@endif

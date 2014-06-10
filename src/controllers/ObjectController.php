@@ -88,7 +88,7 @@ class ObjectController extends \BaseController {
 		return Redirect::action('InstanceController@index', $object_id);
 	}
 	
-	//edit object settings
+	# Edit object settings
 	public function edit($object_id) {
 
 		//get order by select data
@@ -104,13 +104,27 @@ class ObjectController extends \BaseController {
 			Lang::get('avalon::messages.fields_user')=>$order_by,
 		);
 
+		//related objects are different than dependencies; it's the subset of dependencies that are grouped by this object
+		$related_objects = DB::table(Config::get('avalon::db_fields'))
+			->join(Config::get('avalon::db_objects'), Config::get('avalon::db_objects') . '.group_by_field', '=', Config::get('avalon::db_fields') . '.id')
+			->where(Config::get('avalon::db_fields') . '.related_object_id', $object_id)
+			->orderBy(Config::get('avalon::db_objects') . '.title')
+			->select(Config::get('avalon::db_objects') . '.*') //due to bug that leads to ambiguous column error
+			->lists('title', 'id');
+
+		//values for the related objects. could be combined with above
+		$links = DB::table(Config::get('avalon::db_object_links'))->where('object_id', $object_id)->lists('linked_id');
+
+		//return view
 		return View::make('avalon::objects.edit', array(
-			'object'=>DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->first(), 
-			'order_by'=>$order_by,
-			'direction'=>self::$direction,
-			'dependencies'=>DB::table(Config::get('avalon::db_fields'))->where('related_object_id', $object_id)->count(),
-			'group_by_field'=>array(''=>'') + DB::table(Config::get('avalon::db_fields'))->where('object_id', $object_id)->where('type', 'select')->lists('title', 'id'),
-			'list_groupings'=>self::getGroupings(),
+			'object'			=>DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->first(), 
+			'order_by'			=>$order_by,
+			'direction'			=>self::$direction,
+			'dependencies'		=>DB::table(Config::get('avalon::db_fields'))->where('related_object_id', $object_id)->count(),
+			'group_by_field'	=>array(''=>'') + DB::table(Config::get('avalon::db_fields'))->where('object_id', $object_id)->where('type', 'select')->lists('title', 'id'),
+			'list_groupings'	=>self::getGroupings(),
+			'related_objects'	=>$related_objects,
+			'links'				=>$links,
 		));
 	}
 	
@@ -130,27 +144,19 @@ class ObjectController extends \BaseController {
 		//not sure why it's necessary, doesn't like empty value all of a sudden
 		$group_by_field = Input::has('group_by_field') ? Input::get('group_by_field') : null;
 
+		//is a singleton instance?
 		$singleton = Input::has('singleton') ? 1 : 0;
 
-		/*if nested, table should have a subsequence column
-		$has_subsequence = Schema::hasColumn('users', 'subsequence');
-		$needs_subsequence = false;
-		if ($group_by_field) {
-			$group_by = DB::table('avalon_fields')->where('id', $group_by_field)->first();
-			if ($group_by->related_object_id == $object_id) {
-				//nested
-				$needs_subsequence = true;
+		//linked objects
+		DB::table(Config::get('avalon::db_object_links'))->where('object_id', $object_id)->delete();
+		if (Input::has('related_objects')) {
+			foreach (Input::get('related_objects') as $linked_id) {
+				DB::table(Config::get('avalon::db_object_links'))->insert(array(
+					'object_id'=>$object_id,
+					'linked_id'=>$linked_id,
+				));
 			}
 		}
-		if ($has_subsequence != $needs_subsequence) {
-			Schema::table($object->name, function($table) use ($needs_subsequence) {
-				if ($needs_subsequence) {
-				    $table->integer('subsequence')->after('precedence')->nullable();
-				} else {
-			    	$table->dropColumn('subsequence');
-				}
-			});
-		}*/
 
 		//update objects table
 		DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->update(array(
