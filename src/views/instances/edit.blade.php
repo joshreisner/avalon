@@ -151,7 +151,7 @@
 	@foreach ($links as $link)
 
 	<div class="related">
-		<h3>Related {{ $link['object']->title }}</h3>
+		<h3>{{ $link['object']->title }}</h3>
 
 		<div class="btn-group">
 			<a class="btn btn-default" id="create" href="{{ URL::action('InstanceController@create', array($link['object']->id, $instance->id)) }}"><i class="glyphicon glyphicon-plus"></i> {{ Lang::get('avalon::messages.instances_create') }}</a>
