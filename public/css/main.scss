@@ -32,6 +32,7 @@ body {
 				border-radius: $modal_radius;
 				div.modal-header { border-radius: $modal_radius $modal_radius 0 0; }
 				div.modal-body .form-group:last-child { margin-bottom: 0; }
+				div.alert { margin: -20px -20px 20px -20px; border-radius: 0; }
 				div.modal-footer { margin-top: 0; border-radius: 0 0 $modal_radius $modal_radius; background-color: $gray_light; }
 			}
 		}
