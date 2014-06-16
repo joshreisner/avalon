@@ -177,8 +177,8 @@ class AvalonServiceProvider extends ServiceProvider {
 				->where('object_id', $object->id)
 				->whereIn('type', array('date', 'datetime'))
 				->lists('name');
+			$dates = $dates + array('created_at', 'updated_at', 'deleted_at');
 			foreach ($dates as &$date) $date = '\'' . $date . '\'';
-			$dates[] = '\'deleted_at\'';
 			$dates = implode(',', $dates);
 
 
