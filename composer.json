@@ -32,7 +32,7 @@
     	"post-update-cmd": [
     		"php artisan migrate --package=joshreisner/avalon",
     		"php artisan asset:publish"
-    	],
+    	]
     },
     "minimum-stability": "dev"
 }
