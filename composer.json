@@ -23,5 +23,16 @@
             "Joshreisner\\Avalon\\": "src/"
         }
     },
+    "scripts": {
+    	"post-install-cmd": [
+    		"php artisan config:publish joshreisner/avalon",
+    		"php artisan migrate --package=joshreisner/avalon",
+    		"php artisan asset:publish"
+    	],
+    	"post-update-cmd": [
+    		"php artisan migrate --package=joshreisner/avalon",
+    		"php artisan asset:publish"
+    	],
+    },
     "minimum-stability": "dev"
 }
