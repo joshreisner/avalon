@@ -32,8 +32,7 @@ class LoginController extends \BaseController {
 		
 		//make user
 		$user_id = DB::table(Config::get('avalon::db_users'))->insertGetId(array(
-			'firstname'		=> Input::get('firstname'),
-			'lastname'		=> Input::get('lastname'),
+			'name'			=> Input::get('name'),
 			'email'			=> Input::get('email'),
 			'password'		=> Hash::make(Input::get('password')),
 			'role'			=> 1,

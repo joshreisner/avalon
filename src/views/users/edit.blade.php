@@ -15,19 +15,12 @@
 	{{ Form::open(array('class'=>'form-horizontal', 'url'=>URL::action('UserController@update', $user->id), 'method'=>'put')) }}
 
 	<div class="form-group">
-		{{ Form::label('firstname', Lang::get('avalon::messages.users_firstname'), array('class'=>'control-label col-sm-2')) }}
+		{{ Form::label('name', Lang::get('avalon::messages.users_name'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
-			{{ Form::text('firstname', $user->firstname, array('class'=>'form-control required')) }}
+			{{ Form::text('name', $user->name, array('class'=>'form-control required')) }}
 	    </div>
 	</div>
 	
-	<div class="form-group">
-		{{ Form::label('lastname', Lang::get('avalon::messages.users_lastname'), array('class'=>'control-label col-sm-2')) }}
-	    <div class="col-sm-10">
-			{{ Form::text('lastname', $user->lastname, array('class'=>'form-control required')) }}
-	    </div>
-	</div>
-
 	<div class="form-group">
 		{{ Form::label('email', Lang::get('avalon::messages.users_email'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">

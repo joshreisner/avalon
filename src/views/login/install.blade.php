@@ -15,15 +15,9 @@
 				</div>
 				<div class="modal-body">
 					<div class="form-group">
-						<label class="col-md-3 control-label" for="email">{{ Lang::get('avalon::messages.users_firstname') }}</label>
+						<label class="col-md-3 control-label" for="name">{{ Lang::get('avalon::messages.users_name') }}</label>
 				    	<div class="col-md-9">
-				    		<input type="text" name="firstname" class="form-control required" autofocus="autofocus">
-				    	</div>
-					</div>
-					<div class="form-group">
-						<label class="col-md-3 control-label" for="email">{{ Lang::get('avalon::messages.users_lastname') }}</label>
-				    	<div class="col-md-9">
-				    		<input type="text" name="lastname" class="form-control required">
+				    		<input type="text" name="name" class="form-control required" autofocus="autofocus">
 				    	</div>
 					</div>
 					<div class="form-group">

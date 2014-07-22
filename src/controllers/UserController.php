@@ -13,7 +13,6 @@ class UserController extends \BaseController {
 		$users = DB::table(Config::get('avalon::db_users'))->orderBy('lastname')->get();
 		
 		foreach ($users as &$user) {
-			$user->name = $user->firstname . ' ' . $user->lastname;
 			$user->role = self::$roles[$user->role];
 			$user->link = URL::action('UserController@edit', $user->id);
 			$user->delete = URL::action('UserController@delete', $user->id);
@@ -39,8 +38,7 @@ class UserController extends \BaseController {
 		$password = Str::random(12);
 
 		$user_id = DB::table(Config::get('avalon::db_users'))->insertGetId(array(
-			'firstname'=>Input::get('firstname'),
-			'lastname'=>Input::get('lastname'),
+			'name'=>Input::get('name'),
 			'email'=>$email,
 			'password'=>Hash::make($password),
 			'role'=>Input::get('role'),
@@ -75,8 +73,7 @@ class UserController extends \BaseController {
 	//save edit to database
 	public function update($user_id) {
 		DB::table(Config::get('avalon::db_users'))->where('id', $user_id)->update(array(
-			'firstname'=>Input::get('firstname'),
-			'lastname'=>Input::get('lastname'),
+			'name'=>Input::get('name'),
 			'email'=>Input::get('email'),
 			'role'=>Input::get('role'),
 			'updated_by'=>Auth::user()->id,
