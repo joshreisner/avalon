@@ -48,4 +48,12 @@
 
 @section('side')
 	<p>{{ Lang::get('avalon::messages.users_edit_help') }}</p>
+
+	<p><a href="{{ URL::action('UserController@resendWelcome', $user->id) }}" class="btn btn-default btn-xs">{{ Lang::get('avalon::messages.users_welcome_resend') }}</a></p>
+
+	@if (!$user->last_login)
+	{{ Form::open(array('method'=>'delete', 'action'=>array('UserController@destroy', $user->id))) }}
+	<button type="submit" class="btn btn-default btn-xs">{{ Lang::get('avalon::messages.users_destroy') }}</button>
+	{{ Form::close() }}
+	@endif
 @endsection

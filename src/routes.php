@@ -32,6 +32,7 @@ Route::group(array('before'=>'auth', 'prefix'=>Config::get('avalon::route_prefix
 	Route::group(array('before'=>'admin'), function(){
 		Route::resource('users', 'UserController');
 		Route::get('/users/{user_id}/delete', 'UserController@delete');
+		Route::get('/users/{user_id}/resend-welcome', 'UserController@resendWelcome');
 	});
 
 	//only programmers
