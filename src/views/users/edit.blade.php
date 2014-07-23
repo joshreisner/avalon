@@ -31,8 +31,15 @@
 	<div class="form-group">
 		{{ Form::label('role', Lang::get('avalon::messages.users_role'), array('class'=>'control-label col-sm-2')) }}
 	    <div class="col-sm-10">
-			{{ Form::select('role', $roles, $user->role, array('class'=>'form-control')) }}
-	    </div>
+	    	@foreach ($roles as $role_id=>$role)
+			<div class="radio">
+				<label>
+					{{ Form::radio('role', $role_id, $role_id == $user->role) }}
+					<strong>{{ $role }}</strong> &middot; {{ Lang::get('avalon::messages.users_role_' . Str::slug($role)) }}
+				</label>
+			</div>
+			@endforeach
+		</div>
 	</div>
 
 	<div class="form-group">
