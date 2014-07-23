@@ -85,6 +85,7 @@ class AvalonCreateTables extends Migration {
 			$table->string('token')->nullable(); //for password resets
 			$table->string('remember_token', 100)->nullable();
 			$table->dateTime('last_login')->nullable();
+			$table->dateTime('created_at');
 			$table->dateTime('updated_at');
 			$table->integer('updated_by')->nullable(); //for first user
 			$table->softDeletes();

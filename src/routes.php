@@ -12,21 +12,23 @@ Route::post('/' . Config::get('avalon::route_prefix') . '/change',	'LoginControl
 Route::group(array('before'=>'auth', 'prefix'=>Config::get('avalon::route_prefix')), function(){
 	
 	//all authenticated users
-	Route::get('logout', 'LoginController@getLogout');
-	Route::get('/objects', 'ObjectController@index'); 
-	Route::post('/upload/image', 'FileController@image');
-	
-	//complex instance routing, optionally with linked_id for related objects
-	Route::get('/objects/{object_id}/instances', 'InstanceController@index');
-	Route::get('/objects/{object_id}/instances/create/{linked_id?}', 'InstanceController@create');
-	Route::post('/objects/{object_id}/instances/reorder', 'InstanceController@reorder');
-	Route::post('/objects/{object_id}/instances/{linked_id?}', 'InstanceController@store');
-	Route::get('/objects/{object_id}/instances/edit/{instance_id}/{linked_id?}', 'InstanceController@edit');
-	Route::put('/objects/{object_id}/instances/{instance_id}/{linked_id?}', 'InstanceController@update');
-	Route::delete('/objects/{object_id}/instances/{instance_id}', 'InstanceController@destroy');
-	Route::get('/objects/{object_id}/instances/{instance_id}/delete', 'InstanceController@delete');
+	Route::group(array('before'=>'user'), function(){
+		Route::get('logout', 'LoginController@getLogout');
+		Route::get('/objects', 'ObjectController@index'); 
+		Route::post('/upload/image', 'FileController@image');
+		
+		//complex instance routing, optionally with linked_id for related objects
+		Route::get('/objects/{object_id}/instances', 'InstanceController@index');
+		Route::get('/objects/{object_id}/instances/create/{linked_id?}', 'InstanceController@create');
+		Route::post('/objects/{object_id}/instances/reorder', 'InstanceController@reorder');
+		Route::post('/objects/{object_id}/instances/{linked_id?}', 'InstanceController@store');
+		Route::get('/objects/{object_id}/instances/edit/{instance_id}/{linked_id?}', 'InstanceController@edit');
+		Route::put('/objects/{object_id}/instances/{instance_id}/{linked_id?}', 'InstanceController@update');
+		Route::delete('/objects/{object_id}/instances/{instance_id}', 'InstanceController@destroy');
+		Route::get('/objects/{object_id}/instances/{instance_id}/delete', 'InstanceController@delete');
 
-	Route::get('/image/test', 'FileController@test');
+		Route::get('/image/test', 'FileController@test');
+	});
 
 	//only admins
 	Route::group(array('before'=>'admin'), function(){
@@ -51,10 +53,14 @@ Route::group(array('before'=>'auth', 'prefix'=>Config::get('avalon::route_prefix
 
 });
 
+Route::filter('user', function(){
+	if (empty(Auth::user()->role) || Auth::user()->role > 3) return Redirect::action('ObjectController@index');
+});
+
 Route::filter('admin', function(){
-	if (Auth::user()->role > 2) return Redirect::action('ObjectController@index');
+	if (empty(Auth::user()->role) || Auth::user()->role > 2) return Redirect::action('ObjectController@index');
 });
 
 Route::filter('programmer', function(){
-	if (Auth::user()->role > 1) return Redirect::action('ObjectController@index');
+	if (empty(Auth::user()->role) || Auth::user()->role > 1) return Redirect::action('ObjectController@index');
 });
