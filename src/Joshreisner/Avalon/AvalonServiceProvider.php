@@ -11,6 +11,14 @@ class AvalonServiceProvider extends ServiceProvider {
 	 */
 	protected $defer = false;
 
+
+	/**
+	 * make this function available (maybe should be on the model though?)
+	 */
+	public static function saveImage($field_id, $file, $filename, $extension) {
+		return \FileController::saveImage();
+	}
+
 	/**
 	 * Bootstrap the application events.
 	 *
@@ -180,7 +188,6 @@ class AvalonServiceProvider extends ServiceProvider {
 			$dates = $dates + array('created_at', 'updated_at', 'deleted_at');
 			foreach ($dates as &$date) $date = '\'' . $date . '\'';
 			$dates = implode(',', $dates);
-
 
 			//define model
 			eval('

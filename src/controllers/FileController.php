@@ -1,96 +1,22 @@
 <?php
+
 use Intervention\Image\ImageManagerStatic as Image;
 
 class FileController extends \BaseController {
 
-
 	/**
-	 * test image functionality
+	 * handle image upload route
 	 */
-	public function test() {
-		Image::make(file_get_contents('/Users/joshreisner/Desktop/headshot.jpg'))
-			->fit(200, 200)
-			->save(public_path() . '/test.jpg');
-		return '<img src="/test.jpg" width="200" height="200">';
-	}
-
 	public function image() {
 		if (Input::hasFile('image') && Input::has('field_id')) {
 
-			//get field info
-			$field 	= DB::table(Config::get('avalon::db_fields'))->where('id', Input::get('field_id'))->first();
-			$object = DB::table(Config::get('avalon::db_objects'))->where('id', $field->object_id)->first();
-			$unique	= Str::random(5);
-
-			//make path
-			$path = '/' . implode('/', array(
-				'packages',
-				'joshreisner',
-				'avalon',
-				'files',
-				$object->name,
-				$field->name,
-				$unique,
+			return json_encode(self::saveImage(
+				Input::get('field_id'), 
+				file_get_contents(Input::file('image')),
+				Input::file('image')->getClientOriginalName(),
+				Input::file('image')->getClientOriginalExtension()
 			));
 
-			//also make path in the filesystem
-			mkdir(public_path() . $path, 0777, true);
-
-			//get name and extension
-			$name = Str::slug(Input::file('image')->getClientOriginalName(), '-');
-			if ($extension = strtolower(Input::file('image')->getClientOriginalExtension())) {
-				$name = substr($name, 0, strlen($name) - strlen($extension));
-			}
-
-			//process and save image
-			if (!empty($field->width) || !empty($field->height)) {
-				Image::make(file_get_contents(Input::file('image')))
-					->fit((int)$field->width, (int)$field->height)
-					->save(public_path() . $path . '/' . $name . '.' . $extension);
-			} else {
-				Image::make(file_get_contents(Input::file('image')))
-					->save(public_path() . $path . '/' . $name . '.' . $extension);
-				list($width, $height, $type, $attr) = getimagesize(public_path() . $path . '/' . $name . '.' . $extension);
-				$field->width = $width;
-				$field->height = $height;
-			}
-
-			$size = filesize(public_path() . $path . '/' . $name . '.' . $extension);
-
-			//insert record for image
-			$file_id = DB::table(Config::get('avalon::db_files'))->insertGetId(array(
-				'field_id'	=>$field->id,
-				'path'		=>$path,
-				'name'		=>$name,
-				'extension'	=>$extension,
-				'url'		=>$path . '/' . $name . '.' . $extension,
-				'width'		=>$field->width,
-				'height'	=>$field->height,
-				'size'		=>$size,
-				'writable'	=>1,
-				'updated_by'=>Auth::user()->id,
-				'updated_at'=>new DateTime,
-				'precedence'=>DB::table(Config::get('avalon::db_files'))->where('field_id', $field->id)->max('precedence') + 1,
-			));
-
-			/*push it over to s3
-			$target = Str::random() . '/' . Input::file('image')->getClientOriginalName();
-			$bucket = 'josh-reisner-dot-com';
-			AWS::get('s3')->putObject(array(
-			    'Bucket'     => $bucket,
-			    'Key'        => $target,
-			    'SourceFile' => $temp,
-			));
-			unlink($file);
-			return 'https://s3.amazonaws.com/' . $bucket . '/' . $target;
-			*/
-
-			return json_encode(array(
-				'file_id'=>$file_id, 
-				'url'=>$path . '/' . $name . '.' . $extension,
-				'width'=>$field->width,
-				'height'=>$field->height,
-			));
 		} elseif (!Input::hasFile('image')) {
 			return 'no image';
 		} elseif (!Input::hasFile('field_id')) {
@@ -98,6 +24,97 @@ class FileController extends \BaseController {
 		} else {
 			return 'neither image nor field_id';			
 		}
+	}
+
+	/**
+	 * genericized function to handle upload, also available in service provider
+	 */
+	public static function saveImage($field_id, $file, $filename, $extension) {
+		//get field info
+		$field 	= DB::table(Config::get('avalon::db_fields'))->where('id', $field_id)->first();
+		$object = DB::table(Config::get('avalon::db_objects'))->where('id', $field->object_id)->first();
+		$unique	= Str::random(5);
+
+		//make path
+		$path = '/' . implode('/', array(
+			'packages',
+			'joshreisner',
+			'avalon',
+			'files',
+			$object->name,
+			$field->name,
+			$unique,
+		));
+
+		//also make path in the filesystem
+		mkdir(public_path() . $path, 0777, true);
+
+		//get name and extension
+		$name = Str::slug($filename, '-');
+		if ($extension = strtolower($extension)) {
+			$name = substr($name, 0, strlen($name) - strlen($extension));
+		}
+
+		//process and save image
+		if (!empty($field->width) && !empty($field->height)) {
+			Image::make($file)
+				->fit((int)$field->width, (int)$field->height)
+				->save(public_path() . $path . '/' . $name . '.' . $extension);
+		} elseif (!empty($field->width)) {
+			Image::make($file)
+				->widen((int)$field->width)
+				->save(public_path() . $path . '/' . $name . '.' . $extension);
+		} elseif (!empty($field->height)) {
+			Image::make($file)
+				->heighten(null, (int)$field->height)
+				->save(public_path() . $path . '/' . $name . '.' . $extension);
+		} else {
+			Image::make($file)
+				->save(public_path() . $path . '/' . $name . '.' . $extension);
+		}
+
+		//get dimensions
+		list($width, $height, $type, $attr) = getimagesize(public_path() . $path . '/' . $name . '.' . $extension);
+		$field->width = $width;
+		$field->height = $height;
+
+		//get size
+		$size = filesize(public_path() . $path . '/' . $name . '.' . $extension);
+
+		//insert record for image
+		$file_id = DB::table(Config::get('avalon::db_files'))->insertGetId(array(
+			'field_id'	=>$field->id,
+			'path'		=>$path,
+			'name'		=>$name,
+			'extension'	=>$extension,
+			'url'		=>$path . '/' . $name . '.' . $extension,
+			'width'		=>$field->width,
+			'height'	=>$field->height,
+			'size'		=>$size,
+			'writable'	=>1,
+			'updated_by'=>Auth::user()->id,
+			'updated_at'=>new DateTime,
+			'precedence'=>DB::table(Config::get('avalon::db_files'))->where('field_id', $field->id)->max('precedence') + 1,
+		));
+
+		/*push it over to s3
+		$target = Str::random() . '/' . Input::file('image')->getClientOriginalName();
+		$bucket = 'josh-reisner-dot-com';
+		AWS::get('s3')->putObject(array(
+		    'Bucket'     => $bucket,
+		    'Key'        => $target,
+		    'SourceFile' => $temp,
+		));
+		unlink($file);
+		return 'https://s3.amazonaws.com/' . $bucket . '/' . $target;
+		*/
+
+		return array(
+			'file_id'=>$file_id, 
+			'url'=>$path . '/' . $name . '.' . $extension,
+			'width'=>$field->width,
+			'height'=>$field->height,
+		);
 	}
 
 	//todo amazon?
