@@ -15,8 +15,15 @@ class AvalonServiceProvider extends ServiceProvider {
 	/**
 	 * make this function available (maybe should be on the model though?)
 	 */
-	public static function saveImage($field_id, $file, $filename, $extension) {
-		return \FileController::saveImage();
+	public static function saveImage($field_id, $file, $filename, $extension, $instance_id=null) {
+		return \FileController::saveImage($field_id, $file, $filename, $extension, $instance_id);
+	}
+
+	/**
+	 * leaky abstraction!!
+	 */
+	public static function cleanupFiles($files=false) {
+		return \FileController::cleanup($files);
 	}
 
 	/**

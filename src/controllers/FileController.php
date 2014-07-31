@@ -27,9 +27,9 @@ class FileController extends \BaseController {
 	}
 
 	/**
-	 * genericized function to handle upload, also available in service provider
+	 * genericized function to handle upload, available externally via service provider
 	 */
-	public static function saveImage($field_id, $file, $filename, $extension) {
+	public static function saveImage($field_id, $file, $filename, $extension, $instance_id=null) {
 		//get field info
 		$field 	= DB::table(Config::get('avalon::db_fields'))->where('id', $field_id)->first();
 		$object = DB::table(Config::get('avalon::db_objects'))->where('id', $field->object_id)->first();
@@ -50,70 +50,68 @@ class FileController extends \BaseController {
 		mkdir(public_path() . $path, 0777, true);
 
 		//get name and extension
-		$name = Str::slug($filename, '-');
-		if ($extension = strtolower($extension)) {
-			$name = substr($name, 0, strlen($name) - strlen($extension));
-		}
+		$filename	= Str::slug($filename, '-');
+		$extension 	= strtolower($extension);
+		$file_path 	= $path . '/' . $filename . '.' . $extension;
 
 		//process and save image
 		if (!empty($field->width) && !empty($field->height)) {
 			Image::make($file)
 				->fit((int)$field->width, (int)$field->height)
-				->save(public_path() . $path . '/' . $name . '.' . $extension);
+				->save(public_path() . $file_path);
 		} elseif (!empty($field->width)) {
 			Image::make($file)
 				->widen((int)$field->width)
-				->save(public_path() . $path . '/' . $name . '.' . $extension);
+				->save(public_path() . $file_path);
 		} elseif (!empty($field->height)) {
 			Image::make($file)
 				->heighten(null, (int)$field->height)
-				->save(public_path() . $path . '/' . $name . '.' . $extension);
+				->save(public_path() . $file_path);
 		} else {
 			Image::make($file)
-				->save(public_path() . $path . '/' . $name . '.' . $extension);
+				->save(public_path() . $file_path);
 		}
 
 		//get dimensions
-		list($width, $height, $type, $attr) = getimagesize(public_path() . $path . '/' . $name . '.' . $extension);
-		$field->width = $width;
-		$field->height = $height;
+		list($width, $height, $type, $attr) = getimagesize(public_path() . $file_path);
 
 		//get size
-		$size = filesize(public_path() . $path . '/' . $name . '.' . $extension);
+		$size = filesize(public_path() . $file_path);
 
 		//insert record for image
 		$file_id = DB::table(Config::get('avalon::db_files'))->insertGetId(array(
-			'field_id'	=>$field->id,
-			'path'		=>$path,
-			'name'		=>$name,
-			'extension'	=>$extension,
-			'url'		=>$path . '/' . $name . '.' . $extension,
-			'width'		=>$field->width,
-			'height'	=>$field->height,
-			'size'		=>$size,
-			'writable'	=>1,
-			'updated_by'=>Auth::user()->id,
-			'updated_at'=>new DateTime,
-			'precedence'=>DB::table(Config::get('avalon::db_files'))->where('field_id', $field->id)->max('precedence') + 1,
+			'field_id' =>		$field->id,
+			'instance_id' =>	$instance_id,
+			'path' =>			$path,
+			'name' =>			$filename,
+			'extension' =>		$extension,
+			'url' =>			$file_path,
+			'width' =>			$width,
+			'height' =>			$height,
+			'size' =>			$size,
+			'writable' =>		1,
+			'updated_by' =>		Auth::user()->id,
+			'updated_at' =>		new DateTime,
+			'precedence' =>		DB::table(Config::get('avalon::db_files'))->where('field_id', $field->id)->max('precedence') + 1,
 		));
 
 		/*push it over to s3
 		$target = Str::random() . '/' . Input::file('image')->getClientOriginalName();
 		$bucket = 'josh-reisner-dot-com';
 		AWS::get('s3')->putObject(array(
-		    'Bucket'     => $bucket,
-		    'Key'        => $target,
-		    'SourceFile' => $temp,
+		    'Bucket' => 		$bucket,
+		    'Key' => 			$target,
+		    'SourceFile' => 	$temp,
 		));
 		unlink($file);
 		return 'https://s3.amazonaws.com/' . $bucket . '/' . $target;
 		*/
 
 		return array(
-			'file_id'=>$file_id, 
-			'url'=>$path . '/' . $name . '.' . $extension,
-			'width'=>$field->width,
-			'height'=>$field->height,
+			'file_id' =>		$file_id, 
+			'url' =>			$file_path,
+			'width' =>			$width,
+			'height' =>			$height,
 		);
 	}
 
