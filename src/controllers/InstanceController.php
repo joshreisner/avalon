@@ -10,8 +10,8 @@ class InstanceController extends \BaseController {
 	public function index($object_id, $linked_id=false) {
 
 		# Get more info about the object
-		$object = DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->first();
-		$fields = DB::table(Config::get('avalon::db_fields'))
+		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
+		$fields = DB::table(DB_FIELDS)
 			->where('object_id', $object_id)
 			->where('visibility', 'list')
 			->orWhere('id', $object->group_by_field)
@@ -33,8 +33,8 @@ class InstanceController extends \BaseController {
 			} else {
 				$selects[] = $object->name . '.' . $field->name;
 				if ($field->type == 'image') {
-					$instances->leftJoin(Config::get('avalon::db_files'), $object->name . '.' . $field->name, '=', Config::get('avalon::db_files') . '.id');
-					$selects[] = Config::get('avalon::db_files') . '.url as ' . $field->name . '_url';
+					$instances->leftJoin(DB_FILES, $object->name . '.' . $field->name, '=', DB_FILES . '.id');
+					$selects[] = DB_FILES . '.url as ' . $field->name . '_url';
 				}
 			}
 		}
@@ -43,7 +43,7 @@ class InstanceController extends \BaseController {
 		# Handle group-by fields
 		$object->nested = false;
 		if (!empty($object->group_by_field)) {
-			$grouped_field = DB::table(Config::get('avalon::db_fields'))->where('id', $object->group_by_field)->first();
+			$grouped_field = DB::table(DB_FIELDS)->where('id', $object->group_by_field)->first();
 			$grouped_object = self::getRelatedObject($grouped_field->related_object_id);
 			if ($grouped_object->id == $object->id) {
 				//nested object
@@ -113,8 +113,8 @@ class InstanceController extends \BaseController {
 
 	//show create form for an object instance
 	public function create($object_id, $linked_id=false) {
-		$object = DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->first();
-		$fields = DB::table(Config::get('avalon::db_fields'))->where('object_id', $object_id)->orderBy('precedence')->get();
+		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
+		$fields = DB::table(DB_FIELDS)->where('object_id', $object_id)->orderBy('precedence')->get();
 		$options = array();
 		
 		foreach ($fields as $field) {
@@ -126,7 +126,7 @@ class InstanceController extends \BaseController {
 
 				//indent nested selects
 				if ($field->type == 'select' && !empty($related_object->group_by_field)) {
-					$grouped_field = DB::table(Config::get('avalon::db_fields'))->where('id', $related_object->group_by_field)->first();
+					$grouped_field = DB::table(DB_FIELDS)->where('id', $related_object->group_by_field)->first();
 					if ($grouped_field->object_id == $grouped_field->related_object_id) {
 						$field->options = $parents = array();
 						$options = DB::table($related_object->name)->orderBy($related_object->order_by, $related_object->direction)->get();
@@ -166,8 +166,8 @@ class InstanceController extends \BaseController {
 
 	//save a new object instance to the database
 	public function store($object_id, $linked_id=false) {
-		$object = DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->first();
-		$fields = DB::table(Config::get('avalon::db_fields'))->where('object_id', $object_id)->get();
+		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
+		$fields = DB::table(DB_FIELDS)->where('object_id', $object_id)->get();
 		
 		//metadata
 		$inserts = array(
@@ -187,7 +187,7 @@ class InstanceController extends \BaseController {
 		$instance_id = DB::table($object->name)->insertGetId($inserts);
 		
 		//update objects table with latest counts
-		DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->update(array(
+		DB::table(DB_OBJECTS)->where('id', $object_id)->update(array(
 			'count'=>DB::table($object->name)->whereNull('deleted_at')->count(),
 			'updated_at'=>new DateTime,
 			'updated_by'=>Auth::user()->id
@@ -208,7 +208,7 @@ class InstanceController extends \BaseController {
 					}
 				}
 			} elseif ($field->type == 'image') {
-				DB::table(Config::get('avalon::db_files'))->where('id', Input::get($field->name))->update(array('instance_id'=>$instance_id));
+				DB::table(DB_FILES)->where('id', Input::get($field->name))->update(array('instance_id'=>$instance_id));
 			}
 		}
 
@@ -219,7 +219,7 @@ class InstanceController extends \BaseController {
 
 		//otherwise, if we're coming from a related object, go there
 		if ($linked_id) {
-			$related_field = DB::table(Config::get('avalon::db_fields'))->where('id', $object->group_by_field)->first();
+			$related_field = DB::table(DB_FIELDS)->where('id', $object->group_by_field)->first();
 			return Redirect::action('InstanceController@edit', array($related_field->related_object_id, $linked_id))->with('instance_id', $instance_id);
 		}
 
@@ -229,8 +229,8 @@ class InstanceController extends \BaseController {
 	
 	//show edit form
 	public function edit($object_id, $instance_id, $linked_id=false) {
-		$object = DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->first();
-		$fields = DB::table(Config::get('avalon::db_fields'))->where('object_id', $object_id)->orderBy('precedence')->get();
+		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
+		$fields = DB::table(DB_FIELDS)->where('object_id', $object_id)->orderBy('precedence')->get();
 		$instance = DB::table($object->name)->where('id', $instance_id)->first();
 
 		//format instance values for form
@@ -245,7 +245,7 @@ class InstanceController extends \BaseController {
 
 				//indent nested selects
 				if ($field->type == 'select' && !empty($related_object->group_by_field)) {
-					$grouped_field = DB::table(Config::get('avalon::db_fields'))->where('id', $related_object->group_by_field)->first();
+					$grouped_field = DB::table(DB_FIELDS)->where('id', $related_object->group_by_field)->first();
 					if ($grouped_field->object_id == $grouped_field->related_object_id) {
 						$field->options = $parents = array();
 						$options = DB::table($related_object->name)->orderBy($related_object->order_by, $related_object->direction)->get();
@@ -279,7 +279,7 @@ class InstanceController extends \BaseController {
 				}
 
 			} elseif ($field->type == 'image') {
-				$instance->{$field->name} = DB::table(Config::get('avalon::db_files'))->where('id', $instance->{$field->name})->first();
+				$instance->{$field->name} = DB::table(DB_FILES)->where('id', $instance->{$field->name})->first();
 				if (!empty($instance->{$field->name}->width) && !empty($instance->{$field->name}->height)) {
 					$field->width = $instance->{$field->name}->width;
 					$field->height = $instance->{$field->name}->height;
@@ -298,7 +298,7 @@ class InstanceController extends \BaseController {
 		}
 
 		# Get linked objects
-		$links = DB::table(Config::get('avalon::db_object_links'))->where('object_id', $object_id)->lists('linked_id');
+		$links = DB::table(DB_OBJECT_LINKS)->where('object_id', $object_id)->lists('linked_id');
 		foreach ($links as &$link) {
 			$link = self::index($link, $instance_id, $linked_id);
 		}
@@ -314,8 +314,8 @@ class InstanceController extends \BaseController {
 	
 	//save edits to database
 	public function update($object_id, $instance_id, $linked_id=false) {
-		$object = DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->first();
-		$fields = DB::table(Config::get('avalon::db_fields'))->where('object_id', $object_id)->get();
+		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
+		$fields = DB::table(DB_FIELDS)->where('object_id', $object_id)->get();
 		
 		//metadata
 		$updates = array(
@@ -348,12 +348,12 @@ class InstanceController extends \BaseController {
 				if ($field->type == 'image') {
 
 					# Capture the uploaded file by setting the reverse-lookup
-					DB::table(Config::get('avalon::db_files'))
+					DB::table(DB_FILES)
 						->where('id', Input::get($field->name))
 						->update(array('instance_id'=>$instance_id));
 
 					# Delete any images formerly attached to this instance
-					if ($files = DB::table(Config::get('avalon::db_files'))
+					if ($files = DB::table(DB_FILES)
 						->where('field_id', $field->id)
 						->where('instance_id', $instance_id)
 						->where('id', '<>', Input::get($field->name))
@@ -371,7 +371,7 @@ class InstanceController extends \BaseController {
 		DB::table($object->name)->where('id', $instance_id)->update($updates);
 		
 		//update object meta
-		DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->update(array(
+		DB::table(DB_OBJECTS)->where('id', $object_id)->update(array(
 			'count'=>DB::table($object->name)->whereNull('deleted_at')->count(),
 			'updated_at'=>new DateTime,
 			'updated_by'=>Auth::user()->id
@@ -382,7 +382,7 @@ class InstanceController extends \BaseController {
 
 		//otherwise, if we're coming from a related object, go there
 		if ($linked_id) {
-			$related_field = DB::table(Config::get('avalon::db_fields'))->where('id', $object->group_by_field)->first();
+			$related_field = DB::table(DB_FIELDS)->where('id', $object->group_by_field)->first();
 			return Redirect::action('InstanceController@edit', array($related_field->related_object_id, $linked_id))->with('instance_id', $instance_id);
 		}
 
@@ -392,11 +392,11 @@ class InstanceController extends \BaseController {
 	
 	# Remove object from db - todo check key/constraints
 	public function destroy($object_id, $instance_id) {
-		$object = DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->first();
+		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
 		DB::table($object->name)->where('id', $instance_id)->delete();
 
 		//update object meta
-		DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->update(array(
+		DB::table(DB_OBJECTS)->where('id', $object_id)->update(array(
 			'count'=>DB::table($object->name)->whereNull('deleted_at')->count(),
 		));
 
@@ -405,12 +405,12 @@ class InstanceController extends \BaseController {
 	
 	# Reorder fields by drag-and-drop
 	public function reorder($object_id) {
-		$object = DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->first();
+		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
 
 		//determine whether nested
 		$object->nested = false;
 		if (!empty($object->group_by_field)) {
-			$grouped_field = DB::table(Config::get('avalon::db_fields'))->where('id', $object->group_by_field)->first();
+			$grouped_field = DB::table(DB_FIELDS)->where('id', $object->group_by_field)->first();
 			if ($grouped_field->related_object_id == $object->id) {
 				$object->nested = true;
 			}
@@ -440,13 +440,13 @@ class InstanceController extends \BaseController {
 					DB::table($object->name)->where('id', $instance_id)->update(array('precedence'=>$precedence++));
 				}
 			}
-			return 'done reordering linear';
+			return 'done reordering ' . Input::get('order')  . ' instances, linear';
 		}
 	}
 	
 	# Soft delete
 	public function delete($object_id, $instance_id) {
-		$object = DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->first();
+		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
 		
 		//toggle instance with active or inactive
 		$deleted_at = (Input::get('active') == 1) ? null : new DateTime;
@@ -458,7 +458,7 @@ class InstanceController extends \BaseController {
 		));
 
 		//update object meta
-		DB::table(Config::get('avalon::db_objects'))->where('id', $object_id)->update(array(
+		DB::table(DB_OBJECTS)->where('id', $object_id)->update(array(
 			'count'=>DB::table($object->name)->whereNull('deleted_at')->count(),
 			'updated_at'=>new DateTime,
 			'updated_by'=>Auth::user()->id,
@@ -503,14 +503,14 @@ class InstanceController extends \BaseController {
 
 	# Return a foreign key column name for a given table name or object_id (public for AvalonServiceProvider::boot)
 	public static function getKey($table_name) {
-		if (ctype_digit(strval($table_name))) $table_name = DB::table(Config::get('avalon::db_objects'))->where('id', $table_name)->pluck('name');
+		if (ctype_digit(strval($table_name))) $table_name = DB::table(DB_OBJECTS)->where('id', $table_name)->pluck('name');
 		return Str::singular($table_name) . '_id';
 	}
 
 	# Get related object with the first string field name
 	private static function getRelatedObject($related_object_id) {
-		$related = DB::table(Config::get('avalon::db_objects'))->where('id', $related_object_id)->first();
-		$related->field = DB::table(Config::get('avalon::db_fields'))->where('object_id', $related_object_id)->where('type', 'string')->first();
+		$related = DB::table(DB_OBJECTS)->where('id', $related_object_id)->first();
+		$related->field = DB::table(DB_FIELDS)->where('object_id', $related_object_id)->where('type', 'string')->first();
 		return $related;
 	}
 
@@ -521,7 +521,7 @@ class InstanceController extends \BaseController {
 		foreach ($fields as $field) {
 			$table->column($field->name, $field->type, $field->title, $field->width, $field->height);
 		}
-		$table->column('updated_at', 'updated_at', Lang::get('avalon::messages.site_updated_at'));
+		$table->column('updated_at', 'updated_at', trans('avalon::messages.site_updated_at'));
 		$table->deletable();
 		if (!empty($object->group_by_field)) $table->groupBy('group');
 		if ($object->order_by == 'precedence') $table->draggable(URL::action('InstanceController@reorder', $object->id));

@@ -10,7 +10,7 @@ class UserController extends \BaseController {
 	
 	//show a list of users
 	public function index() {
-		$users = DB::table(Config::get('avalon::db_users'))->orderBy('name')->get();
+		$users = DB::table(DB_USERS)->orderBy('name')->get();
 		
 		foreach ($users as &$user) {
 			$user->role = self::$roles[$user->role];
@@ -25,7 +25,7 @@ class UserController extends \BaseController {
 	
 	//show the create new user form
 	public function create() {
-		$objects = DB::table(Config::get('avalon::db_objects'))->get();
+		$objects = DB::table(DB_OBJECTS)->get();
 		return View::make('avalon::users.create', array(
 			'roles'=>self::$roles,
 			'objects'=>$objects,
@@ -37,7 +37,7 @@ class UserController extends \BaseController {
 		$email = Input::get('email');
 		$password = Str::random(12);
 
-		$user_id = DB::table(Config::get('avalon::db_users'))->insertGetId(array(
+		$user_id = DB::table(DB_USERS)->insertGetId(array(
 			'name'=>Input::get('name'),
 			'email'=>$email,
 			'password'=>Hash::make($password),
@@ -53,8 +53,8 @@ class UserController extends \BaseController {
 
 	//show edit screen
 	public function edit($user_id) {
-		$objects = DB::table(Config::get('avalon::db_objects'))->get();
-		$user = DB::table(Config::get('avalon::db_users'))->where('id', $user_id)->first();
+		$objects = DB::table(DB_OBJECTS)->get();
+		$user = DB::table(DB_USERS)->where('id', $user_id)->first();
 		return View::make('avalon::users.edit', array(
 			'user'=>$user,
 			'roles'=>self::$roles,
@@ -64,7 +64,7 @@ class UserController extends \BaseController {
 
 	//save edit to database
 	public function update($user_id) {
-		DB::table(Config::get('avalon::db_users'))->where('id', $user_id)->update(array(
+		DB::table(DB_USERS)->where('id', $user_id)->update(array(
 			'name'=>Input::get('name'),
 			'email'=>Input::get('email'),
 			'role'=>Input::get('role'),
@@ -77,18 +77,18 @@ class UserController extends \BaseController {
 	//toggle active flag
 	public function delete($user_id) {
 		$deleted_at = (Input::get('active') == 1) ? null : new DateTime;
-		DB::table(Config::get('avalon::db_users'))->where('id', $user_id)->update(array(
+		DB::table(DB_USERS)->where('id', $user_id)->update(array(
 			'updated_by'=>Auth::user()->id,
 			'updated_at'=>new DateTime,
 			'deleted_at'=>$deleted_at,
 		));
-		$updated = DB::table(Config::get('avalon::db_users'))->where('id', $user_id)->pluck('updated_at');
+		$updated = DB::table(DB_USERS)->where('id', $user_id)->pluck('updated_at');
 		return Dates::relative($updated);
 	}
 
 	//destroy a never-logged-in user
 	public function destroy($user_id) {
-		DB::table(Config::get('avalon::db_users'))->whereNull('last_login')->where('id', $user_id)->delete();
+		DB::table(DB_USERS)->whereNull('last_login')->where('id', $user_id)->delete();
 		return Redirect::action('UserController@index');
 	}
 
@@ -99,9 +99,9 @@ class UserController extends \BaseController {
 	 */
 	public function resendWelcome($user_id) {
 		$password = Str::random(12);
-		$email = DB::table(Config::get('avalon::db_users'))->where('id', $user_id)->pluck('email');
+		$email = DB::table(DB_USERS)->where('id', $user_id)->pluck('email');
 
-		DB::table(Config::get('avalon::db_users'))->where('id', $user_id)->update(array(
+		DB::table(DB_USERS)->where('id', $user_id)->update(array(
 			'password'=>Hash::make($password),
 		));
 

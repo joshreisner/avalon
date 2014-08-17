@@ -31,8 +31,8 @@ class FileController extends \BaseController {
 	 */
 	public static function saveImage($field_id, $file, $filename, $extension, $instance_id=null) {
 		//get field info
-		$field 	= DB::table(Config::get('avalon::db_fields'))->where('id', $field_id)->first();
-		$object = DB::table(Config::get('avalon::db_objects'))->where('id', $field->object_id)->first();
+		$field 	= DB::table(DB_FIELDS)->where('id', $field_id)->first();
+		$object = DB::table(DB_OBJECTS)->where('id', $field->object_id)->first();
 		$unique	= Str::random(5);
 
 		//make path
@@ -79,7 +79,7 @@ class FileController extends \BaseController {
 		$size = filesize(public_path() . $file_path);
 
 		//insert record for image
-		$file_id = DB::table(Config::get('avalon::db_files'))->insertGetId(array(
+		$file_id = DB::table(DB_FILES)->insertGetId(array(
 			'field_id' =>		$field->id,
 			'instance_id' =>	$instance_id,
 			'path' =>			$path,
@@ -92,7 +92,7 @@ class FileController extends \BaseController {
 			'writable' =>		1,
 			'updated_by' =>		Auth::user()->id,
 			'updated_at' =>		new DateTime,
-			'precedence' =>		DB::table(Config::get('avalon::db_files'))->where('field_id', $field->id)->max('precedence') + 1,
+			'precedence' =>		DB::table(DB_FILES)->where('field_id', $field->id)->max('precedence') + 1,
 		));
 
 		/*push it over to s3
@@ -119,7 +119,7 @@ class FileController extends \BaseController {
 	public static function cleanup($files=false) {
 
 		//by default, remove all non-instanced files
-		if (!$files) $files = DB::table(Config::get('avalon::db_files'))->whereNull('instance_id')->get();
+		if (!$files) $files = DB::table(DB_FILES)->whereNull('instance_id')->get();
 		
 		//try to physically remove
 		$ids = array();
@@ -133,7 +133,7 @@ class FileController extends \BaseController {
 
 		//remove records
 		if (!empty($ids)) {
-			DB::table(Config::get('avalon::db_files'))->whereIn('id', $ids)->delete();
+			DB::table(DB_FILES)->whereIn('id', $ids)->delete();
 		}
 	}
 }
