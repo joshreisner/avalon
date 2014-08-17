@@ -1,0 +1,329 @@
+@import "../../../bower_components/bootstrap-sass/lib/bootstrap.scss"
+@import "../../../bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css"
+@import "redactor.css"
+
+$gray 			: #ccc
+$gray_dark		: #555
+$gray_light		: #f5f5f5
+$white			: #fff
+$margin			: 24px
+$modal_radius	: 14px
+$field_radius	: 4px
+
+$success		: #dff0d8
+$warning		: #fcf8e3
+$danger			: #f2dede
+
+html
+	height: 100%
+
+body
+	height: 100%
+
+	h1, h2, h3, h4, h5, h6
+		font-family: inherit
+
+	.container
+		padding-top: $margin
+
+	/*overriding var_dumpling*/
+	.string
+		color: inherit
+
+	&.login
+		background-color: $gray
+		div.modal
+			border-radius: $modal_radius
+			border: 0
+			top: 25%
+			div.modal-content
+				border-radius: $modal_radius
+				div.modal-header
+					border-radius: $modal_radius $modal_radius 0 0
+				div.modal-body .form-group:last-child
+					margin-bottom: 0
+				div.alert
+					margin: -20px -20px 20px -20px
+					border-radius: 0
+				div.modal-footer
+					margin-top: 0
+					border-radius: 0 0 $modal_radius $modal_radius
+					background-color: $gray_light
+
+		a.github
+			display: block
+			width: 149px
+			height: 149px
+			position: absolute
+			top: 0
+			right: 0
+			background-image: url(https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png)
+	
+	form
+		margin-bottom: $margin
+		
+		.form-group
+
+			input
+				&.color
+					max-width: 100px
+				&.date
+					max-width: 200px
+				&.datetime
+					max-width: 200px
+				&.integer
+					max-width: 200px
+				&.time
+					max-width: 200px
+
+			div.checkbox
+				padding-top: 4px
+
+			.checkbox-inline
+				margin-left: 0
+				margin-right: 20px
+				min-width: 152px
+			
+			.redactor_box
+				border: 1px solid $gray
+				border-radius: $field_radius
+				ul.redactor_toolbar
+					border-bottom: 1px solid $gray
+					background: none
+					background-color: $gray_light
+					border-radius: $field_radius $field_radius 0 0
+					li
+						padding-bottom: 0
+						a.redactor_btn_button1
+							background: url(/packages/joshreisner/avalon/img/lorem_ipsum_button.png) no-repeat
+
+				div.redactor_editor
+					border-radius: 0 0 $field_radius $field_radius
+
+			div.image_upload
+				border: $gray
+				background-color: $gray_light
+				display: block
+				overflow: hidden
+				text-align: center
+				font-size: 20px
+				color: $gray
+				background-size: cover
+				&:hover
+					text-decoration: none
+				&.filled
+					text-indent: 100%
+					white-space: nowrap
+
+			&:last-child
+				margin-bottom: 0
+			&.has-error
+				.help-inline
+					display: none !important
+
+		&.upload
+			position: absolute
+			input
+				opacity: 0
+				position: absolute
+				top: 0
+				right: 0
+				bottom: 0
+				left: 0
+				cursor: pointer
+				width: 100%
+	
+	.header
+		margin-bottom: $margin
+		overflow: auto
+		a
+			background-image: url(/packages/joshreisner/avalon/img/banner.png)
+			display: block
+			width: 295px
+			height: 92px
+			float: left
+	
+	.main
+		margin-bottom: $margin
+
+		h1
+			font-weight: normal
+			font-size: $margin
+			line-height: $margin
+			margin: 0 0 $margin 0
+			i.glyphicon-chevron-right
+				color: $gray
+		
+		.btn-group
+			margin-bottom: $margin
+
+		table, div.nested
+			.draggy
+				color: $gray
+				cursor: url(https://mail.google.com/mail/images/2/openhand.cur), default !important
+			.delete a
+				color: inherit
+				i
+					top: 2px
+				&:hover
+					text-decoration: none
+
+			.inactive
+				text-decoration: line-through
+				color: $gray
+				a
+					color: $gray
+
+		div.nested
+			margin-left: -30px
+			.legend
+				font-weight: bold
+				border-bottom: 2px solid #ddd
+				position: relative
+				padding: 0 30px 5px
+				margin-left: 30px
+				div.updated_at
+					position: absolute
+					right: 30px
+					top: 0
+
+			.placeholder
+				background: #eee !important
+				border: 0
+
+			li:last-child > div.nested_row
+				border-bottom-width: 0
+			ul
+				list-style: none
+				padding-left: 30px
+				li
+					div.nested_row
+						position: relative
+						padding: 5px 28px
+						border-top: 1px solid #ddd
+						border-bottom: 1px solid #ddd
+						margin-top: -1px
+						div
+							position: absolute
+							top: 0px
+							width: 24px
+							text-align: center
+							i
+								margin-top: 6px
+							&.updated_at
+								position: absolute
+								right: 30px
+								width: 120px
+								height: 30px
+								line-height: 30px
+								text-align: right
+							&.draggy
+								left: 0px
+							&.delete
+								right: 0px
+
+		div.related
+			border-top: 2px dashed $gray
+		
+		table
+			margin: -6px 0 $margin
+			tbody
+				border-top: 0
+			div.highlight
+				z-index: -10
+				background-color: $gray_light
+				position: absolute
+			tr
+				th, td
+					&.draggy, &.delete
+						width: 18px
+						text-align: center
+					&.center
+						text-align: center
+					&.date
+						text-align: right
+						white-space: nowrap
+					&.datetime
+						text-align: left
+						white-space: nowrap
+					&.integer
+						text-align: right
+					&.date-relative
+						text-align: right
+						white-space: nowrap
+						width: 120px
+					&.updated_at
+						text-align: right
+						white-space: nowrap
+						width: 120px
+					&.updated_by
+						text-align: right
+						white-space: nowrap
+						width: 120px
+					&.color 
+						width: 30px
+						a
+							display: block
+							width: 30px
+							height: 30px
+							margin: -5px
+					&.image
+						width: 100px
+						a
+							display: block
+							text-align: center
+							img
+								display: inline
+								max-width: 100px
+								max-height: 100px
+								width: auto
+								height: auto
+					&:first-child
+						text-align: left
+				
+				&.group
+					td
+						padding-top: 34px
+						color: $gray_dark
+						text-transform: uppercase
+						font-weight: bold
+						font-size: 12px
+
+				&.dragging
+					td.draggy
+						cursor: url(https://mail.google.com/mail/images/2/closedhand.cur), default !important
+					td
+						border-color: $gray_dark
+						border-bottom-width: 1px
+						border-bottom-style: solid
+						background-color: $gray_light
+			&.objects
+				tr
+					td, th
+						&.string
+							width: 200px
+						&.updated_at
+							width: 200px
+						&.integer
+							text-align: center
+	
+	.side
+		margin-bottom: $margin
+		.inner
+			font-size: 1.1em
+			border-left: 2px dashed $gray
+			padding: 9px $margin
+			color: $gray_dark
+			margin-top: 38px
+			
+			p
+				margin: 0 0 $margin 0
+
+			form
+				margin-bottom: 30px
+
+			.well
+				max-height: 300px
+				overflow: scroll
+				img
+					margin-bottom: 10px

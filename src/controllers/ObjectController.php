@@ -7,17 +7,22 @@ class ObjectController extends \BaseController {
 		'desc'=>'Descending',
 	);
 	
-	//display list for home page
+	# Display list for home page
 	public function index() {
-		$objects = DB::table(Config::get('avalon::db_objects'))->orderBy('list_grouping')->orderBy('title')->get();
+		$objects = DB::table(Config::get('avalon::db_objects'))
+			->join('users', 'users.id', '=', 'avalon_objects.updated_by')
+			->orderBy('list_grouping')
+			->orderBy('title')
+			->get();
 		foreach ($objects as &$object) {
 			$object->link = URL::action('InstanceController@index', $object->id);
+			$object->updated_by = $object->name;
 			if ($object->count == 0) $object->instance_count = '';
 		}
 		return View::make('avalon::objects.index', array('objects'=>$objects));
 	}
 	
-	//display create object form
+	# Display create object form
 	public function create() {
 		$order_by = array(Lang::get('avalon::messages.fields_system')=>array(
 			'id'=>Lang::get('avalon::messages.fields_id'),
@@ -33,7 +38,7 @@ class ObjectController extends \BaseController {
 		));
 	}
 	
-	//store create object form post data
+	# Store create object form post data
 	public function store() {
 
 		//make plural, title case

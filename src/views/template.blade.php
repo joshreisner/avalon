@@ -3,13 +3,12 @@
 	<head>
 		<title>@yield('title')</title>
 		<meta charset="UTF-8">
-		{{ HTML::style('/packages/joshreisner/avalon/css/main.css') }}
+		{{ HTML::style('/packages/joshreisner/avalon/assets/css/main.min.css') }}
 		@if (Config::has('avalon::css'))
 			@foreach (Config::get('avalon::css') as $stylesheet)
 			{{ HTML::style($stylesheet) }}
 			@endforeach
 		@endif
-		{{ HTML::style('/packages/joshreisner/avalon/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}
 	</head>
 	<body>
 		<div class="container">
