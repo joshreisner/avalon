@@ -10,7 +10,6 @@
     "require": {
         "php": ">=5.3.0",
         "illuminate/support": "4.*",
-        "doctrine/dbal": "2.*",
         "intervention/image": "2.*"
     },
     "autoload": {
@@ -25,13 +24,8 @@
     },
     "scripts": {
     	"post-install-cmd": [
-    		"php artisan config:publish joshreisner/avalon",
-    		"php artisan migrate --package=joshreisner/avalon",
-    		"php artisan asset:publish"
     	],
     	"post-update-cmd": [
-    		"php artisan migrate --package=joshreisner/avalon",
-    		"php artisan asset:publish"
     	]
     },
     "minimum-stability": "dev"
