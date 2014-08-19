@@ -15,7 +15,7 @@ var outputDir	= 'public/assets';
 gulp.task('main-css', function(){
 	return gulp.src(sassDir + '/main.sass')
 		.pipe(sass())
-		.on('error', handleError)
+		.on('error', handleSassError)
 		.pipe(autoprefix('last 3 version'))
 		.pipe(minifyCSS({keepSpecialComments:0}))
         .pipe(rename({suffix: '.min'}))
@@ -26,6 +26,7 @@ gulp.task('main-js', function(){
 	return gulp.src(jsDir + '/main.js')
 		.pipe(include())
 		.pipe(uglify())
+		.on('error', handleJsError)		
         .pipe(rename({suffix: '.min'}))
 		.pipe(gulp.dest(outputDir + '/js'));
 });
@@ -37,7 +38,12 @@ gulp.task('watch', function(){
 
 gulp.task('default', ['main-css', 'main-js', 'watch']);
 
-function handleError(err) {
+function handleJsError(err, line) {
+	gulp.src(jsDir + '/main.js').pipe(notify(err + ' ' + line));
+	this.emit('end');
+}
+
+function handleSassError(err) {
 	gulp.src(sassDir + '/main.sass').pipe(notify(err));
 	this.emit('end');
 }

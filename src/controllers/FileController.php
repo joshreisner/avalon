@@ -107,12 +107,50 @@ class FileController extends \BaseController {
 		return 'https://s3.amazonaws.com/' . $bucket . '/' . $target;
 		*/
 
+		list($screenwidth, $screenheight) = self::getImageDimensions($width, $height);
+
+		//perhaps also screenwidth & screenheight?
 		return array(
 			'file_id' =>		$file_id, 
 			'url' =>			$file_path,
 			'width' =>			$width,
 			'height' =>			$height,
+			'screenwidth' =>	$screenwidth,
+			'screenheight' =>	$screenheight,
 		);
+	}
+
+	# Get display size for create and edit views
+	public static function getImageDimensions($width=false, $height=false) {
+
+		$max_width  = Config::get('avalon::image_max_width');
+		$max_height = Config::get('avalon::image_max_height');
+		$max_area   = Config::get('avalon::image_max_area');
+
+		//too wide?
+		if ($width && $width > $max_width) {
+			if ($height) $height *= $max_width / $width;
+			$width = $max_width;
+		}
+
+		//too tall?
+		if ($height && $height > $max_height) {
+			if ($width) $width *= $max_height / $height;
+			$height = $max_height;
+		}
+
+		//not specified?
+		if (!$width) $width = Config::get('avalon::image_default_width');
+		if (!$height) $height = Config::get('avalon::image_default_height');
+
+		//too large?
+		$area = $width * $height;
+		if ($width * $height > $max_area) {
+			$width *= $max_area / $area;
+			$height *= $max_area / $area;
+		}
+
+		return array($width, $height);
 	}
 
 	//todo amazon?

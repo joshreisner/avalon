@@ -152,8 +152,8 @@ class InstanceController extends \BaseController {
 					$field->options = array(''=>'') + $field->options;
 				}
 
-			} elseif ($field->type == 'image') {
-				list($field->screen_width, $field->screen_height) = self::getImageDimensions($field->width, $field->height);
+			} elseif (in_array($field->type, array('image', 'images'))) {
+				list($field->screen_width, $field->screen_height) = FileController::getImageDimensions($field->width, $field->height);
 			}
 		}
 
@@ -284,7 +284,7 @@ class InstanceController extends \BaseController {
 					$field->width = $instance->{$field->name}->width;
 					$field->height = $instance->{$field->name}->height;
 				}
-				list($field->screen_width, $field->screen_height) = self::getImageDimensions($field->width, $field->height);
+				list($field->screen_width, $field->screen_height) = FileController::getImageDimensions($field->width, $field->height);
 			} elseif ($field->type == 'slug') {
 				if ($field->required && empty($instance->{$field->name}) && $field->related_field_id) {
 					//slugify related field to populate this one
@@ -528,34 +528,6 @@ class InstanceController extends \BaseController {
 		return $table->draw();
 	}
 
-	# Get display size for create and edit views
-	private static function getImageDimensions($width=false, $height=false) {
-
-		//too wide?
-		if ($width && $width > Config::get('avalon::image_max_width')) {
-			if ($height) $height *= Config::get('avalon::image_max_width') / $width;
-			$width = Config::get('avalon::image_max_width');
-		}
-
-		//too tall?
-		if ($height && $height > Config::get('avalon::image_max_height')) {
-			if ($width) $width *= Config::get('avalon::image_max_height') / $height;
-			$height = Config::get('avalon::image_max_height');
-		}
-
-		//not specified?
-		if (!$width) $width = Config::get('avalon::image_default_width');
-		if (!$height) $height = Config::get('avalon::image_default_height');
-
-		//too large?
-		if ($width * $height > Config::get('avalon::image_max_area')) {
-			$width *= Config::get('avalon::image_max_area') / $width * $height;
-			$height *= Config::get('avalon::image_max_area') / $width * $height;
-		}
-
-		return array($width, $height);
-	}
-
 	/* public function redactor_s3() {
 
 		$S3_KEY		= Config::get('aws.key');
@@ -598,7 +570,6 @@ class InstanceController extends \BaseController {
 
 		//send a response
 		
-	}
-	*/
+	}*/
 }
 

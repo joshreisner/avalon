@@ -2,6 +2,7 @@
 
 class FieldController extends \BaseController {
 
+	//this could probably be a variable no?
 	private static function types() {
 
 		return array(
@@ -12,7 +13,7 @@ class FieldController extends \BaseController {
 			),
 			trans('avalon::messages.fields_types_cat_files')=>array(
 				'image'			=>trans('avalon::messages.fields_types_image'),
-				//'images'		=>'Images',
+				'images'		=>trans('avalon::messages.fields_types_images'),
 				//'file'		=>'File',
 				//'files'		=>'Files',
 			),
@@ -38,11 +39,12 @@ class FieldController extends \BaseController {
 		);
 	}
 	
+	//also probably could be a variable
 	private static function visibility() {
 		return array(
 			'list'	=>trans('avalon::messages.fields_visibility_list'),
 			'normal'=>trans('avalon::messages.fields_visibility_normal'),
-			'Hidden'=>trans('avalon::messages.fields_visibility_hidden'),
+			'hidden'=>trans('avalon::messages.fields_visibility_hidden'),
 		);
 	}
 
@@ -148,6 +150,10 @@ class FieldController extends \BaseController {
 							$table->integer($field_name)->nullable();
 						}
 						break;
+
+					case 'images':
+					//no column here? was considering an int count?
+					break;
 
 					case 'slug':
 					case 'string':
@@ -305,7 +311,7 @@ class FieldController extends \BaseController {
 	private static function organizeTable($object_id) {
 		//reorder actual table fields
 		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
-		$fields = DB::table(DB_FIELDS)->where('object_id', $object_id)->where('type', '<>', 'checkboxes')->orderBy('precedence')->get();
+		$fields = DB::table(DB_FIELDS)->where('object_id', $object_id)->whereNotIn('type', array('checkboxes', 'images'))->orderBy('precedence')->get();
 		$system = array('created_at', 'updated_at', 'updated_by', 'deleted_at', 'precedence');
 
 		db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT FIRST');
@@ -321,10 +327,6 @@ class FieldController extends \BaseController {
 		db::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN updated_by INT 			   AFTER updated_at');
 		db::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN deleted_at DATETIME 		   AFTER updated_by');
 		db::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN precedence INT 	  NOT NULL AFTER deleted_at');
-
-		/*if (Schema::hasColumn($object->name, 'subsequence')) {
-			db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN subsequence INT AFTER precedence');
-		}*/
 	}
 
 	//format field type

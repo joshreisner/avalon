@@ -27,14 +27,11 @@ $(function() {
 		}
 	});
 
-	//autoselect first text element that's not a color (they get messed up when they're autoselected)
+	//autoselect first text element that's not a color (jscolor gets messed up when autoselected)
 	$('form input[type=text]:not(.color)').first().focus();
 
-	//datetimepicker
-	$('.input-group.date').datetimepicker({
-        pickTime: false
-    });
-
+	//datetimepickers
+	$('.input-group.date').datetimepicker({pickTime: false});
 	$('.input-group.datetime').datetimepicker();
 
 	//draggable tables
@@ -174,28 +171,34 @@ $(function() {
 	//typeaheads	
 	$("input.typeahead").each(function(){
 		var $this = $(this);
-		//console.log('hi');
 		$.getJSON($this.attr("data-typeahead"), function(data){
 		    $this.typeahead({ source:data });
-			//console.log('there' + data);
 		});
 	});
 
-	//single image upload
+	//jquery function to cover a input element, used on page load and when cloning
+	jQuery.fn.extend({
+		setupUploadForm : function() {
+			var offset   = $(this).offset();
+			var width    = $(this).width();
+			var height   = $(this).height();
+			var field_id = $(this).attr('id').substr(6);
+			var multiple = $(this).closest(".form-group").hasClass("images") ? "multiple" : "";
+			$("<form class='upload upload_image'><input type='hidden' name='field_id' value='" + field_id + "'><input type='file' name='image'" + multiple + "></form>").appendTo("body").css({
+				top: offset.top, 
+				left: offset.left,
+				width: width,
+				height: height
+			});		
+		}
+	});
+
+	//set up image upload <form>s on load
 	$("div.image_upload").each(function(){
-		var offset = $(this).offset();
-		var width = $(this).width();
-		var height = $(this).height();
-		var field_id = $(this).attr('id').substr(6);
-		$("<form class='upload upload_image'><input type='hidden' name='field_id' value='" + field_id + "'><input type='file' name='image'></form>").appendTo("body").css({
-			top: offset.top, 
-			left: offset.left,
-			width: width,
-			height: height,
-			display: 'block'
-		});
+		$(this).setupUploadForm();
 	});
 
+	//handle image upload
 	$("form.upload_image input").fileupload({
 		url: 				"/login/upload/image",
 		type: 				"POST",
@@ -203,6 +206,7 @@ $(function() {
 		acceptFileTypes : 	/(\.|\/)(jpg|gif|png)$/i,
 		autoUpload: 		true,
 		add: function(e, data) {
+			//window.console.log($(this).prop("multiple"));
 			data.submit();
 		},
 		fail: function(e, data) {
@@ -212,66 +216,32 @@ $(function() {
 			//var file_id = data.jqXHR.responseText;
 			var field_id = $(this).parent().find("input[name=field_id]").val();
 
-			//set dimensions
-			$(this).parent().width(data.result.width).height(data.result.height);
+			var multiple = $(this).prop("multiple");
 
+			var $parent = $(this).parent();
+
+			//set dimensions for this <input>
+			$parent.width(data.result.screenwidth).height(data.result.screenheight);
 
 			//console.log(data);
+
+			if (multiple) {
+				var $copy = $("div#image_" + field_id).clone();
+			}
+
+			//set the image as background on the underlying <div> and resize
 			$("div#image_" + field_id)
 				.css('backgroundImage', 'url(' + data.result.url + ')')
 				.addClass("filled")
-				.width(data.result.width)
-				.height(data.result.height)
+				.width(data.result.screenwidth)
+				.height(data.result.screenheight)
 				.next()
 				.val(data.result.file_id);
+
+			if (multiple) {
+				$copy.appendTo($parent).setupUploadForm();
+			}
 		}
 	});
 
-	/*multiple images upload
-	var well = $(".control-group.images .controls");
-	var images = new Array();
-	$("input#image_upload").fileupload({
-		url: 				$(this).closest("form").attr('action'),
-		type: 				'POST',
-		dataType: 			"xml", 
-		acceptFileTypes : 	/(\.|\/)(jpg|gif|png)$/i,
-		autoUpload: 		true,
-		dropZone: 			well,
-		add: function(e, data) {
-        	if (data.filename = file_name(data.files[0].name)) {
-	        	data.context = $('<div class="image loading"/>').html('<div class="progress progress-striped active"><div class="bar"></div></div>').appendTo(well);
-				$(this).closest("form").find("input[name=filename]").val(data.filename);
-				data.submit();
-        	}
-		},
-		fail: function(e, data) {
-			window.console.log('fail');
-			window.console.log(data);
-		},
-		progress: function(e, data){
-			//update progress bar
-			var percent = Math.round((e.loaded / e.total) * 100);
-			$(data.context).find('.bar').css('width', percent + '%');
-		},
-		done: function(e, data) {
-			window.console.log('done');
-			//window.console.log(data);
-			var img = document.createElement('img');
-			img.src = 'https://s3.amazonaws.com/josh-reisner-dot-com/' + data.filename;
-			$(data.context).removeClass("loading").html(img);
-			images[images.length] = data.filename;
-			$("input[name=images]").val(images.join("|"));
-		}
-	});
-
-	//i believe these allow the browser to accept a file dropzone
-	window.addEventListener("dragover", function(e){
-		e = e || event;
-		e.preventDefault();
-	}, false);
-	window.addEventListener("drop", function(e){
-		e = e || event;
-		e.preventDefault();
-	}, false);
-	*/
 });
