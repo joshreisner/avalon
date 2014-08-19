@@ -19,9 +19,12 @@
 	@endif
 
 	@foreach ($fields as $field)
+		{{--
 		@if ($linked_id && $field->id == $object->group_by_field)
 			{{ Form::hidden($field->name, $linked_id) }}
-		@elseif ($field->type == 'checkboxes')
+		@else
+		--}}
+		@if ($field->type == 'checkboxes')
 			<div class="form-group {{ $field->type }}">
 			    <label class="control-label col-sm-2">{{ $field->title }}</label>
 			    <div class="col-sm-10">
