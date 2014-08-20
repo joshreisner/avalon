@@ -400,7 +400,7 @@ class InstanceController extends \BaseController {
 			'count'=>DB::table($object->name)->whereNull('deleted_at')->count(),
 		));
 
-		return Redirect::action('InstanceController@index', $object->id);
+		return Redirect::action('InstanceController@index', $object->name);
 	}
 	
 	# Reorder fields by drag-and-drop
