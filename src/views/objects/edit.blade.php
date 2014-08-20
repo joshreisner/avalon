@@ -8,11 +8,11 @@
 
 	{{ Breadcrumbs::leave(array(
 		URL::action('ObjectController@index')=>Lang::get('avalon::messages.objects'),
-		URL::action('InstanceController@index', $object->id)=>$object->title,
+		URL::action('InstanceController@index', $object->name)=>$object->title,
 		Lang::get('avalon::messages.objects_edit'),
 		)) }}
 
-	{{ Form::open(array('class'=>'form-horizontal', 'url'=>URL::action('ObjectController@update', $object->id), 'method'=>'put')) }}
+	{{ Form::open(array('class'=>'form-horizontal', 'url'=>URL::action('ObjectController@update', $object->name), 'method'=>'put')) }}
 	
 	<div class="form-group">
 		{{ Form::label('title', Lang::get('avalon::messages.objects_title'), array('class'=>'control-label col-sm-2')) }}
@@ -119,7 +119,7 @@
 	<p>{{ Lang::get('avalon::messages.objects_edit_help', array('title'=>$object->title)) }}</p>
 
 	@if (!$dependencies)
-		{{ Form::open(array('method'=>'delete', 'action'=>array('ObjectController@destroy', $object->id))) }}
+		{{ Form::open(array('method'=>'delete', 'action'=>array('ObjectController@destroy', $object->name))) }}
 		<button type="submit" class="btn btn-default btn-xs">{{ Lang::get('avalon::messages.objects_destroy') }}</button>
 		{{ Form::close() }}
 	@else

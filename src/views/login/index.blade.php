@@ -14,6 +14,7 @@
 					<h2 class="modal-title">{{ Lang::get('avalon::messages.site_welcome') }}</h2>
 				</div>
 				<div class="modal-body">
+					@include('avalon::login.notifications')
 					<div class="form-group">
 						<label class="col-md-3 control-label" for="email">{{ Lang::get('avalon::messages.users_email') }}</label>
 				    	<div class="col-md-9">

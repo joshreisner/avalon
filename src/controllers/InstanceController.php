@@ -7,12 +7,12 @@ class InstanceController extends \BaseController {
 
 	# Show list of instances for an object
 	# $group_by_id is for when coming from a linked object
-	public function index($object_id, $linked_id=false) {
+	public function index($object_name, $linked_id=false) {
 
 		# Get more info about the object
-		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
+		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
 		$fields = DB::table(DB_FIELDS)
-			->where('object_id', $object_id)
+			->where('object_id', $object->id)
 			->where('visibility', 'list')
 			->orWhere('id', $object->group_by_field)
 			->orderBy('precedence')->get();
@@ -75,8 +75,8 @@ class InstanceController extends \BaseController {
 		
 		# Set Avalon URLs on each instance
 		foreach ($instances as &$instance) {
-			$instance->link = URL::action('InstanceController@edit', array($object->id, $instance->id, $linked_id));
-			$instance->delete = URL::action('InstanceController@delete', array($object->id, $instance->id));
+			$instance->link = URL::action('InstanceController@edit', array($object->name, $instance->id, $linked_id));
+			$instance->delete = URL::action('InstanceController@delete', array($object->name, $instance->id));
 		}
 		
 		# If it's a nested object, nest-ify the resultset
@@ -112,9 +112,9 @@ class InstanceController extends \BaseController {
 	}
 
 	//show create form for an object instance
-	public function create($object_id, $linked_id=false) {
-		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
-		$fields = DB::table(DB_FIELDS)->where('object_id', $object_id)->orderBy('precedence')->get();
+	public function create($object_name, $linked_id=false) {
+		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
+		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->orderBy('precedence')->get();
 		$options = array();
 		
 		foreach ($fields as $field) {
@@ -165,9 +165,9 @@ class InstanceController extends \BaseController {
 	}
 
 	//save a new object instance to the database
-	public function store($object_id, $linked_id=false) {
-		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
-		$fields = DB::table(DB_FIELDS)->where('object_id', $object_id)->get();
+	public function store($object_name, $linked_id=false) {
+		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
+		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->get();
 		
 		//metadata
 		$inserts = array(
@@ -187,7 +187,7 @@ class InstanceController extends \BaseController {
 		$instance_id = DB::table($object->name)->insertGetId($inserts);
 		
 		//update objects table with latest counts
-		DB::table(DB_OBJECTS)->where('id', $object_id)->update(array(
+		DB::table(DB_OBJECTS)->where('id', $object->id)->update(array(
 			'count'=>DB::table($object->name)->whereNull('deleted_at')->count(),
 			'updated_at'=>new DateTime,
 			'updated_by'=>Auth::user()->id
@@ -224,13 +224,13 @@ class InstanceController extends \BaseController {
 		}
 
 		//otherwise, return to instance index
-		return Redirect::action('InstanceController@index', $object_id)->with('instance_id', $instance_id);
+		return Redirect::action('InstanceController@index', $object->name)->with('instance_id', $instance_id);
 	}
 	
 	//show edit form
-	public function edit($object_id, $instance_id, $linked_id=false) {
-		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
-		$fields = DB::table(DB_FIELDS)->where('object_id', $object_id)->orderBy('precedence')->get();
+	public function edit($object_name, $instance_id, $linked_id=false) {
+		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
+		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->orderBy('precedence')->get();
 		$instance = DB::table($object->name)->where('id', $instance_id)->first();
 
 		//format instance values for form
@@ -298,7 +298,7 @@ class InstanceController extends \BaseController {
 		}
 
 		# Get linked objects
-		$links = DB::table(DB_OBJECT_LINKS)->where('object_id', $object_id)->lists('linked_id');
+		$links = DB::table(DB_OBJECT_LINKS)->where('object_id', $object->id)->lists('linked_id');
 		foreach ($links as &$link) {
 			$link = self::index($link, $instance_id, $linked_id);
 		}
@@ -313,9 +313,9 @@ class InstanceController extends \BaseController {
 	}
 	
 	//save edits to database
-	public function update($object_id, $instance_id, $linked_id=false) {
-		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
-		$fields = DB::table(DB_FIELDS)->where('object_id', $object_id)->get();
+	public function update($object_name, $instance_id, $linked_id=false) {
+		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
+		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->get();
 		
 		//metadata
 		$updates = array(
@@ -371,7 +371,7 @@ class InstanceController extends \BaseController {
 		DB::table($object->name)->where('id', $instance_id)->update($updates);
 		
 		//update object meta
-		DB::table(DB_OBJECTS)->where('id', $object_id)->update(array(
+		DB::table(DB_OBJECTS)->where('id', $object->id)->update(array(
 			'count'=>DB::table($object->name)->whereNull('deleted_at')->count(),
 			'updated_at'=>new DateTime,
 			'updated_by'=>Auth::user()->id
@@ -387,25 +387,25 @@ class InstanceController extends \BaseController {
 		}
 
 		//otherwise, return to instance index
-		return Redirect::action('InstanceController@index', $object_id)->with('instance_id', $instance_id);
+		return Redirect::action('InstanceController@index', $object->name);
 	}
 	
 	# Remove object from db - todo check key/constraints
-	public function destroy($object_id, $instance_id) {
-		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
+	public function destroy($object_name, $instance_id) {
+		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
 		DB::table($object->name)->where('id', $instance_id)->delete();
 
 		//update object meta
-		DB::table(DB_OBJECTS)->where('id', $object_id)->update(array(
+		DB::table(DB_OBJECTS)->where('id', $object->id)->update(array(
 			'count'=>DB::table($object->name)->whereNull('deleted_at')->count(),
 		));
 
-		return Redirect::action('InstanceController@index', $object_id);
+		return Redirect::action('InstanceController@index', $object->id);
 	}
 	
 	# Reorder fields by drag-and-drop
-	public function reorder($object_id) {
-		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
+	public function reorder($object_name) {
+		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
 
 		//determine whether nested
 		$object->nested = false;
@@ -445,8 +445,8 @@ class InstanceController extends \BaseController {
 	}
 	
 	# Soft delete
-	public function delete($object_id, $instance_id) {
-		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
+	public function delete($object_name, $instance_id) {
+		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
 		
 		//toggle instance with active or inactive
 		$deleted_at = (Input::get('active') == 1) ? null : new DateTime;
@@ -458,7 +458,7 @@ class InstanceController extends \BaseController {
 		));
 
 		//update object meta
-		DB::table(DB_OBJECTS)->where('id', $object_id)->update(array(
+		DB::table(DB_OBJECTS)->where('id', $object->id)->update(array(
 			'count'=>DB::table($object->name)->whereNull('deleted_at')->count(),
 			'updated_at'=>new DateTime,
 			'updated_by'=>Auth::user()->id,
@@ -524,7 +524,7 @@ class InstanceController extends \BaseController {
 		$table->column('updated_at', 'updated_at', trans('avalon::messages.site_updated_at'));
 		$table->deletable();
 		if (!empty($object->group_by_field)) $table->groupBy('group');
-		if ($object->order_by == 'precedence') $table->draggable(URL::action('InstanceController@reorder', $object->id));
+		if ($object->order_by == 'precedence') $table->draggable(URL::action('InstanceController@reorder', $object->name));
 		return $table->draw();
 	}
 

@@ -3,7 +3,7 @@
 	<li id="item-{{ $instance->id }}">
 		<div class="nested_row @if ($instance->deleted_at) inactive@endif">
 			<div class="draggy"><i class="glyphicon glyphicon-align-justify"></i></div>
-			<a href="{{  URL::action('InstanceController@edit', array($object->id, $instance->id)) }}">{{ $instance->title }}</a>
+			<a href="{{  URL::action('InstanceController@edit', array($object->name, $instance->id)) }}">{{ $instance->title }}</a>
 			<div class="updated_at">{{ Dates::relative($instance->updated_at) }}</div>
 			<div class="delete">
 				<a href="{{ $instance->delete }}">

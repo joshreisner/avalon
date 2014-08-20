@@ -8,11 +8,11 @@
 
 	{{ Breadcrumbs::leave(array(
 		URL::action('ObjectController@index')=>Lang::get('avalon::messages.objects'),
-		URL::action('InstanceController@index', $object->id)=>$object->title,
+		URL::action('InstanceController@index', $object->name)=>$object->title,
 		Lang::get('avalon::messages.instances_edit'),
 		)) }}
 
-	{{ Form::open(array('class'=>'form-horizontal ' . $object->name, 'url'=>URL::action('InstanceController@update', array($object->id, $instance->id, $linked_id)), 'method'=>'put')) }}
+	{{ Form::open(array('class'=>'form-horizontal ' . $object->name, 'url'=>URL::action('InstanceController@update', array($object->name, $instance->id, $linked_id)), 'method'=>'put')) }}
 	
 	@if (Input::has('return_to'))
 		{{ Form::hidden('return_to', Input::get('return_to')) }}
@@ -144,7 +144,7 @@
 			@if (Input::has('return_to'))
 			{{ HTML::link(Input::get('return_to'), Lang::get('avalon::messages.site_cancel'), array('class'=>'btn btn-default')) }}
 			@else
-			{{ HTML::link(URL::action('InstanceController@index', $object->id), Lang::get('avalon::messages.site_cancel'), array('class'=>'btn btn-default')) }}
+			{{ HTML::link(URL::action('InstanceController@index', $object->name), Lang::get('avalon::messages.site_cancel'), array('class'=>'btn btn-default')) }}
 			@endif
 	    </div>
 	</div>
@@ -170,7 +170,7 @@
 @section('side')
 	<p>{{ nl2br($object->form_help) }}</p>
 
-	{{ Form::open(array('method'=>'delete', 'action'=>array('InstanceController@destroy', $object->id, $instance->id))) }}
+	{{ Form::open(array('method'=>'delete', 'action'=>array('InstanceController@destroy', $object->name, $instance->id))) }}
 	<button type="submit" class="btn btn-default btn-xs">{{ Lang::get('avalon::messages.instances_destroy') }}</button>
 	{{ Form::close() }}
 

@@ -1,56 +1,69 @@
 <?php
 
-//unprotected routes
-Route::get('/'  . Config::get('avalon::route_prefix'),				'LoginController@getIndex');
-Route::post('/' . Config::get('avalon::route_prefix'), 				'LoginController@postIndex');
-Route::get('/'  . Config::get('avalon::route_prefix') . '/reset',	'LoginController@getReset');
-Route::post('/' . Config::get('avalon::route_prefix') . '/reset',	'LoginController@postReset');
-Route::get('/'  . Config::get('avalon::route_prefix') . '/change/{email}/{token}', 'LoginController@getChange');
-Route::post('/' . Config::get('avalon::route_prefix') . '/change',	'LoginController@postChange');
+Route::group(array('prefix'=>Config::get('avalon::route_prefix')), function(){
 
-//protected routes
-Route::group(array('before'=>'auth', 'prefix'=>Config::get('avalon::route_prefix')), function(){
+	if (Auth::guest() || empty(Auth::user()->role)) {
 	
-	//all authenticated users
-	Route::group(array('before'=>'user'), function(){
-		Route::get('logout', 'LoginController@getLogout');
-		Route::get('/objects', 'ObjectController@index'); 
-		Route::post('/upload/image', 'FileController@image');
+		# Unprotected login routes
+		Route::get('/',							array('as'=>'home', 'uses'=>'LoginController@getIndex'));
+		Route::post('/', 						'LoginController@postIndex');
+		Route::get('/reset',					'LoginController@getReset');
+		Route::post('/reset',					'LoginController@postReset');
+		Route::get('/change/{email}/{token}',	'LoginController@getChange');
+		Route::post('/change',					'LoginController@postChange');
+
+	} else {
+
+		# Admins only
+		Route::group(array('before'=>'admin'), function(){
+			Route::resource('users', 'UserController');
+			Route::get('/users/{user_id}/delete', 'UserController@delete');
+			Route::get('/users/{user_id}/resend-welcome', 'UserController@resendWelcome');
+		});
+
+		# Programmers only
+		Route::group(array('before'=>'programmer'), function(){
+
+			# Edit table
+			Route::get('/create', 'ObjectController@create'); 
+			Route::post('/', 'ObjectController@store'); 
+			Route::get('/{object_name}/edit', 'ObjectController@edit'); 
+			Route::put('/{object_name}', 'ObjectController@update'); 
+			Route::delete('/{object_name}', 'ObjectController@destroy'); 
+
+			# Edit fields
+			Route::get('/{object_name}/fields', 'FieldController@index');
+			Route::get('/{object_name}/fields/create', 'FieldController@create');
+			Route::post('/{object_name}/fields', 'FieldController@store');
+			Route::get('/{object_name}/fields/{field_id}/edit', 'FieldController@edit');
+			Route::put('/{object_name}/fields/{field_id}', 'FieldController@update');
+			Route::delete('/{object_name}/fields/{field_id}', 'FieldController@destroy');
+			Route::post('/{object_name}/fields/reorder', 'FieldController@reorder');
 		
-		//complex instance routing, optionally with linked_id for related objects
-		Route::get('/objects/{object_id}/instances', 'InstanceController@index');
-		Route::get('/objects/{object_id}/instances/create/{linked_id?}', 'InstanceController@create');
-		Route::post('/objects/{object_id}/instances/reorder', 'InstanceController@reorder');
-		Route::post('/objects/{object_id}/instances/{linked_id?}', 'InstanceController@store');
-		Route::get('/objects/{object_id}/instances/edit/{instance_id}/{linked_id?}', 'InstanceController@edit');
-		Route::put('/objects/{object_id}/instances/{instance_id}/{linked_id?}', 'InstanceController@update');
-		Route::delete('/objects/{object_id}/instances/{instance_id}', 'InstanceController@destroy');
-		Route::get('/objects/{object_id}/instances/{instance_id}/delete', 'InstanceController@delete');
+		});
 
-		Route::get('/image/test', 'FileController@test');
-	});
+		# All authenticated users
+		Route::group(array('before'=>'user'), function(){
+			Route::get('/', array('as'=>'home', 'uses'=>'ObjectController@index')); 
+			Route::get('/logout', 'LoginController@getLogout');
+			Route::post('/upload/image', 'FileController@image');
 
-	//only admins
-	Route::group(array('before'=>'admin'), function(){
-		Route::resource('users', 'UserController');
-		Route::get('/users/{user_id}/delete', 'UserController@delete');
-		Route::get('/users/{user_id}/resend-welcome', 'UserController@resendWelcome');
-	});
+			# Todo delete
+			Route::get('/image/test', 'FileController@test');
+			
+			# Complex instance routing, optionally with linked_id for related objects
+			Route::get('/{object_name}', 'InstanceController@index');
+			Route::get('/{object_name}/create/{linked_id?}', 'InstanceController@create');
+			Route::post('/{object_name}/reorder', 'InstanceController@reorder');
+			Route::post('/{object_name}/{linked_id?}', 'InstanceController@store');
+			Route::get('/{object_name}/edit/{instance_id}/{linked_id?}', 'InstanceController@edit');
+			Route::put('/{object_name}/{instance_id}/{linked_id?}', 'InstanceController@update');
+			Route::delete('/{object_name}/{instance_id}', 'InstanceController@destroy');
+			Route::get('/{object_name}/{instance_id}/delete', 'InstanceController@delete');
+		});
 
-	//only programmers
-	Route::group(array('before'=>'programmer'), function(){
-
-		//these would fit neatly in a resource controller except that index can be accessed by any user
-		Route::get('/objects/create', 'ObjectController@create'); 
-		Route::post('/objects', 'ObjectController@store'); 
-		Route::get('/objects/{id}/edit', 'ObjectController@edit'); 
-		Route::put('/objects/{id}', 'ObjectController@update'); 
-		Route::delete('/objects/{id}', 'ObjectController@destroy'); 
-
-		Route::resource('objects.fields', 'FieldController');
-		Route::post('/objects/{object_id}/fields/reorder', 'FieldController@reorder');
-	});
-
+	}
+	
 });
 
 Route::filter('user', function(){

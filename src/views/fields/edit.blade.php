@@ -8,12 +8,12 @@
 
 	{{ Breadcrumbs::leave(array(
 		URL::action('ObjectController@index')=>Lang::get('avalon::messages.objects'),
-		URL::action('InstanceController@index', $object->id)=>$object->title,
-		URL::action('FieldController@index', $object->id)=>Lang::get('avalon::messages.fields'),
+		URL::action('InstanceController@index', $object->name)=>$object->title,
+		URL::action('FieldController@index', $object->name)=>Lang::get('avalon::messages.fields'),
 		Lang::get('avalon::messages.fields_edit'),
 		)) }}
 
-	{{ Form::open(array('class'=>'form-horizontal', 'url'=>URL::action('FieldController@update', array($object->id, $field->id)), 'method'=>'put')) }}
+	{{ Form::open(array('class'=>'form-horizontal', 'url'=>URL::action('FieldController@update', array($object->name, $field->id)), 'method'=>'put')) }}
 	
 	<div class="form-group">
 		{{ Form::label('title', Lang::get('avalon::messages.fields_title'), array('class'=>'control-label col-sm-2')) }}
@@ -102,7 +102,7 @@
 	@if ($object->order_by == $field->name)
 		<p>{{ Lang::get('avalon::messages.fields_not_deletable') }}</p>
 	@else
-		{{ Form::open(array('method'=>'delete', 'action'=>array('FieldController@destroy', $object->id, $field->id))) }}
+		{{ Form::open(array('method'=>'delete', 'action'=>array('FieldController@destroy', $object->name, $field->id))) }}
 		<button type="submit" class="btn btn-default btn-xs">{{ Lang::get('avalon::messages.fields_destroy') }}</button>
 		{{ Form::close() }}	
 	@endif

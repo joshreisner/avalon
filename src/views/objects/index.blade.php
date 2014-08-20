@@ -23,7 +23,7 @@
 		{{ Table::rows($objects)
 			->column('title', 'string', @trans('avalon::messages.object'))
 			->column('count', 'integer', @trans('avalon::messages.objects_count'))
-			->column('updated_by', 'updated_by', @trans('avalon::messages.site_updated_by'))
+			->column('updated_name', 'updated_by', @trans('avalon::messages.site_updated_by'))
 			->column('updated_at', 'updated_at', @trans('avalon::messages.site_updated_at'))
 			->groupBy('list_grouping')
 			->draw('objects')

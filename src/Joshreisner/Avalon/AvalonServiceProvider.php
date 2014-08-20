@@ -204,7 +204,7 @@ class AvalonServiceProvider extends ServiceProvider {
 
 			class ' . $object->model . ' extends Eloquent {
 			    use SoftDeletingTrait;
-				protected $table = "' . $object->name . '";
+				//protected $table = \'' . $object->name . '\';
 				protected $guarded = array();
 				public $object_id = "' . $object->id . '";
 
@@ -216,7 +216,7 @@ class AvalonServiceProvider extends ServiceProvider {
 				public static function boot() {
 			        static::creating(function($object)
 			        {
-			        	$object->precedence = DB::table(\'' . $object->name . '\')->max(\'precedence\') + 1;
+			        	//$object->precedence = DB::table(\'' . $object->name . '\')->max(\'precedence\') + 1;
 			            //$object->created_by = Auth::user()->id;
 			            //$object->updated_by = Auth::user()->id;
 			        });

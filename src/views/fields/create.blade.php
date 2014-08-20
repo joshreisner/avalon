@@ -8,12 +8,12 @@
 
 	{{ Breadcrumbs::leave(array(
 		URL::action('ObjectController@index')=>Lang::get('avalon::messages.objects'),
-		URL::action('InstanceController@index', $object->id)=>$object->title,
-		URL::action('FieldController@index', $object->id)=>Lang::get('avalon::messages.fields'),
+		URL::action('InstanceController@index', $object->name)=>$object->title,
+		URL::action('FieldController@index', $object->name)=>Lang::get('avalon::messages.fields'),
 		Lang::get('avalon::messages.fields_create'),
 		)) }}
 
-	{{ Form::open(array('class'=>'form-horizontal', 'url'=>URL::action('FieldController@store', $object->id))) }}
+	{{ Form::open(array('class'=>'form-horizontal', 'url'=>URL::action('FieldController@store', $object->name))) }}
 	
 	<div class="form-group">
 		{{ Form::label('title', Lang::get('avalon::messages.fields_title'), array('class'=>'control-label col-sm-2')) }}

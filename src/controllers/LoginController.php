@@ -7,10 +7,6 @@ class LoginController extends \BaseController {
 		//show install form
 		if (!DB::table(DB_USERS)->count()) return View::make('avalon::login.install');
 
-		//already logged in
-		if (Auth::check()) return Redirect::action('ObjectController@index');
-		
-		//not logged in
 		return View::make('avalon::login.index');
 	}
 
@@ -25,9 +21,9 @@ class LoginController extends \BaseController {
 					'last_login'=>new DateTime
 				));
 
-				return Redirect::intended(URL::action('ObjectController@index'));
+				return Redirect::intended(URL::route('home'));
 			}
-			return Redirect::action('LoginController@getIndex');
+			return Redirect::route('home')->with('error', trans('avalon::messages.site_login_invalid'));
 		} 
 		
 		//make user
@@ -45,13 +41,13 @@ class LoginController extends \BaseController {
 		
 		Auth::loginUsingId($user_id);
 		
-		return Redirect::action('ObjectController@index');
+		return Redirect::route('home');
 	}
 	
 	//logout
 	public function getLogout() {
 		Auth::logout();
-		return Redirect::action('LoginController@getIndex');
+		return Redirect::route('home');
 	}
 
 	//reset password form
@@ -117,7 +113,7 @@ class LoginController extends \BaseController {
 
 		//log you in
 		Session::put('avalon_id', $user->id);
-		return Redirect::action('ObjectController@index');
+		return Redirect::route('home');
 	}
 
 }

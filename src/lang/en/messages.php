@@ -89,6 +89,7 @@ return array(
     'site_cancel'				=> 'Cancel',
 	'site_install'				=> 'Install',
 	'site_login'				=> 'Log In',
+	'site_login_invalid'		=> 'That email / password combination was not found.',
 	'site_logout'				=> 'Log Out',
     'site_save'					=> 'Save Changes',
     'site_updated_at'			=> 'Updated',

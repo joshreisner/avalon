@@ -13,15 +13,15 @@
 
 	<div class="btn-group">
 		@if (Auth::user()->role < 2)
-		<a class="btn btn-default" href="{{ URL::action('ObjectController@edit', $object->id) }}"><i class="glyphicon glyphicon-cog"></i> {{ Lang::get('avalon::messages.objects_edit', array('title'=>$object->title)) }}</a>
-		<a class="btn btn-default" href="{{ URL::action('FieldController@index', $object->id) }}"><i class="glyphicon glyphicon-list"></i> {{ Lang::get('avalon::messages.fields') }}</a>
+		<a class="btn btn-default" href="{{ URL::action('ObjectController@edit', $object->name) }}"><i class="glyphicon glyphicon-cog"></i> {{ Lang::get('avalon::messages.objects_edit', array('title'=>$object->title)) }}</a>
+		<a class="btn btn-default" href="{{ URL::action('FieldController@index', $object->name) }}"><i class="glyphicon glyphicon-list"></i> {{ Lang::get('avalon::messages.fields') }}</a>
 		@endif
-		<a class="btn btn-default" id="create" href="{{ URL::action('InstanceController@create', $object->id) }}"><i class="glyphicon glyphicon-plus"></i> {{ Lang::get('avalon::messages.instances_create') }}</a>
+		<a class="btn btn-default" id="create" href="{{ URL::action('InstanceController@create', $object->name) }}"><i class="glyphicon glyphicon-plus"></i> {{ Lang::get('avalon::messages.instances_create') }}</a>
 	</div>
 
 	@if (count($instances))
 		@if ($object->nested)
-			<div class="nested" data-draggable-url="{{ URL::action('InstanceController@reorder', $object->id) }}">
+			<div class="nested" data-draggable-url="{{ URL::action('InstanceController@reorder', $object->name) }}">
 				<div class="legend">
 					Title
 					<div class="updated_at">Updated</div>
@@ -33,7 +33,7 @@
 		@endif
 	@else
 	<div class="alert alert-warning">
-		{{ Lang::get('avalon::messages.instances_empty', array('title'=>$object->title)) }}
+		{{ Lang::get('avalon::messages.instances_empty', array('title'=>strtolower($object->title))) }}
 	</div>
 	@endif
 

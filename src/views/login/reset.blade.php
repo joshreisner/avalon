@@ -14,17 +14,7 @@
 					<h3 class="modal-title">{{ Lang::get('avalon::messages.users_password_reset') }}</h3>
 				</div>
 				<div class="modal-body">
-
-					@if (Session::has('error'))
-					<div class="alert alert-danger">
-						{{ Session::get('error') }}
-					</div>
-					@elseif (Session::has('message'))
-					<div class="alert alert-warning">
-						{{ Session::get('message') }}
-					</div>
-					@endif
-
+					@include('login.notifications')
 					<div class="form-group">
 						<label class="col-md-3 control-label" for="email">{{ Lang::get('avalon::messages.users_email') }}</label>
 				    	<div class="col-md-9">

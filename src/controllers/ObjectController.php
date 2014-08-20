@@ -11,12 +11,12 @@ class ObjectController extends \BaseController {
 	public function index() {
 		$objects = DB::table(DB_OBJECTS)
 			->join(DB_USERS, DB_USERS . '.id', '=', DB_OBJECTS . '.updated_by')
-			->select(DB_OBJECTS . '.*', DB_USERS . '.name')
+			->select(DB_OBJECTS . '.*', DB_USERS . '.name AS updated_name')
 			->orderBy('list_grouping')
 			->orderBy('title')
 			->get();
 		foreach ($objects as &$object) {
-			$object->link = URL::action('InstanceController@index', $object->id);
+			$object->link = URL::action('InstanceController@index', $object->name);
 			$object->updated_by = $object->name;
 			if ($object->count == 0) $object->instance_count = '';
 		}
@@ -91,14 +91,15 @@ class ObjectController extends \BaseController {
 			$table->integer('precedence');
 		});
 		
-		return Redirect::action('InstanceController@index', $object_id);
+		return Redirect::action('InstanceController@index', $name);
 	}
 	
 	# Edit object settings
-	public function edit($object_id) {
+	public function edit($object_name) {
 
 		//get order by select data
-		$fields = DB::table(DB_FIELDS)->where('object_id', $object_id)->orderBy('precedence')->get();
+		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
+		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->orderBy('precedence')->get();
 		$order_by = array();
 		foreach ($fields as $field) $order_by[$field->name] = $field->title;
 		$order_by = array(
@@ -113,21 +114,21 @@ class ObjectController extends \BaseController {
 		//related objects are different than dependencies; it's the subset of dependencies that are grouped by this object
 		$related_objects = DB::table(DB_FIELDS)
 			->join(DB_OBJECTS, DB_OBJECTS . '.group_by_field', '=', DB_FIELDS . '.id')
-			->where(DB_FIELDS . '.related_object_id', $object_id)
+			->where(DB_FIELDS . '.related_object_id', $object->id)
 			->orderBy(DB_OBJECTS . '.title')
 			->select(DB_OBJECTS . '.*') //due to bug that leads to ambiguous column error
 			->lists('title', 'id');
 
 		//values for the related objects. could be combined with above
-		$links = DB::table(DB_OBJECT_LINKS)->where('object_id', $object_id)->lists('linked_id');
+		$links = DB::table(DB_OBJECT_LINKS)->where('object_id', $object->id)->lists('linked_id');
 
 		//return view
 		return View::make('avalon::objects.edit', array(
-			'object'			=>DB::table(DB_OBJECTS)->where('id', $object_id)->first(), 
+			'object'			=>DB::table(DB_OBJECTS)->where('id', $object->id)->first(), 
 			'order_by'			=>$order_by,
 			'direction'			=>self::$direction,
-			'dependencies'		=>DB::table(DB_FIELDS)->where('related_object_id', $object_id)->count(),
-			'group_by_field'	=>array(''=>'') + DB::table(DB_FIELDS)->where('object_id', $object_id)->where('type', 'select')->lists('title', 'id'),
+			'dependencies'		=>DB::table(DB_FIELDS)->where('related_object_id', $object->id)->count(),
+			'group_by_field'	=>array(''=>'') + DB::table(DB_FIELDS)->where('object_id', $object->id)->where('type', 'select')->lists('title', 'id'),
 			'list_groupings'	=>self::getGroupings(),
 			'related_objects'	=>$related_objects,
 			'links'				=>$links,
@@ -135,10 +136,10 @@ class ObjectController extends \BaseController {
 	}
 	
 	//edit object settings
-	public function update($object_id) {
+	public function update($object_name) {
 
 		//rename table if necessary
-		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
+		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
 		$new_name = Str::slug(Input::get('name'), '_');
 		if ($object->name != $new_name) Schema::rename($object->name, $new_name);
 		
@@ -154,7 +155,7 @@ class ObjectController extends \BaseController {
 		$singleton = Input::has('singleton') ? 1 : 0;
 
 		//linked objects
-		DB::table(DB_OBJECT_LINKS)->where('object_id', $object_id)->delete();
+		DB::table(DB_OBJECT_LINKS)->where('object_id', $object->id)->delete();
 		if (Input::has('related_objects')) {
 			foreach (Input::get('related_objects') as $linked_id) {
 				DB::table(DB_OBJECT_LINKS)->insert(array(
@@ -165,7 +166,7 @@ class ObjectController extends \BaseController {
 		}
 
 		//update objects table
-		DB::table(DB_OBJECTS)->where('id', $object_id)->update(array(
+		DB::table(DB_OBJECTS)->where('id', $object->id)->update(array(
 			'title'				=>Input::get('title'),
 			'name'				=>$new_name,
 			'model'				=>Input::get('model'),
@@ -178,16 +179,17 @@ class ObjectController extends \BaseController {
 			'form_help'			=>trim(Input::get('form_help')),
 		));
 		
-		return Redirect::action('InstanceController@index', $object_id);
+		return Redirect::action('InstanceController@index', $new_name);
 	}
 	
 	//destroy object
-	public function destroy($object_id) {
-		Schema::dropIfExists(DB::table(DB_OBJECTS)->where('id', $object_id)->pluck('name'));
-		DB::table(DB_OBJECTS)->where('id', $object_id)->delete();
-		DB::table(DB_FIELDS)->where('object_id', $object_id)->delete();
-		DB::table(DB_OBJECT_LINKS)->where('object_id', $object_id)->orWhere('linked_id', $object_id)->delete();
-		return Redirect::action('ObjectController@index');
+	public function destroy($object_name) {
+		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
+		Schema::dropIfExists($object->name);
+		DB::table(DB_OBJECTS)->where('id', $object->id)->delete();
+		DB::table(DB_FIELDS)->where('object_id', $object->id)->delete();
+		DB::table(DB_OBJECT_LINKS)->where('object_id', $object->id)->orWhere('linked_id', $object->id)->delete();
+		return Redirect::route('home');
 	}
 
 	//for list_grouping typeaheads

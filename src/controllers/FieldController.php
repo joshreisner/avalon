@@ -49,11 +49,11 @@ class FieldController extends \BaseController {
 	}
 
 	//show a list of an object's fields
-	public function index($object_id) {
-		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
-		$fields = DB::table(DB_FIELDS)->where('object_id', $object_id)->orderBy('precedence')->get();
+	public function index($object_name) {
+		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
+		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->orderBy('precedence')->get();
 		foreach ($fields as &$field) {
-			$field->link = URL::action('FieldController@edit', array($object->id, $field->id));
+			$field->link = URL::action('FieldController@edit', array($object->name, $field->id));
 			$field->type = trans('avalon::messages.fields_types_' . $field->type);
 		}
 		return View::make('avalon::fields.index', array(
@@ -63,8 +63,8 @@ class FieldController extends \BaseController {
 	}
 	
 	//show create form
-	public function create($object_id) {
-		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
+	public function create($object_name) {
+		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
 
 		$related_fields = DB::table(DB_FIELDS)
 				->where('object_id', $object->id)
@@ -86,11 +86,11 @@ class FieldController extends \BaseController {
 	}
 	
 	//save form data to fields, add new column to object
-	public function store($object_id) {
+	public function store($object_name) {
 		$type		= Input::get('type');
 		$required	= Input::has('required') ? 1 : 0;
 		
-		$table_name = DB::table(DB_OBJECTS)->where('id', $object_id)->pluck('name');
+		$table_name = DB::table(DB_OBJECTS)->where('name', $object_name)->pluck('name');
 
 		if ($type == 'checkboxes') {
 			//use field_name to store joining table
@@ -191,6 +191,7 @@ class FieldController extends \BaseController {
 		}
 
 		//save field info to fields table
+		$object_id = DB::table(DB_OBJECTS)->where('name', $object_name)->pluck('id');
 		$field_id = DB::table(DB_FIELDS)->insertGetId(array(
 			'title'				=>Input::get('title'),
 			'name'				=>$field_name,
@@ -209,12 +210,12 @@ class FieldController extends \BaseController {
 
 		self::organizeTable($object_id);
 		
-		return Redirect::action('FieldController@index', $object_id)->with('field_id', $field_id);
+		return Redirect::action('FieldController@index', $object_name)->with('field_id', $field_id);
 	}
 	
 	//show edit form
-	public function edit($object_id, $field_id) {
-		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
+	public function edit($object_name, $field_id) {
+		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
 		$field = DB::table(DB_FIELDS)->where('id', $field_id)->first();
 
 		$related_fields = array(''=>'') + DB::table(DB_FIELDS)
@@ -239,8 +240,8 @@ class FieldController extends \BaseController {
 	}
 	
 	//save edits to database
-	public function update($object_id, $field_id) {
-		$table_name = DB::table(DB_OBJECTS)->where('id', $object_id)->pluck('name');
+	public function update($object_name, $field_id) {
+		$table_name = DB::table(DB_OBJECTS)->where('name', $object_name)->pluck('name');
 		$field_name = Str::slug(Input::get('name'), '_');
 		$required	= Input::has('required') ? 1 : 0;
 		$field = DB::table(DB_FIELDS)->where('id', $field_id)->first();
@@ -273,12 +274,12 @@ class FieldController extends \BaseController {
 			'updated_at'		=>new DateTime,
 		));
 		
-		return Redirect::action('FieldController@index', $object_id)->with('field_id', $field_id);
+		return Redirect::action('FieldController@index', $object_name)->with('field_id', $field_id);
 	}
 	
 	//delete field & remove from database
-	public function destroy($object_id, $field_id) {
-		$table = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
+	public function destroy($object_name, $field_id) {
+		$table = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
 		$field = DB::table(DB_FIELDS)->where('id', $field_id)->first();
 
 		if ($field->type == 'checkboxes') {
@@ -290,7 +291,7 @@ class FieldController extends \BaseController {
 		}
 		
 		DB::table(DB_FIELDS)->where('id', $field_id)->delete();
-		return Redirect::action('FieldController@index', $object_id);
+		return Redirect::action('FieldController@index', $object_name);
 	}
 	
 	//reorder fields by drag-and-drop

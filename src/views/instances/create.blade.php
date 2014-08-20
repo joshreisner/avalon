@@ -8,11 +8,11 @@
 
 	{{ Breadcrumbs::leave(array(
 		URL::action('ObjectController@index')=>Lang::get('avalon::messages.objects'),
-		URL::action('InstanceController@index', $object->id)=>$object->title,
+		URL::action('InstanceController@index', $object->name)=>$object->title,
 		Lang::get('avalon::messages.instances_create'),
 		)) }}
 
-	{{ Form::open(array('class'=>'form-horizontal', 'url'=>URL::action('InstanceController@store', array($object->id, $linked_id)))) }}
+	{{ Form::open(array('class'=>'form-horizontal', 'url'=>URL::action('InstanceController@store', array($object->name, $linked_id)))) }}
 	
 	@if (Input::has('return_to'))
 		{{ Form::hidden('return_to', Input::get('return_to')) }}
@@ -151,7 +151,7 @@
 	<div class="form-group">
 	    <div class="col-sm-10 col-sm-offset-2">
 			{{ Form::submit(Lang::get('avalon::messages.site_save'), array('class'=>'btn btn-primary')) }}
-			{{ HTML::link(URL::action('InstanceController@index', $object->id), Lang::get('avalon::messages.site_cancel'), array('class'=>'btn btn-default')) }}
+			{{ HTML::link(URL::action('InstanceController@index', $object->name), Lang::get('avalon::messages.site_cancel'), array('class'=>'btn btn-default')) }}
 	    </div>
 	</div>
 

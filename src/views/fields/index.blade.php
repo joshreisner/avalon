@@ -8,17 +8,17 @@
 
 	{{ Breadcrumbs::leave(array(
 		URL::action('ObjectController@index')=>Lang::get('avalon::messages.objects'),
-		URL::action('InstanceController@index', $object->id)=>$object->title,
+		URL::action('InstanceController@index', $object->name)=>$object->title,
 		Lang::get('avalon::messages.fields'),
 		)) }}
 
 	<div class="btn-group">
-		<a class="btn btn-default" id="create" href="{{ URL::action('FieldController@create', $object->id) }}"><i class="glyphicon glyphicon-plus"></i> {{ Lang::get('avalon::messages.fields_create') }}</a>
+		<a class="btn btn-default" id="create" href="{{ URL::action('FieldController@create', $object->name) }}"><i class="glyphicon glyphicon-plus"></i> {{ Lang::get('avalon::messages.fields_create') }}</a>
 	</div>
 
 	@if (count($fields))
 		{{ Table::rows($fields)
-			->draggable(URL::action('FieldController@reorder', $object->id))
+			->draggable(URL::action('FieldController@reorder', $object->name))
 			->column('title', 'string', Lang::get('avalon::messages.fields_title'))
 			->column('type', 'string', Lang::get('avalon::messages.fields_type'))
 			->column('updated_at', 'updated_at', Lang::get('avalon::messages.site_updated_at'))
