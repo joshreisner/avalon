@@ -204,9 +204,8 @@ class AvalonServiceProvider extends ServiceProvider {
 
 			class ' . $object->model . ' extends Eloquent {
 			    use SoftDeletingTrait;
-				protected $table = \'' . $object->name . '\';
+				public $table = \'' . $object->name . '\'; //public intentionally
 				protected $guarded = array();
-				public $object_id = "' . $object->id . '";
 
 				public function getDates()
 				{

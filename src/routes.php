@@ -52,7 +52,7 @@ Route::group(array('prefix'=>Config::get('avalon::route_prefix')), function(){
 			Route::get('/image/test', 'FileController@test');
 			
 			# Complex instance routing, optionally with linked_id for related objects
-			Route::get('/{object_name}', 'InstanceController@index');
+			Route::get('/{object_name}/{linked_id?}', 'InstanceController@index');
 			Route::get('/{object_name}/create/{linked_id?}', 'InstanceController@create');
 			Route::post('/{object_name}/reorder', 'InstanceController@reorder');
 			Route::post('/{object_name}/{linked_id?}', 'InstanceController@store');

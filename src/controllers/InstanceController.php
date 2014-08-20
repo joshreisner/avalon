@@ -298,7 +298,10 @@ class InstanceController extends \BaseController {
 		}
 
 		# Get linked objects
-		$links = DB::table(DB_OBJECT_LINKS)->where('object_id', $object->id)->lists('linked_id');
+		$links = DB::table(DB_OBJECT_LINKS)
+				->where('object_id', $object->id)
+				->join(DB_OBJECTS, DB_OBJECT_LINKS . '.linked_id', '=', DB_OBJECTS . '.id')
+				->lists(DB_OBJECTS . '.name');
 		foreach ($links as &$link) {
 			$link = self::index($link, $instance_id, $linked_id);
 		}
