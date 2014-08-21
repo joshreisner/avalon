@@ -204,19 +204,21 @@ class AvalonServiceProvider extends ServiceProvider {
 
 			class ' . $object->model . ' extends Eloquent {
 			    use SoftDeletingTrait;
+				
 				public $table = \'' . $object->name . '\'; //public intentionally
 				protected $guarded = array();
-
-				public function getDates()
-				{
-				    return array(' . $dates . ');
-				}
+				protected $dates = array(' . $dates . ');
 
 				public static function boot() {
+					parent::boot();
 			        static::creating(function($object)
 			        {
 						$object->precedence = DB::table(\'' . $object->name . '\')->max(\'precedence\') + 1;
-						$object->updated_by = Auth::user()->id;
+						$object->updated_by = Auth::id();
+			        });
+			        static::updating(function($object)
+			        {
+						$object->updated_by = Auth::id();
 			        });
 				}
 
