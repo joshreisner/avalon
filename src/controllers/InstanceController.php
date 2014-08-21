@@ -219,8 +219,11 @@ class InstanceController extends \BaseController {
 
 		//otherwise, if we're coming from a related object, go there
 		if ($linked_id) {
-			$related_field = DB::table(DB_FIELDS)->where('id', $object->group_by_field)->first();
-			return Redirect::action('InstanceController@edit', array($related_field->related_object_id, $linked_id))->with('instance_id', $instance_id);
+			$related_object_name = DB::table(DB_FIELDS)
+				->join(DB_OBJECTS, DB_FIELDS . '.related_object_id', '=', DB_OBJECTS . '.id')
+				->where(DB_FIELDS . '.id', $object->group_by_field)
+				->pluck(DB_OBJECTS . '.name');
+			return Redirect::action('InstanceController@edit', array($related_object_name, $linked_id))->with('instance_id', $instance_id);
 		}
 
 		//otherwise, return to instance index
@@ -385,8 +388,11 @@ class InstanceController extends \BaseController {
 
 		//otherwise, if we're coming from a related object, go there
 		if ($linked_id) {
-			$related_field = DB::table(DB_FIELDS)->where('id', $object->group_by_field)->first();
-			return Redirect::action('InstanceController@edit', array($related_field->related_object_id, $linked_id))->with('instance_id', $instance_id);
+			$related_object_name = DB::table(DB_FIELDS)
+				->join(DB_OBJECTS, DB_FIELDS . '.related_object_id', '=', DB_OBJECTS . '.id')
+				->where(DB_FIELDS . '.id', $object->group_by_field)
+				->pluck(DB_OBJECTS . '.name');
+			return Redirect::action('InstanceController@edit', array($related_object_name, $linked_id))->with('instance_id', $instance_id);
 		}
 
 		//otherwise, return to instance index
