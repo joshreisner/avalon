@@ -118,7 +118,7 @@ class UserController extends \BaseController {
 		return Mail::send('avalon::emails.welcome', array(
 			'email'=>$email,
 			'password'=>$password,
-			'link'=>URL::action('LoginController@getIndex'),
+			'link'=>URL::route('home'),
 			), function($message) use ($email) 
 		{
 			$message->to($email)->subject(Lang::get('avalon::messages.users_welcome_subject'));
