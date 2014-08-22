@@ -192,11 +192,44 @@ class ObjectController extends \BaseController {
 		return Redirect::route('home');
 	}
 
+	//test
+	public function tables() {
+		
+		//get all tables in database
+		$tables = self::getTables();
+
+		//remove the objects
+		$tables = array_diff($tables, DB::table(DB_OBJECTS)->lists('name'));
+
+		//remove the linking tables
+		$tables = array_diff($tables, DB::table(DB_FIELDS)->where('type', 'checkboxes')->lists('name'));
+
+		//remove the avalon system tables
+		$tables = array_diff($tables, array(DB_FIELDS, DB_FILES, DB_OBJECT_LINKS, DB_OBJECT_USER, DB_OBJECTS, DB_USERS));
+
+		//remove avalon paths
+		$tables = array_diff($tables, array('create', 'logout'));
+		
+		//remove the laravel system tables
+		$tables = array_diff($tables, array('migrations'));
+
+		dd($tables);
+	}
+
 	//for list_grouping typeaheads
 	private static function getGroupings() {
 		$groupings = DB::table(DB_OBJECTS)->where('list_grouping', '<>', '')->distinct()->orderBy('list_grouping')->lists('list_grouping');
 		foreach ($groupings as &$grouping) $grouping = '"' . str_replace('"', '', $grouping) . '"';
 		return '[' . implode(',', $groupings) . ']';
+	}
+
+	//get array of tables in database
+	private static function getTables() {
+		$return = array();
+		$pdo = DB::connection()->getPdo();
+		$tables = $pdo->query('SHOW TABLES');
+		foreach ($tables as $table) $return[] = $table[0];
+		return $return;
 	}
 
 }

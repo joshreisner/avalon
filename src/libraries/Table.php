@@ -46,7 +46,7 @@ class Table {
 		$columns = self::$columns;
 		foreach ($columns as &$column) {
 			if ($column['type'] == 'color') $column['head'] = '&nbsp;';
-			$column = '<th class="' . $column['type'] . '">' . $column['head'] . '</th>';
+			$column = '<th class="' . self::column_class($column['type']) . '">' . $column['head'] . '</th>';
 		}
 		$columns = implode($columns);
 		$head = '<thead><tr>' . $columns . '</tr></thead>';
@@ -99,7 +99,7 @@ class Table {
 				}
 
 				//create cell
-				$columns[] = '<td class="' . $column['type'] . '">' . $value . '</td>';
+				$columns[] = '<td class="' . self::column_class($column['type']) . '">' . $value . '</td>';
 			}
 
 			//create row
@@ -122,6 +122,11 @@ class Table {
 		return $this;
 	}
 
+	//class
+	private static function column_class($type) {
+		if ($type == 'updated_at') return $type . ' hidden-xs';
+		return $type;
+	}
 
 	//always comes first.  $rows must be an object, eg a Laravel Query Builder resultset
 	public static function rows($rows) {

@@ -40,6 +40,11 @@ Route::group(array('prefix'=>Config::get('avalon::route_prefix')), function(){
 			Route::delete('/{object_name}/fields/{field_id}', 'FieldController@destroy');
 			Route::post('/{object_name}/fields/reorder', 'FieldController@reorder');
 		
+			# Test routes
+			Route::group(array('prefix'=>'test'), function(){
+				Route::get('tables', 'ObjectController@tables');
+			});
+
 		});
 
 		# All authenticated users

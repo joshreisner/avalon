@@ -100,6 +100,7 @@ class AvalonServiceProvider extends ServiceProvider {
 		if (!defined('DB_FILES'))			define('DB_FILES',			\Config::get('packages/joshreisner/avalon/config.db_files'));
 		if (!defined('DB_OBJECTS'))			define('DB_OBJECTS',		\Config::get('packages/joshreisner/avalon/config.db_objects'));
 		if (!defined('DB_OBJECT_LINKS'))	define('DB_OBJECT_LINKS',	\Config::get('packages/joshreisner/avalon/config.db_object_links'));
+		if (!defined('DB_OBJECT_USER'))		define('DB_OBJECT_USER',	\Config::get('packages/joshreisner/avalon/config.db_object_user'));
 		if (!defined('DB_USERS'))			define('DB_USERS',			\Config::get('packages/joshreisner/avalon/config.db_users'));
 
 		if (!\Schema::hasTable(DB_OBJECTS)) return;
