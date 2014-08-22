@@ -117,7 +117,7 @@ return array(
     'users_role_admin'			=> 'edit any object, administer user accounts',
     'users_role_programmer'		=> 'godlike powers',
     'users_role_user'			=> 'data entry',
-    'users_welcome_resend'		=> 'Re-Welcome',
+    'users_welcome_resend'		=> 'Reset Password and Resend Welcome Email',
     'users_welcome_subject'		=> 'Avalon CMS Login Information',
     'users_welcome_message'		=> 'Welcome, you\'ve been added to the content management system. Click <a href=":link">this link</a> and log in with the following credentials:',
 
