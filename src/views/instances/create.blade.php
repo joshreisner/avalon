@@ -160,5 +160,7 @@
 @endsection
 
 @section('side')
-	<p>{{ nl2br($object->form_help) }}</p>
+	@if (!empty($object->form_help))
+		<p>{{ nl2br($object->form_help) }}</p>
+	@endif
 @endsection

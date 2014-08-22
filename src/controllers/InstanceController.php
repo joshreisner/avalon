@@ -530,7 +530,7 @@ class InstanceController extends \BaseController {
 		foreach ($fields as $field) {
 			$table->column($field->name, $field->type, $field->title, $field->width, $field->height);
 		}
-		$table->column('updated_at', 'updated_at', trans('avalon::messages.site_updated_at'));
+		$table->column('updated_at', 'updated_at hidden-xs', trans('avalon::messages.site_updated_at'));
 		$table->deletable();
 		if (!empty($object->group_by_field)) $table->groupBy('group');
 		if ($object->order_by == 'precedence') $table->draggable(URL::action('InstanceController@reorder', $object->name));

@@ -93,7 +93,7 @@ return array(
 	'site_logout'				=> 'Log Out',
     'site_save'					=> 'Save Changes',
     'site_updated_at'			=> 'Updated',
-    'site_updated_by'			=> 'User',
+    'site_updated_name'			=> 'User',
     'site_welcome'				=> 'Welcome to Avalon',
 
 	'users'						=> 'Users',

@@ -29,7 +29,7 @@
 				@include('avalon::instances.nested', array('instances'=>$instances))
 			</div>
 		@else
-			<?php echo InstanceController::table($object, $fields, $instances) ?>
+			{{ InstanceController::table($object, $fields, $instances) }}
 		@endif
 	@else
 	<div class="alert alert-warning">
