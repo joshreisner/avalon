@@ -208,7 +208,7 @@ class FieldController extends \BaseController {
 			'updated_at'		=>new DateTime,
 		));
 
-		self::organizeTable($object_id);
+		self::organizeTable($object_name);
 		
 		return Redirect::action('FieldController@index', $object_name)->with('field_id', $field_id);
 	}
@@ -295,7 +295,7 @@ class FieldController extends \BaseController {
 	}
 	
 	//reorder fields by drag-and-drop
-	public function reorder($object_id) {
+	public function reorder($object_name) {
 		$fields = explode('&', Input::get('order'));
 		$precedence = 1;
 		foreach ($fields as $field) {
@@ -306,28 +306,28 @@ class FieldController extends \BaseController {
 			}
 		}
 
-		self::organizeTable($object_id);
+		self::organizeTable($object_name);
 	}
 
-	private static function organizeTable($object_id) {
+	private static function organizeTable($object_name) {
 		//reorder actual table fields
-		$object = DB::table(DB_OBJECTS)->where('id', $object_id)->first();
-		$fields = DB::table(DB_FIELDS)->where('object_id', $object_id)->whereNotIn('type', array('checkboxes', 'images'))->orderBy('precedence')->get();
+		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
+		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->whereNotIn('type', array('checkboxes', 'images'))->orderBy('precedence')->get();
 		$system = array('created_at', 'updated_at', 'updated_by', 'deleted_at', 'precedence');
 
-		db::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT FIRST');
+		DB::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT FIRST');
 		$last = 'id';
 		foreach ($fields as $field) {
-			db::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN `' . $field->name . '` ' . self::type($field->type) . ' AFTER ' . $last);
+			DB::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN `' . $field->name . '` ' . self::type($field->type) . ' AFTER ' . $last);
 			$last = $field->name;
 		}
 
 		//if there are non-system columns, reorder
-		db::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN created_at DATETIME NOT NULL AFTER ' . $last);
-		db::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN updated_at DATETIME NOT NULL AFTER created_at');
-		db::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN updated_by INT 			   AFTER updated_at');
-		db::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN deleted_at DATETIME 		   AFTER updated_by');
-		db::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN precedence INT 	  NOT NULL AFTER deleted_at');
+		DB::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN created_at DATETIME NOT NULL AFTER ' . $last);
+		DB::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN updated_at DATETIME NOT NULL AFTER created_at');
+		DB::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN updated_by INT 			   AFTER updated_at');
+		DB::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN deleted_at DATETIME 		   AFTER updated_by');
+		DB::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN precedence INT 	  NOT NULL AFTER deleted_at');
 	}
 
 	//format field type
