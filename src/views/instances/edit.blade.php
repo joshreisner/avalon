@@ -74,16 +74,33 @@
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 				<div class="col-sm-10">
 					@if (empty($instance->{$field->name}))
-					<div class="image_upload" id="image_{{ $field->id }}" style="width:{{ $field->screen_width }}px; height:{{ $field->screen_height }}px; line-height:{{ $field->screen_height }}px;">
+					<div class="image new" data-field-id="{{ $field->id }}" style="width:{{ $field->screen_width }}px; height:{{ $field->screen_height }}px; line-height:{{ $field->screen_height }}px;">
 						{{ $field->width or '&infin;' }} &times; {{ $field->height or '&infin;' }}
 					</div>
 					{{ Form::hidden($field->name, null) }}
 					@else
-					<div class="image_upload filled" id="image_{{ $field->id }}" style="width:{{ $field->screen_width }}px; height:{{ $field->screen_height }}px; line-height:{{ $field->screen_height }}px; background-image: url({{ $instance->{$field->name}->url }});">
+					<div class="image" data-field-id="{{ $field->id }}" style="width:{{ $field->screen_width }}px; height:{{ $field->screen_height }}px; line-height:{{ $field->screen_height }}px; background-image: url({{ $instance->{$field->name}->url }});">
 						{{ $field->width }} &times; {{ $field->height }}
 					</div>
 					{{ Form::hidden($field->name, $instance->{$field->name}->id) }}
 					@endif
+				</div>
+			</div>
+		@elseif ($field->type == 'images')
+			<div class="form-group {{ $field->type }}">
+				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
+				<div class="col-sm-10">
+					<?php $ids = array(); ?>
+					@foreach ($instance->{$field->name} as $image)
+						<div class="image" data-file-id="{{ $image->id }}" data-field-id="{{ $field->id }}" style="width:{{ $field->screen_width }}px; height:{{ $field->screen_height }}px; line-height:{{ $field->screen_height }}px; background-image: url({{ $image->url }});">
+							{{ $field->width }} &times; {{ $field->height }}
+						</div>
+						<?php $ids[] = $image->id; ?>
+					@endforeach
+					{{ Form::hidden($field->name, implode(',', $ids)) }}
+					<div class="image new" data-field-id="{{ $field->id }}" style="width:{{ $field->screen_width }}px; height:{{ $field->screen_height }}px; line-height:{{ $field->screen_height }}px;">
+						{{ $field->width or '&infin;' }} &times; {{ $field->height or '&infin;' }}
+					</div>
 				</div>
 			</div>
 		@elseif ($field->type == 'integer')

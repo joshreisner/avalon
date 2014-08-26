@@ -177,72 +177,135 @@ $(function() {
 		});
 	});
 
+	//handle remove event
+	$("body").on("click", "form.upload a.remove", function(){
+		var $form = $(this).parent("form");
+		var $div = $("div[data-form-id=" + $form.attr("id") + "]");
+		var $sibs = $div.siblings("div.image");
+		var field_id = $div.attr("data-field-id");
+		var $hidden = $div.closest(".form-group").find("input[type=hidden]");
+		$form.remove();
+		$div.remove(); //todo animate
+		$hidden.setUploadedIds(field_id);
+		$sibs.each(function(){
+			$(this).checkUploadForm();
+		});
+
+	})
+
 	//jquery function to cover a input element, used on page load and when cloning
 	jQuery.fn.extend({
-		setupUploadForm : function() {
+		setUploadedIds : function(field_id) {
+			var ids = new Array();
+			$(".image[data-field-id=" + field_id + "]:not(.new)").each(function(){
+				ids[ids.length] = $(this).attr('data-file-id')
+			});
+			$(this).val(ids.join(","));
+		},
+		checkUploadForm : function() {
 			var offset   = $(this).offset();
 			var width    = $(this).width();
 			var height   = $(this).height();
-			var field_id = $(this).attr('id').substr(6);
-			var multiple = $(this).closest(".form-group").hasClass("images") ? "multiple" : "";
-			$("<form class='upload upload_image'><input type='hidden' name='field_id' value='" + field_id + "'><input type='file' name='image'" + multiple + "></form>").appendTo("body").css({
+			$("form#" + $(this).attr("data-form-id")).css({
 				top: offset.top, 
 				left: offset.left,
 				width: width,
 				height: height
-			});		
+			});
+		},
+		setupUploadForm : function() {
+			var random	 = randomStr();
+			var offset   = $(this).offset();
+			var width    = $(this).width();
+			var height   = $(this).height();
+			var field_id = $(this).attr("data-field-id");
+			var multiple = $(this).closest(".form-group").hasClass("images");
+			var isnew    = $(this).hasClass("new");
+
+			//set form attr
+			$(this).attr("data-form-id", random);
+
+			//create form
+			if (multiple) {				
+				$('<form id="' + random + '" class="upload upload_image' + (isnew ? ' new' : '') + '">' + 
+					'<input type="hidden" name="field_id" value="' + field_id + '">' + 
+					'<input type="file" name="image" multiple>' +
+					'<a class="remove"><i class="glyphicon glyphicon-remove-sign"></i></a>' +
+					'</form>')
+					.appendTo("body");
+			} else {
+				$('<form id="' + random + '" class="upload upload_image">' + 
+					'<input type="hidden" name="field_id" value="' + field_id + '">' + 
+					'<input type="file" name="image">' +
+					'</form>')
+					.appendTo("body");
+			}
+
+			//position form
+			$(this).checkUploadForm();		
+				
+			//set upload event on form input
+			$("form#" + random + " input[type=file]").fileupload({
+				url: 				"/login/upload/image",
+				type: 				"POST",
+				dataType: 			"json", 
+				acceptFileTypes : 	/(\.|\/)(jpg|gif|png)$/i,
+				autoUpload: 		true,
+				add: function(e, data) {
+					data.submit();
+				},
+				fail: function(e, data) {
+					//window.console.log(data.jqXHR.responseJSON.error);
+					window.console.log(data.jqXHR.responseText);
+				},
+				done: function(e, data) {
+					//window.console.log(data);
+
+					//get some vars
+					var multiple = $(this).prop("multiple");
+					var $form = $(this).parent();
+					var field_id = $form.find("input[name=field_id]").val();
+					var $div = $("div.image[data-form-id=" + $form.attr("id") + "]");
+					var $hidden = $div.closest(".form-group").find("input[type=hidden]");
+
+					//if multiple, make sure to keep a new one around
+					if (multiple && $div.hasClass("new")) {
+						$div.clone().addClass("new").removeAttr("id").appendTo($div.parent()).setupUploadForm();
+					}
+
+					//adjust dimensions for the parent <form>
+					$form.removeClass("new").width(data.result.screenwidth).height(data.result.screenheight);
+
+					//set the image as background on the underlying <div> and resize
+					$div.css('backgroundImage', 'url(' + data.result.url + ')')
+						.removeClass("new")
+						.attr("data-file-id", data.result.file_id)
+						.width(data.result.screenwidth)
+						.height(data.result.screenheight);
+
+					//update hidden field value that will be passed with this form
+					$hidden.setUploadedIds(field_id);
+				}
+			});
+
 		}
 	});
 
 	//set up image upload <form>s on load
-	$("div.image_upload").each(function(){
+	$("div.image div.image").each(function(){
 		$(this).setupUploadForm();
 	});
 
-	//handle image upload
-	$("form.upload_image input").fileupload({
-		url: 				"/login/upload/image",
-		type: 				"POST",
-		dataType: 			"json", 
-		acceptFileTypes : 	/(\.|\/)(jpg|gif|png)$/i,
-		autoUpload: 		true,
-		add: function(e, data) {
-			//window.console.log($(this).prop("multiple"));
-			data.submit();
-		},
-		fail: function(e, data) {
-			//window.console.log('fail ' + data.jqXHR.responseText);
-		},
-		done: function(e, data) {
-			//var file_id = data.jqXHR.responseText;
-			var field_id = $(this).parent().find("input[name=field_id]").val();
-
-			var multiple = $(this).prop("multiple");
-
-			var $parent = $(this).parent();
-
-			//set dimensions for this <input>
-			$parent.width(data.result.screenwidth).height(data.result.screenheight);
-
-			//console.log(data);
-
-			if (multiple) {
-				var $copy = $("div#image_" + field_id).clone();
-			}
-
-			//set the image as background on the underlying <div> and resize
-			$("div#image_" + field_id)
-				.css('backgroundImage', 'url(' + data.result.url + ')')
-				.addClass("filled")
-				.width(data.result.screenwidth)
-				.height(data.result.screenheight)
-				.next()
-				.val(data.result.file_id);
-
-			if (multiple) {
-				$copy.appendTo($parent).setupUploadForm();
-			}
-		}
+	$("div.images div.image").each(function(){
+		$(this).setupUploadForm();
 	});
+
+	function randomStr() {
+		var m = 36, s = '', r = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		for (var i = 0; i < m; i++) { 
+			s += r.charAt(Math.floor(Math.random()*r.length)); 
+		}
+		return s;
+	};
 
 });

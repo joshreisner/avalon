@@ -179,7 +179,7 @@ class InstanceController extends \BaseController {
 		
 		//run various cleanup processes on the fields
 		foreach ($fields as $field) {
-			if ($field->type != 'checkboxes') {
+			if (!in_array($field->type, array('checkboxes', 'images'))) {
 				$inserts[$field->name] = self::sanitize($field);
 			}
 		}
@@ -209,6 +209,15 @@ class InstanceController extends \BaseController {
 				}
 			} elseif ($field->type == 'image') {
 				DB::table(DB_FILES)->where('id', Input::get($field->name))->update(array('instance_id'=>$instance_id));
+			} elseif ($field->type == 'images') {
+				$file_ids = explode(',', Input::get($field->name));
+				$precedence = 0;
+				foreach ($file_ids as $file_id) {
+					DB::table(DB_FILES)->where('id', $file_id)->update(array(
+						'instance_id'=>$instance_id,
+						'precedence'=>++$precedence,
+					));
+				}
 			}
 		}
 
@@ -288,6 +297,15 @@ class InstanceController extends \BaseController {
 					$field->height = $instance->{$field->name}->height;
 				}
 				list($field->screen_width, $field->screen_height) = FileController::getImageDimensions($field->width, $field->height);
+			} elseif ($field->type == 'images') {
+				$instance->{$field->name} = DB::table(DB_FILES)->where('field_id', $field->id)->where('instance_id', $instance->id)->orderBy('precedence', 'asc')->get();
+				foreach ($instance->{$field->name} as &$image) {
+					if (!empty($image->width) && !empty($image->height)) {
+						$image->screen_width = $image->width;
+						$image->screen_width = $image->height;
+					}
+				}
+				list($field->screen_width, $field->screen_height) = FileController::getImageDimensions($field->width, $field->height);
 			} elseif ($field->type == 'slug') {
 				if ($field->required && empty($instance->{$field->name}) && $field->related_field_id) {
 					//slugify related field to populate this one
@@ -349,23 +367,41 @@ class InstanceController extends \BaseController {
 						));
 					}
 				}
+			} elseif ($field->type == 'images') {
 
-			} else{
+				# Unset any old file associations (will get cleaned up after this loop)
+				DB::table(DB_FILES)
+					->where('field_id', $field->id)
+					->where('instance_id', $instance_id)
+					->update(array('instance_id'=>null));
+
+				# Create new associations
+				$file_ids = explode(',', Input::get($field->name));
+				$precedence = 0;
+				foreach ($file_ids as $file_id) {
+					DB::table(DB_FILES)
+						->where('id', $file_id)
+						->update(array(
+							'instance_id'=>$instance_id,
+							'precedence'=>++$precedence,
+						));
+				}
+
+			} else {
 				if ($field->type == 'image') {
+
+					# Unset any old file associations (will get cleaned up after this loop)
+					DB::table(DB_FILES)
+						->where('field_id', $field->id)
+						->where('instance_id', $instance_id)
+						->update(array('instance_id'=>null));
+
 
 					# Capture the uploaded file by setting the reverse-lookup
 					DB::table(DB_FILES)
 						->where('id', Input::get($field->name))
 						->update(array('instance_id'=>$instance_id));
 
-					# Delete any images formerly attached to this instance
-					if ($files = DB::table(DB_FILES)
-						->where('field_id', $field->id)
-						->where('instance_id', $instance_id)
-						->where('id', '<>', Input::get($field->name))
-						->get()) {
-						FileController::cleanup($files);
-					}
 				}
 
 				$updates[$field->name] = self::sanitize($field);

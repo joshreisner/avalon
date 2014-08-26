@@ -93,18 +93,23 @@ form
 
 			div.redactor_editor
 				border-radius: 0 0 $field-radius $field-radius
-
-		.image_upload
-			background-color: $gray-lightest
-			display: block
-			overflow: hidden
-			text-align: center
-			font-size: 20px
-			color: $gray-medium
-			background-size: cover
-			&.filled
-				text-indent: 100%
-				white-space: nowrap
+		
+		&.image, &.images
+			margin-bottom: 0
+			
+			.image
+				overflow: hidden
+				background-size: cover
+				text-align: center
+				font-size: 40px
+				color: white
+				text-shadow: 0 0 2px $gray
+				float: left 
+				margin: 0 $margin $margin 0
+				&.new
+					background-color: $gray-lightest
+					color: $gray-medium
+					text-shadow: none
 
 		&:last-child
 			margin-bottom: 0
@@ -124,6 +129,29 @@ form
 			left: 0
 			cursor: pointer
 			width: 100%
+		a.remove
+			position: absolute
+			background-color: white
+			line-height: 24px
+			text-align: center
+			border-radius: 12px
+			top: -10px
+			right: -10px
+			width: 24px
+			height: 24px
+			color: black
+			box-shadow: 1px 1px 5px 0px $gray
+			font-size: 22px
+			display: none
+			cursor: pointer
+			&:hover
+				color: $btn-danger-border
+		&:hover
+			a.remove
+				display: block
+		&.new:hover
+			a.remove
+				display: none
 
 .header
 	margin-bottom: $margin

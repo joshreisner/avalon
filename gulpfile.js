@@ -7,6 +7,7 @@ var minifyCSS 	= require('gulp-minify-css');
 var rename		= require('gulp-rename');
 var include		= require('gulp-include');
 var uglify		= require('gulp-uglify');
+var shell		= require('gulp-shell');
 
 var sassDir		= 'src/assets/sass';
 var jsDir		= 'src/assets/js';
@@ -19,7 +20,11 @@ gulp.task('main-css', function(){
 		.pipe(autoprefix('last 3 version'))
 		.pipe(minifyCSS({keepSpecialComments:0}))
         .pipe(rename({suffix: '.min'}))
-		.pipe(gulp.dest(outputDir + '/css'));
+		.pipe(gulp.dest(outputDir + '/css'))
+	    .pipe(shell([
+			'cd /Users/joshreisner/Sites/writers-center; php artisan asset:publish --bench=joshreisner/avalon',
+	    ]))
+	    .pipe(notify('published'));
 });
 
 gulp.task('main-js', function(){
@@ -28,7 +33,11 @@ gulp.task('main-js', function(){
 		.pipe(uglify())
 		.on('error', handleJsError)		
         .pipe(rename({suffix: '.min'}))
-		.pipe(gulp.dest(outputDir + '/js'));
+		.pipe(gulp.dest(outputDir + '/js'))
+	    .pipe(shell([
+			'cd /Users/joshreisner/Sites/writers-center; php artisan asset:publish --bench=joshreisner/avalon',
+	    ]))
+	    .pipe(notify('published'));
 });
 
 gulp.task('watch', function(){

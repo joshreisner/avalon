@@ -9,12 +9,10 @@ class FileController extends \BaseController {
 	 */
 	public function image() {
 		if (Input::hasFile('image') && Input::has('field_id')) {
-
 			return json_encode(self::saveImage(
 				Input::get('field_id'), 
 				file_get_contents(Input::file('image')),
-				Input::file('image')->getClientOriginalName(),
-				Input::file('image')->getClientOriginalExtension()
+				Input::file('image')->getClientOriginalName()
 			));
 
 		} elseif (!Input::hasFile('image')) {
@@ -29,7 +27,7 @@ class FileController extends \BaseController {
 	/**
 	 * genericized function to handle upload, available externally via service provider
 	 */
-	public static function saveImage($field_id, $file, $filename, $extension, $instance_id=null) {
+	public static function saveImage($field_id, $file, $filename, $instance_id=null) {
 		//get field info
 		$field 	= DB::table(DB_FIELDS)->where('id', $field_id)->first();
 		$object = DB::table(DB_OBJECTS)->where('id', $field->object_id)->first();
@@ -50,8 +48,9 @@ class FileController extends \BaseController {
 		mkdir(public_path() . $path, 0777, true);
 
 		//get name and extension
-		$filename	= Str::slug($filename, '-');
-		$extension 	= strtolower($extension);
+		$fileparts = pathinfo($filename);
+		$filename	= Str::slug($fileparts['filename'], '-');
+		$extension 	= strtolower($fileparts['extension']);
 		$file_path 	= $path . '/' . $filename . '.' . $extension;
 
 		//process and save image

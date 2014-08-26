@@ -80,19 +80,20 @@
 		@elseif ($field->type == 'image')
 			<div class="form-group {{ $field->type }}">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
+				{{ Form::hidden($field->name, null) }}
 				<div class="col-sm-10">
-					<div class="image_upload" id="image_{{ $field->id }}" style="width:{{ $field->screen_width }}px; height:{{ $field->screen_height }}px; line-height:{{ $field->screen_height }}px;">
-						{{ $field->width or '&infin;' }} &times; {{ $field->height or '&infin;' }}
+					<div class="image new" data-field-id="{{ $field->id }}" style="width:{{ $field->screen_width }}px; height:{{ $field->screen_height }}px; line-height:{{ $field->screen_height }}px;">
+						<span>{{ $field->width or '&infin;' }} &times; {{ $field->height or '&infin;' }}</span>
 					</div>
-					{{ Form::hidden($field->name, null) }}
 				</div>
 			</div>
 		@elseif ($field->type == 'images')
 			<div class="form-group {{ $field->type }}">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
+				{{ Form::hidden($field->name, null) }}
 				<div class="col-sm-10">
-					<div class="image_upload" id="image_{{ $field->id }}" style="width:{{ $field->screen_width }}px; height:{{ $field->screen_height }}px; line-height:{{ $field->screen_height }}px;">
-						{{ $field->width or '&infin;' }} &times; {{ $field->height or '&infin;' }}
+					<div class="image new" data-field-id="{{ $field->id }}" style="width:{{ $field->screen_width }}px; height:{{ $field->screen_height }}px; line-height:{{ $field->screen_height }}px;">
+						<span>{{ $field->width or '&infin;' }} &times; {{ $field->height or '&infin;' }}</span>
 					</div>
 				</div>
 			</div>
