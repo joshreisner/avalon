@@ -12,6 +12,10 @@ Route::group(array('prefix'=>Config::get('avalon::route_prefix')), function(){
 		Route::get('/change/{email}/{token}',	'LoginController@getChange');
 		Route::post('/change',					'LoginController@postChange');
 
+		App::missing(function($exception){
+			return Redirect::route('home');
+		});
+
 	} else {
 
 		# Admins only

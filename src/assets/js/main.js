@@ -31,8 +31,9 @@ $(function() {
 	$('form input[type=text]:not(.color)').first().focus();
 
 	//datetimepickers
-	$('.input-group.date').datetimepicker({pickTime: false});
 	$('.input-group.datetime').datetimepicker();
+	$('.input-group.date').datetimepicker({pickTime: false});
+	$('.input-group.time').datetimepicker({pickDate: false});
 
 	//draggable tables
 	$('table.draggable').tableDnD({

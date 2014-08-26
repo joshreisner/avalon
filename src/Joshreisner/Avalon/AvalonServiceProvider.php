@@ -74,7 +74,8 @@ class AvalonServiceProvider extends ServiceProvider {
 		    return $input;
 		});
 
-		\Form::macro('time', function($name, $value = null, $options = array()) {
+		# Currently not using; interferes with Chrome implementation of datetimepicker
+		/*\Form::macro('time', function($name, $value = null, $options = array()) {
 		    $input =  '<input type="time" name="' . $name . '" value="' . $value . '"';
 
 		    foreach ($options as $key => $value) {
@@ -84,7 +85,7 @@ class AvalonServiceProvider extends ServiceProvider {
 		    $input .= '>';
 
 		    return $input;
-		});
+		});*/
 
 	}
 

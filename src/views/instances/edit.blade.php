@@ -125,7 +125,10 @@
 			<div class="form-group {{ $field->type }}">
 				{{ Form::label($field->name, $field->title, array('class'=>'control-label col-sm-2')) }}
 			    <div class="col-sm-10">
-					{{ Form::time($field->name, $instance->{$field->name}, array('class'=>'form-control ' . $field->type . ($field->required ? ' required' : ''))) }}
+		            <div class="input-group time" data-date-format="hh:mm A">
+		                <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span></span>
+						{{ Form::text($field->name, $instance->{$field->name}, array('class'=>'form-control ' . $field->type . ($field->required ? ' required' : ''))) }}
+					</div>
 			    </div>
 			</div>
 		@elseif ($field->type == 'url')

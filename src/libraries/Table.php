@@ -61,7 +61,7 @@ class Table {
 				//handle groupings
 				if (self::$grouped && ($last_group != $row->{self::$grouped})) {
 					$last_group = $row->{self::$grouped};
-					$bodies[] = '<tbody>' . implode($rows) . '</tbody>';
+					if (count($rows)) $bodies[] = '<tbody>' . implode($rows) . '</tbody>';
 					$bodies[] = '<tr class="group"><td colspan=' . $colspan . '">' . $last_group . '</td></tr>';
 					$rows = array();
 				}
