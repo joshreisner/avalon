@@ -90,13 +90,11 @@ class FieldController extends \BaseController {
 		$type		= Input::get('type');
 		$required	= Input::has('required') ? 1 : 0;
 		
-		$table_name = DB::table(DB_OBJECTS)->where('name', $object_name)->pluck('name');
-
 		if ($type == 'checkboxes') {
 			//use field_name to store joining table
 			$columns = array(
 				Str::singular(DB::table(DB_OBJECTS)->where('id', Input::get('related_object_id'))->pluck('name')), 
-				Str::singular($table_name)
+				Str::singular($object_name)
 			);
 			sort($columns);
 			$field_name = implode('_', $columns);
@@ -114,7 +112,7 @@ class FieldController extends \BaseController {
 			if (in_array($type, array('select', 'image')) && !Str::endsWith($field_name, '_id')) $field_name .= '_id';
 
 			//add new column
-			Schema::table($table_name, function($table) use ($type, $field_name, $required) {
+			Schema::table($object_name, function($table) use ($type, $field_name, $required) {
 				switch ($type) {
 
 					case 'color':
@@ -186,7 +184,7 @@ class FieldController extends \BaseController {
 
 			//set existing default values for required dates to today, better than 0000-00-00
 			if (in_array($type, array('date', 'datetime')) && $required) {
-				DB::table($table_name)->update(array($field_name=>new DateTime)); 
+				DB::table($object_name)->update(array($field_name=>new DateTime)); 
 			}
 		}
 
@@ -241,14 +239,13 @@ class FieldController extends \BaseController {
 	
 	//save edits to database
 	public function update($object_name, $field_id) {
-		$table_name = DB::table(DB_OBJECTS)->where('name', $object_name)->pluck('name');
+		$field = DB::table(DB_FIELDS)->where('id', $field_id)->first();
 		$field_name = Str::slug(Input::get('name'), '_');
 		$required	= Input::has('required') ? 1 : 0;
-		$field = DB::table(DB_FIELDS)->where('id', $field_id)->first();
 
 		//rename column if necessary		
 		if ($field->name != $field_name) {
-			Schema::table($table_name, function($table) use ($field, $field_name) {
+			Schema::table($object_name, function($table) use ($field, $field_name) {
 				$table->renameColumn($field->name, $field_name);
 			});
 		}

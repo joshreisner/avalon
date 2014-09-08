@@ -159,7 +159,7 @@ class ObjectController extends \BaseController {
 		if (Input::has('related_objects')) {
 			foreach (Input::get('related_objects') as $linked_id) {
 				DB::table(DB_OBJECT_LINKS)->insert(array(
-					'object_id'=>$object_id,
+					'object_id'=>$object->id,
 					'linked_id'=>$linked_id,
 				));
 			}
