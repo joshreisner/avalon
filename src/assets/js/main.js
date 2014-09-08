@@ -230,7 +230,7 @@ $(function() {
 				$('<form id="' + random + '" class="upload upload_image' + (isnew ? ' new' : '') + '">' + 
 					'<input type="hidden" name="field_id" value="' + field_id + '">' + 
 					'<input type="file" name="image" multiple>' +
-					'<a class="remove"><i class="glyphicon glyphicon-remove-sign"></i></a>' +
+					'<a class="remove"><i class="glyphicon glyphicon-remove-circle"></i></a>' +
 					'</form>')
 					.appendTo("body");
 			} else {
@@ -280,6 +280,7 @@ $(function() {
 					$div.css('backgroundImage', 'url(' + data.result.url + ')')
 						.removeClass("new")
 						.attr("data-file-id", data.result.file_id)
+						.css('lineHeight', data.result.screenheight + 'px')
 						.width(data.result.screenwidth)
 						.height(data.result.screenheight);
 
