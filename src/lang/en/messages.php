@@ -15,7 +15,6 @@ return array(
 	'fields_id'					=> 'ID',
 	'fields_list_help'			=> 'A list of fields for the :title object.',
 	'fields_name'				=> 'Column Name',
-	'fields_not_deletable'		=> 'This field may not be deleted because it is its object\'s sort field.',
 	'fields_precedence'			=> 'Precedence',
 	'fields_title'				=> 'Title',
 	'fields_related_field'		=> 'Related Field',

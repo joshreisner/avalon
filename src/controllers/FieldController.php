@@ -240,6 +240,7 @@ class FieldController extends \BaseController {
 	//save edits to database
 	public function update($object_name, $field_id) {
 		$field = DB::table(DB_FIELDS)->where('id', $field_id)->first();
+		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
 		$field_name = Str::slug(Input::get('name'), '_');
 		$required	= Input::has('required') ? 1 : 0;
 
@@ -248,6 +249,13 @@ class FieldController extends \BaseController {
 			Schema::table($object_name, function($table) use ($field, $field_name) {
 				$table->renameColumn($field->name, $field_name);
 			});
+
+			//update object sort order if necessary
+			if ($object->order_by == $field->name) {
+				DB::table(DB_OBJECTS)->where('name', $object_name)->update(array(
+					'order_by' => $field_name
+				));
+			}
 		}
 
 		//change nullability if necessary
@@ -276,17 +284,24 @@ class FieldController extends \BaseController {
 	
 	//delete field & remove from database
 	public function destroy($object_name, $field_id) {
-		$table = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
+		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
 		$field = DB::table(DB_FIELDS)->where('id', $field_id)->first();
 
 		if ($field->type == 'checkboxes') {
 			Schema::dropIfExists($field->name);
-		} elseif (Schema::hasColumn($table->name, $field->name)) {
-			Schema::table($table->name, function($table) use ($field) {
+		} elseif (Schema::hasColumn($object->name, $field->name)) {
+			Schema::table($object->name, function($table) use ($field) {
 				$table->dropColumn($field->name);
 			});
 		}
-		
+
+		//we're deleting the object's order_by field, so reset to default
+		if ($object->order_by == $field->name) {
+			DB::table(DB_OBJECTS)->where('name', $object_name)->update(array(
+				'order_by' => 'precedence'
+			));
+		}
+
 		DB::table(DB_FIELDS)->where('id', $field_id)->delete();
 		return Redirect::action('FieldController@index', $object_name);
 	}

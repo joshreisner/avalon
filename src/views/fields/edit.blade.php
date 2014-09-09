@@ -99,12 +99,8 @@
 @section('side')
 	<p>{{ Lang::get('avalon::messages.fields_edit_help') }}</p>
 
-	@if ($object->order_by == $field->name)
-		<p>{{ Lang::get('avalon::messages.fields_not_deletable') }}</p>
-	@else
-		{{ Form::open(array('method'=>'delete', 'action'=>array('FieldController@destroy', $object->name, $field->id))) }}
-		<button type="submit" class="btn btn-default btn-xs">{{ Lang::get('avalon::messages.fields_destroy') }}</button>
-		{{ Form::close() }}	
-	@endif
+	{{ Form::open(array('method'=>'delete', 'action'=>array('FieldController@destroy', $object->name, $field->id))) }}
+	<button type="submit" class="btn btn-default btn-xs">{{ Lang::get('avalon::messages.fields_destroy') }}</button>
+	{{ Form::close() }}	
 
 @endsection
