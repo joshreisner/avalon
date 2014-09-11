@@ -248,7 +248,7 @@ class InstanceController extends \BaseController {
 		//format instance values for form
 		foreach ($fields as &$field) {
 			if ($field->type == 'datetime') {
-				if (!empty($instance->{$field->name})) $instance->{$field->name} = date('Y-m-d\TH:i:s', strtotime($instance->{$field->name}));
+				if (!empty($instance->{$field->name})) $instance->{$field->name} = date('m/d/Y h:i A', strtotime($instance->{$field->name}));
 			} elseif (($field->type == 'checkboxes') || ($field->type == 'select')) {
 
 				//load options for checkboxes or selects
@@ -518,17 +518,21 @@ class InstanceController extends \BaseController {
 	private function sanitize($field) {
 		$value = trim(Input::get($field->name));
 
-		//format date fields
-		if ($field->type == 'date') $value = date('Y-m-d', strtotime($value));
-
-		//format date fields
-		if ($field->type == 'datetime') $value = date('Y-m-d H:i:s', strtotime($value));
-
-		//format slug fields
-		if ($field->type == 'slug') $value = Str::slug($value);
-
 		//add each field if not present
-		if (empty($value) && ($value !== '0') && !$field->required) $value = null;
+		if (empty($value) && ($value !== '0') && !$field->required) {
+			$value = null;
+		} else {
+
+			//format date fields
+			if ($field->type == 'date') $value = date('Y-m-d', strtotime($value));
+
+			//format date fields
+			if ($field->type == 'datetime') $value = date('Y-m-d H:i:s', strtotime($value));
+
+			//format slug fields
+			if ($field->type == 'slug') $value = Str::slug($value);
+
+		}
 
 		return $value;
 	}

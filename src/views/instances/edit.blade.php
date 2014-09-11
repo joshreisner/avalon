@@ -58,7 +58,7 @@
 			    <div class="col-sm-10">
 		            <div class="input-group datetime" data-date-format="MM/DD/YYYY hh:mm A">
 		                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-		                <input type="text" class="form-control  @if ($field->required) required @endif" value="{{ date('m/d/Y h:i A', strtotime($instance->{$field->name})) }}" name="{{ $field->name }}">
+		                <input type="text" class="form-control  @if ($field->required) required @endif" value="{{ $instance->{$field->name} }}" name="{{ $field->name }}">
 		            </div>
 			    </div>
 			</div>
