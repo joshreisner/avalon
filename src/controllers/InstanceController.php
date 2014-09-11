@@ -519,8 +519,14 @@ class InstanceController extends \BaseController {
 		$value = trim(Input::get($field->name));
 
 		//add each field if not present
-		if (empty($value) && ($value !== '0') && !$field->required) {
-			$value = null;
+		if ($field->type == 'checkbox') {
+			
+			$value = !empty($value); //1 or 0, never null
+		
+		} elseif (empty($value) && ($value !== '0') && !$field->required) {
+		
+			$value = null; //nullable
+		
 		} else {
 
 			//format date fields

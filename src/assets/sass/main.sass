@@ -56,6 +56,8 @@ form
 	
 	.form-group
 
+		//background-color: pink
+
 		input
 			&.color
 				max-width: 100px
@@ -67,9 +69,6 @@ form
 				max-width: 200px
 			&.time
 				max-width: 200px
-
-		.checkbox
-			padding-top: 4px
 
 		.checkbox-inline
 			margin-left: 0
@@ -93,8 +92,12 @@ form
 
 			div.redactor_editor
 				border-radius: 0 0 $field-radius $field-radius
+
+		&.field-checkbox
+			input
+				margin-top: 11px
 		
-		&.image, &.images
+		&.field-image, &.field-images
 			margin-bottom: 0
 			
 			.image

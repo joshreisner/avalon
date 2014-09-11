@@ -34,6 +34,7 @@ class FieldController extends \BaseController {
 				'select'		=>trans('avalon::messages.fields_types_select'),
 			),
 			trans('avalon::messages.fields_types_cat_misc')=>array(
+				'checkbox'		=>trans('avalon::messages.fields_types_checkbox'),
 				'color'			=>trans('avalon::messages.fields_types_color'),
 			),
 		);
@@ -111,10 +112,17 @@ class FieldController extends \BaseController {
 			//add _id suffix to foreign key columns (convention, also relationship eg hasOne() conflict)
 			if (in_array($type, array('select', 'image')) && !Str::endsWith($field_name, '_id')) $field_name .= '_id';
 
+			//checkboxes can't be 'required' (or it's always required)
+			if ($type == 'checkbox') $required = false;
+
 			//add new column
 			Schema::table($object_name, function($table) use ($type, $field_name, $required) {
 				switch ($type) {
 
+					case 'checkbox':
+						$table->boolean($field_name)->default(false);
+						break;
+					
 					case 'color':
 						if ($required) {
 							$table->string($field_name, 6);
@@ -346,6 +354,9 @@ class FieldController extends \BaseController {
 	private static function type($type) {
 		switch ($type) {
 
+			case 'checkbox':
+				return 'TINYINT(1)';
+			
 			case 'color':
 				return 'VARCHAR(7)';
 			

@@ -219,7 +219,7 @@ $(function() {
 			var width    = $(this).width();
 			var height   = $(this).height();
 			var field_id = $(this).attr("data-field-id");
-			var multiple = $(this).closest(".form-group").hasClass("images");
+			var multiple = $(this).closest(".form-group").hasClass("field-images");
 			var isnew    = $(this).hasClass("new");
 
 			//set form attr
@@ -293,11 +293,11 @@ $(function() {
 	});
 
 	//set up image upload <form>s on load
-	$("div.image div.image").each(function(){
+	$("div.form-group.field-image div.image").each(function(){
 		$(this).setupUploadForm();
 	});
 
-	$("div.images div.image").each(function(){
+	$("div.form-group.field-images div.image").each(function(){
 		$(this).setupUploadForm();
 	});
 
