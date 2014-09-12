@@ -33,6 +33,7 @@ class LoginController extends \BaseController {
 			'password'		=> Hash::make(Input::get('password')),
 			'role'			=> 1,
 			'last_login'	=> new DateTime,
+			'created_at'	=> new DateTime,
 			'updated_at'	=> new DateTime,
 		));
 		

@@ -90,7 +90,8 @@ class AvalonServiceProvider extends ServiceProvider {
 	}
 
 	/**
-	 * Register the service provider.
+	 * Register the service provider. In this case, we're going to provide auto-generated models
+	 * to the application for all the Avalon objects while only querying the db once
 	 *
 	 * @return void
 	 */
@@ -104,130 +105,131 @@ class AvalonServiceProvider extends ServiceProvider {
 		if (!defined('DB_OBJECT_USER'))		define('DB_OBJECT_USER',	\Config::get('packages/joshreisner/avalon/config.db_object_user'));
 		if (!defined('DB_USERS'))			define('DB_USERS',			\Config::get('packages/joshreisner/avalon/config.db_users'));
 
-		if (!\Schema::hasTable(DB_OBJECTS)) return;
+		# Get required Avalon object/field data, error means migration/config needed
+		try {
+			$fields  = \DB::table(DB_FIELDS)
+						->join(DB_OBJECTS . ' as object', DB_FIELDS . '.object_id', '=', 'object.id')
+						->leftJoin(DB_OBJECTS . ' as related', DB_FIELDS . '.related_object_id', '=', 'related.id')
+						->select(
+							DB_FIELDS . '.object_id',
+							DB_FIELDS . '.related_object_id as related_id',
+							DB_FIELDS . '.type as type',
+							DB_FIELDS . '.name as field_name',
+							'object.name as object_name', 
+							'object.model as object_model', 
+							'object.order_by as object_order_by',
+							'object.direction as object_direction',
+							'related.name as related_name', 
+							'related.model as related_model', 
+							'related.order_by as related_order_by',
+							'related.direction as related_direction'
+						)
+						->orderBy('object.name')
+						->get();
+		} catch (\Exception $e) {
+			//todo return a helpful message here that doesn't interfere with migrations
+			return false;
+		}
 
+		# Loop through and process the $fields into $objects for model methods below
+		$objects = array();
+		foreach ($fields as $field) {
+
+			//make new empty object
+			if (!isset($objects[$field->object_id])) $objects[$field->object_id] = array(
+				'model' => $field->object_model,
+				'name' => $field->object_name,
+				'dates' => array('\'created_at\'', '\'updated_at\'', '\'deleted_at\''),
+				'relationships' => array(),
+			);
+			if (!empty($field->related_model)) {
+				if (!isset($objects[$field->related_id])) $objects[$field->related_id] = array(
+					'model' => $field->related_model,
+					'name' => $field->related_name,
+					'dates' => array('\'created_at\'', '\'updated_at\'', '\'deleted_at\''),
+					'relationships' => array(),
+				);
+			}
+
+			//define relationships
+			if ($field->type == 'select') {
+				//this is legacy. i think we're worried about the universe folding in on itself
+				if ($field->object_id == $field->related_id) continue;
+
+				//out from this object
+				$objects[$field->object_id]['relationships'][] = '
+				public function ' . $field->related_name . '() {
+					return $this->belongsTo("' . $field->related_model . '", "' . $field->field_name . '");
+				}
+				';
+
+				//back from the related object
+				$objects[$field->related_id]['relationships'][] = '
+				public function ' . $field->object_name . '() {
+					return $this->hasMany("' . $field->object_model . '", "' . $field->field_name . '")->orderBy("' . $field->related_order_by . '", "' . $field->related_direction . '");
+				}
+				';
+
+			} elseif ($field->type == 'checkboxes') {
+
+				//out from this object
+				$objects[$field->object_id]['relationships'][] = '
+				public function ' . $field->related_name . '() {
+					return $this->belongsToMany("' . $field->related_model . '", "' . $field->field_name . '", "' . \InstanceController::getKey($field->object_name) . '", "' . \InstanceController::getKey($field->related_name) . '")->orderBy("' . $field->related_order_by . '", "' . $field->related_direction . '");
+				}
+				';
+			
+				//back from the related object
+				$objects[$field->related_id]['relationships'][] = '
+				public function ' . $field->object_name . '() {
+					return $this->belongsToMany("' . $field->object_model . '", "' . $field->field_name . '", "' . \InstanceController::getKey($field->related_name) . '", "' . \InstanceController::getKey($field->object_name) . '")->orderBy("' . $field->object_order_by . '", "' . $field->object_direction . '");
+				}
+				';
+			
+			} elseif ($field->type == 'image') {
+
+				$objects[$field->object_id]['relationships'][] = 'public function ' . substr($field->field_name, 0, -3) . '() {
+					return $this->hasOne(\'AvalonFile\', \'id\', \'' . $field->field_name . '\');
+				}';
+
+			} elseif (in_array($field->type, array('date', 'datetime'))) {
+				$objects[$field->object_id]['dates'][] = '\'' . $field->field_name . '\'';
+			}
+		}
+
+		# Provide this class to extend below if needed
 		eval('class AvalonFile extends Eloquent {
 				protected $table = \'' . DB_FILES . '\';
 			}');
 
-		//register avalon objects as models for yr application
-		foreach (\DB::table(DB_OBJECTS)->get() as $object) {
+		# Define object models (finally)
+		foreach ($objects as $object) {
 
-			//relationships
-			$relationships = array();
-
-			//to the related object
-			$related_fields = \DB::table(DB_FIELDS)
-					->where('object_id', $object->id)
-					->where('related_object_id', '<>', $object->id)
-					->whereNotNull('related_object_id')
-					->join(DB_OBJECTS, DB_FIELDS . '.related_object_id', '=', DB_OBJECTS . '.id')
-					->select(
-						DB_FIELDS . '.type as type',
-						DB_FIELDS . '.name as field_name',
-						DB_OBJECTS . '.name as object_name', 
-						DB_OBJECTS . '.model', 
-						DB_OBJECTS . '.order_by',
-						DB_OBJECTS . '.direction'
-					)->get();
-			foreach ($related_fields as $field) {
-				if ($field->type == 'select') {
-					$relationships[] = 'public function ' . $field->object_name . '() {
-						return $this->belongsTo("' . $field->model . '", "' . $field->field_name . '");
-					}';
-				}
-			}
-
-			//from the related object
-			$related_fields = \DB::table(DB_FIELDS)
-					->where('related_object_id', $object->id)
-					->join(DB_OBJECTS, DB_FIELDS . '.object_id', '=', DB_OBJECTS . '.id')
-					->select(
-						DB_FIELDS . '.type as type',
-						DB_FIELDS . '.name as field_name',
-						DB_OBJECTS . '.name as object_name', 
-						DB_OBJECTS . '.model', 
-						DB_OBJECTS . '.order_by',
-						DB_OBJECTS . '.direction'
-					)->get();
-			foreach ($related_fields as $field) {
-				if ($field->type == 'select') {
-					$relationships[] = 'public function ' . $field->object_name . '() {
-						return $this->hasMany("' . $field->model . '", "' . $field->field_name . '")->orderBy("' . $field->order_by . '", "' . $field->direction . '");
-					}';
-				} elseif ($field->type == 'checkboxes') {
-					$relationships[] = 'public function ' . $field->object_name . '() {
-						return $this->belongsToMany("' . $field->model . '", "' . $field->field_name . '", "' . \InstanceController::getKey($object->name) . '", "' . \InstanceController::getKey($field->object_name) . '")->orderBy("' . $field->order_by . '", "' . $field->direction . '");
-					}';
-				}
-			}
-
-			//also need many-to-many from the object
-			$related_fields = \DB::table(DB_FIELDS)
-					->where('object_id', $object->id)
-					->whereIn('type', array('checkboxes'))
-					->join(DB_OBJECTS, DB_FIELDS . '.related_object_id', '=', DB_OBJECTS . '.id')
-					->select(
-						DB_FIELDS . '.type as type',
-						DB_FIELDS . '.name as field_name',
-						DB_OBJECTS . '.name as object_name', 
-						DB_OBJECTS . '.model', 
-						DB_OBJECTS . '.order_by',
-						DB_OBJECTS . '.direction'
-					)->get();
-			foreach ($related_fields as $field) {
-				$relationships[] = 'public function ' . $field->object_name . '() {
-					return $this->belongsToMany("' . $field->model . '", "' . $field->field_name . '", "' . \InstanceController::getKey($object->name) . '", "' . \InstanceController::getKey($field->object_name) . '")->orderBy("' . $field->order_by . '", "' . $field->direction . '");
-				}';
-			}
-
-			$images = \DB::table(DB_FIELDS)
-				->where('object_id', $object->id)
-				->whereIn('type', array('image'))
-				->select('name')
-				->get();
-			foreach ($images as $image)	 {
-				$relationships[] = 'public function ' . substr($image->name, 0, -3) . '() {
-					return $this->hasOne("AvalonFile", "id", "' . $image->name . '");
-				}';
-			}
-
-			$dates = \DB::table(DB_FIELDS)
-				->where('object_id', $object->id)
-				->whereIn('type', array('date', 'datetime'))
-				->lists('name');
-			$dates = $dates + array('created_at', 'updated_at', 'deleted_at');
-			foreach ($dates as &$date) $date = '\'' . $date . '\'';
-			$dates = implode(',', $dates);
-
-			//define model
 			eval('
 			use Illuminate\Database\Eloquent\SoftDeletingTrait;
 
-			class ' . $object->model . ' extends Eloquent {
+			class ' . $object['model'] . ' extends Eloquent {
 			    use SoftDeletingTrait;
 				
-				public $table = \'' . $object->name . '\'; //public intentionally
+				public $table      = \'' . $object['name'] . '\'; //public intentionally
 				protected $guarded = array();
-				protected $dates = array(' . $dates . ');
+				protected $dates   = array(' . implode(',', $object['dates']) . ');
 
 				public static function boot() {
 					parent::boot();
-			        static::creating(function($object)
-			        {
-						$object->precedence = DB::table(\'' . $object->name . '\')->max(\'precedence\') + 1;
+			        static::creating(function($object) {
+						$object->precedence = DB::table(\'' . $object['name'] . '\')->max(\'precedence\') + 1;
 						$object->updated_by = Auth::id();
 			        });
-			        static::updating(function($object)
-			        {
+			        static::updating(function($object) {
 						$object->updated_by = Auth::id();
 			        });
 				}
 
-				' . implode(' ', $relationships) . '
+				' . implode(' ', $object['relationships']) . '
 			}');
 		}
-
+		//exit;
 	}
 
 	/**
