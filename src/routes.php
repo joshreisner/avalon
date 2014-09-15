@@ -1,5 +1,4 @@
 <?php
-
 Route::group(array('prefix'=>Config::get('avalon::route_prefix')), function(){
 
 	if (Auth::guest() || empty(Auth::user()->role)) {

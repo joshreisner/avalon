@@ -35,7 +35,13 @@ class AvalonServiceProvider extends ServiceProvider {
 	{
 		$this->package('joshreisner/avalon');
 		
-		include __DIR__ . '/../../routes.php';
+		//capture last activity -- too expensive?
+		\App::before(function() {
+			if ($user = \Auth::user()) {
+				$user->last_login = new \DateTime;
+				$user->save();
+			}
+		});
 
 		//add some special fields to the default laravel form class
 		\Form::macro('date', function($name, $value = null, $options = array()) {
@@ -86,6 +92,8 @@ class AvalonServiceProvider extends ServiceProvider {
 
 		    return $input;
 		});*/
+
+		include __DIR__ . '/../../routes.php';
 
 	}
 
