@@ -60,7 +60,7 @@ class LoginController extends \BaseController {
 	public function postReset() {
 
 		//get user
-		if (!$user = DB::table(DB_USERS)->where('role', '<', 3)->whereNull('deleted_at')->where('email', Input::get('email'))->first()) {
+		if (!$user = DB::table(DB_USERS)->where('role', '<', 4)->whereNull('deleted_at')->where('email', Input::get('email'))->first()) {
 			return Redirect::action('LoginController@getReset')->with(array(
 				'error'=>trans('avalon::messages.users_password_reset_error')
 			));

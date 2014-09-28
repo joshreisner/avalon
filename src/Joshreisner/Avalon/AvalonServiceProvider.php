@@ -1,6 +1,14 @@
 <?php namespace Joshreisner\Avalon;
 
-use Illuminate\Support\ServiceProvider;
+use App,
+	Auth,
+	Config,
+	DateTime,
+	DB,
+	FileController,
+	Form,
+	Illuminate\Support\ServiceProvider,
+	InstanceController;
 
 class AvalonServiceProvider extends ServiceProvider {
 
@@ -16,14 +24,14 @@ class AvalonServiceProvider extends ServiceProvider {
 	 * make this function available (maybe should be on the model though?)
 	 */
 	public static function saveImage($field_id, $file, $filename, $instance_id=null) {
-		return \FileController::saveImage($field_id, $file, $filename, $instance_id);
+		return FileController::saveImage($field_id, $file, $filename, $instance_id);
 	}
 
 	/**
 	 * leaky abstraction!!
 	 */
 	public static function cleanupFiles($files=false) {
-		return \FileController::cleanup($files);
+		return FileController::cleanup($files);
 	}
 
 	/**
@@ -36,15 +44,15 @@ class AvalonServiceProvider extends ServiceProvider {
 		$this->package('joshreisner/avalon');
 		
 		//capture last activity -- too expensive?
-		\App::before(function() {
-			if ($user = \Auth::user()) {
-				$user->last_login = new \DateTime;
+		App::before(function() {
+			if ($user = Auth::user()) {
+				$user->last_login = new DateTime;
 				$user->save();
 			}
 		});
 
 		//add some special fields to the default laravel form class
-		\Form::macro('date', function($name, $value = null, $options = array()) {
+		Form::macro('date', function($name, $value = null, $options = array()) {
 		    $input =  '<input type="date" name="' . $name . '" value="' . $value . '"';
 
 		    foreach ($options as $key => $value) {
@@ -56,7 +64,7 @@ class AvalonServiceProvider extends ServiceProvider {
 		    return $input;
 		});
 
-		\Form::macro('datetime', function($name, $value = null, $options = array()) {
+		Form::macro('datetime', function($name, $value = null, $options = array()) {
 		    $input =  '<input type="datetime" name="' . $name . '" value="' . $value . '"';
 
 		    foreach ($options as $key => $value) {
@@ -68,7 +76,7 @@ class AvalonServiceProvider extends ServiceProvider {
 		    return $input;
 		});
 
-		\Form::macro('integer', function($name, $value = null, $options = array()) {
+		Form::macro('integer', function($name, $value = null, $options = array()) {
 		    $input =  '<input type="number" step="1" name="' . $name . '" value="' . $value . '"';
 
 		    foreach ($options as $key => $value) {
@@ -81,7 +89,7 @@ class AvalonServiceProvider extends ServiceProvider {
 		});
 
 		# Currently not using; interferes with Chrome implementation of datetimepicker
-		/*\Form::macro('time', function($name, $value = null, $options = array()) {
+		/*Form::macro('time', function($name, $value = null, $options = array()) {
 		    $input =  '<input type="time" name="' . $name . '" value="' . $value . '"';
 
 		    foreach ($options as $key => $value) {
@@ -106,16 +114,16 @@ class AvalonServiceProvider extends ServiceProvider {
 	public function register()
 	{
 		//have to get config in a special way
-		if (!defined('DB_FIELDS'))			define('DB_FIELDS',			\Config::get('packages/joshreisner/avalon/config.db_fields'));
-		if (!defined('DB_FILES'))			define('DB_FILES',			\Config::get('packages/joshreisner/avalon/config.db_files'));
-		if (!defined('DB_OBJECTS'))			define('DB_OBJECTS',		\Config::get('packages/joshreisner/avalon/config.db_objects'));
-		if (!defined('DB_OBJECT_LINKS'))	define('DB_OBJECT_LINKS',	\Config::get('packages/joshreisner/avalon/config.db_object_links'));
-		if (!defined('DB_OBJECT_USER'))		define('DB_OBJECT_USER',	\Config::get('packages/joshreisner/avalon/config.db_object_user'));
-		if (!defined('DB_USERS'))			define('DB_USERS',			\Config::get('packages/joshreisner/avalon/config.db_users'));
+		if (!defined('DB_FIELDS'))			define('DB_FIELDS',			Config::get('packages/joshreisner/avalon/config.db_fields'));
+		if (!defined('DB_FILES'))			define('DB_FILES',			Config::get('packages/joshreisner/avalon/config.db_files'));
+		if (!defined('DB_OBJECTS'))			define('DB_OBJECTS',		Config::get('packages/joshreisner/avalon/config.db_objects'));
+		if (!defined('DB_OBJECT_LINKS'))	define('DB_OBJECT_LINKS',	Config::get('packages/joshreisner/avalon/config.db_object_links'));
+		if (!defined('DB_OBJECT_USER'))		define('DB_OBJECT_USER',	Config::get('packages/joshreisner/avalon/config.db_object_user'));
+		if (!defined('DB_USERS'))			define('DB_USERS',			Config::get('packages/joshreisner/avalon/config.db_users'));
 
 		# Get required Avalon object/field data, error means migration/config needed
 		try {
-			$fields  = \DB::table(DB_FIELDS)
+			$fields  = DB::table(DB_FIELDS)
 						->join(DB_OBJECTS . ' as object', DB_FIELDS . '.object_id', '=', 'object.id')
 						->leftJoin(DB_OBJECTS . ' as related', DB_FIELDS . '.related_object_id', '=', 'related.id')
 						->select(
@@ -134,7 +142,7 @@ class AvalonServiceProvider extends ServiceProvider {
 						)
 						->orderBy('object.name')
 						->get();
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			//todo return a helpful message here that doesn't interfere with migrations
 			return false;
 		}
@@ -183,14 +191,14 @@ class AvalonServiceProvider extends ServiceProvider {
 				//out from this object
 				$objects[$field->object_id]['relationships'][] = '
 				public function ' . $field->related_name . '() {
-					return $this->belongsToMany("' . $field->related_model . '", "' . $field->field_name . '", "' . \InstanceController::getKey($field->object_name) . '", "' . \InstanceController::getKey($field->related_name) . '")->orderBy("' . $field->related_order_by . '", "' . $field->related_direction . '");
+					return $this->belongsToMany("' . $field->related_model . '", "' . $field->field_name . '", "' . InstanceController::getKey($field->object_name) . '", "' . InstanceController::getKey($field->related_name) . '")->orderBy("' . $field->related_order_by . '", "' . $field->related_direction . '");
 				}
 				';
 			
 				//back from the related object
 				$objects[$field->related_id]['relationships'][] = '
 				public function ' . $field->object_name . '() {
-					return $this->belongsToMany("' . $field->object_model . '", "' . $field->field_name . '", "' . \InstanceController::getKey($field->related_name) . '", "' . \InstanceController::getKey($field->object_name) . '")->orderBy("' . $field->object_order_by . '", "' . $field->object_direction . '");
+					return $this->belongsToMany("' . $field->object_model . '", "' . $field->field_name . '", "' . InstanceController::getKey($field->related_name) . '", "' . InstanceController::getKey($field->object_name) . '")->orderBy("' . $field->object_order_by . '", "' . $field->object_direction . '");
 				}
 				';
 			
