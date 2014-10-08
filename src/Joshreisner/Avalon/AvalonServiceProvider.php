@@ -182,7 +182,7 @@ class AvalonServiceProvider extends ServiceProvider {
 				//back from the related object
 				$objects[$field->related_id]['relationships'][] = '
 				public function ' . $field->object_name . '() {
-					return $this->hasMany("' . $field->object_model . '", "' . $field->field_name . '")->orderBy("' . $field->related_order_by . '", "' . $field->related_direction . '");
+					return $this->hasMany("' . $field->object_model . '", "' . $field->field_name . '");
 				}
 				';
 
