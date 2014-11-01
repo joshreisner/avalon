@@ -68,6 +68,8 @@
 						</div>
 					@elseif ($field->type == 'integer')
 						{{ Form::integer($field->name, null, ['class'=>'form-control ' . $field->type . ($field->required ? ' required' : '')]) }}
+					@elseif ($field->type == 'money')
+						{{ Form::decimal($field->name, null, ['class'=>'form-control ' . $field->type . ($field->required ? ' required' : '')]) }}
 					@elseif ($field->type == 'select')
 						{{ Form::select($field->name, $field->options, null, ['class'=>'form-control ' . $field->type . ($field->required ? ' required' : '')]) }}
 					@elseif ($field->type == 'slug')
@@ -83,6 +85,8 @@
 						</div>
 					@elseif ($field->type == 'url')
 						{{ Form::url($field->name, null, ['class'=>'form-control ' . $field->type . ($field->required ? ' required' : '')]) }}
+					@elseif ($field->type == 'user')
+						{{ Form::select($field->name, $field->options, null, ['class'=>'form-control ' . $field->type . ($field->required ? ' required' : '')]) }}
 					@endif
 				</div>
 			</div>

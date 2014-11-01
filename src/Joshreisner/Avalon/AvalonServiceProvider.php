@@ -76,6 +76,18 @@ class AvalonServiceProvider extends ServiceProvider {
 		    return $input;
 		});
 
+		Form::macro('decimal', function($name, $value = null, $options = array()) {
+		    $input =  '<input type="number" step="0.01" name="' . $name . '" value="' . $value . '"';
+
+		    foreach ($options as $key => $value) {
+		        $input .= ' ' . $key . '="' . $value . '"';
+		    }
+
+		    $input .= '>';
+
+		    return $input;
+		});
+
 		Form::macro('integer', function($name, $value = null, $options = array()) {
 		    $input =  '<input type="number" step="1" name="' . $name . '" value="' . $value . '"';
 

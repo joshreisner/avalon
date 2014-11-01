@@ -21,7 +21,7 @@ class InstanceController extends \BaseController {
 		$instances = DB::table($object->name);
 
 		# Build select statement
-		$selects = array($object->name . '.id', $object->name . '.updated_at', $object->name . '.deleted_at');
+		$instances->select([$object->name . '.id', $object->name . '.updated_at', $object->name . '.deleted_at']);
 		foreach ($fields as $field) {
 			if ($field->type == 'checkboxes') {
 				$related_object = self::getRelatedObject($field->related_object_id);
@@ -29,16 +29,24 @@ class InstanceController extends \BaseController {
 					FROM ' . $related_object->name . ' 
 					JOIN ' . $field->name . ' ON ' . $related_object->name . '.id = ' . $field->name . '.' . self::getKey($related_object->name) . '
 					WHERE ' . $field->name . '.' . self::getKey($object->name) . ' = ' . $object->name . '.id 
-					ORDER BY ' . $related_object->name . '.' . $related_object->field->name . ') as ' . $field->name);
+					ORDER BY ' . $related_object->name . '.' . $related_object->field->name . ') AS ' . $field->name);
+			} elseif ($field->type == 'image') {
+				$instances
+					->leftJoin(DB_FILES, $object->name . '.' . $field->name, '=', DB_FILES . '.id')
+					->addSelect(DB_FILES . '.url AS ' . $field->name . '_url');
+			} elseif ($field->type == 'select') {
+				$related_object = self::getRelatedObject($field->related_object_id);
+				$instances
+					->leftJoin($related_object->name, $object->name . '.' . $field->name, '=', $related_object->name . '.id')
+					->addSelect($related_object->name . '.' . $related_object->field->name . ' AS ' . $field->name);
+			} elseif ($field->type == 'user') {
+				$instances
+					->leftJoin(DB_USERS, $object->name . '.' . $field->name, '=', DB_USERS . '.id')
+					->addSelect(DB_USERS . '.name AS ' . $field->name);
 			} else {
-				$selects[] = $object->name . '.' . $field->name;
-				if ($field->type == 'image') {
-					$instances->leftJoin(DB_FILES, $object->name . '.' . $field->name, '=', DB_FILES . '.id');
-					$selects[] = DB_FILES . '.url as ' . $field->name . '_url';
-				}
+				$instances->addSelect($object->name . '.' . $field->name);
 			}
 		}
-		$instances->select($selects);
 
 		# Handle group-by fields
 		$object->nested = false;
@@ -56,7 +64,6 @@ class InstanceController extends \BaseController {
 				
 				# Include group_by_field in resultset
 				$instances
-					->leftJoin($grouped_object->name, $object->name . '.' . $grouped_field->name, '=', $grouped_object->name . '.id')
 					->orderBy($grouped_object->name . '.' . $grouped_object->order_by, $grouped_object->direction)
 					->addSelect($grouped_object->name . '.' . $grouped_object->field->name . ' as group');
 	
@@ -151,9 +158,11 @@ class InstanceController extends \BaseController {
 
 				//select might be nullable
 				if ($field->type == 'select' && !$field->required) {
-					$field->options = array(''=>'') + $field->options;
+					$field->options = [''=>''] + $field->options;
 				}
-
+			} elseif ($field->type == 'user') {
+				$field->options = DB::table(DB_USERS)->orderBy('name')->lists('name', 'id');
+				if (!$field->required) $field->options = [''=>''] + $field->options;
 			} elseif (in_array($field->type, array('image', 'images'))) {
 				list($field->screen_width, $field->screen_height) = FileController::getImageDimensions($field->width, $field->height);
 			}
@@ -282,7 +291,7 @@ class InstanceController extends \BaseController {
 
 				//select might be nullable
 				if ($field->type == 'select' && !$field->required) {
-					$field->options = array(''=>'') + $field->options;
+					$field->options = [''=>''] + $field->options;
 				}
 
 				//get checkbox values todo make a function for consistently getting these checkbox column names
@@ -292,6 +301,9 @@ class InstanceController extends \BaseController {
 					$instance->{$field->name} = DB::table($field->name)->where($table_key, $instance->id)->lists($foreign_key);
 				}
 
+			} elseif ($field->type == 'user') {
+				$field->options = DB::table(DB_USERS)->orderBy('name')->lists('name', 'id');
+				if (!$field->required) $field->options = [''=>''] + $field->options;
 			} elseif ($field->type == 'image') {
 				$instance->{$field->name} = DB::table(DB_FILES)->where('id', $instance->{$field->name})->first();
 				if (!empty($instance->{$field->name}->width) && !empty($instance->{$field->name}->height)) {

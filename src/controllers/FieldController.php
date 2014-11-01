@@ -5,48 +5,49 @@ class FieldController extends \BaseController {
 	//this could probably be a variable no?
 	private static function types() {
 
-		return array(
-			trans('avalon::messages.fields_types_cat_dates')=> array(
+		return [
+			trans('avalon::messages.fields_types_cat_dates')=> [
 				'date'			=>trans('avalon::messages.fields_types_date'),
 				'datetime'		=>trans('avalon::messages.fields_types_datetime'),
 				'time'			=>trans('avalon::messages.fields_types_time'),
-			),
-			trans('avalon::messages.fields_types_cat_files')=>array(
+			],
+			trans('avalon::messages.fields_types_cat_files')=>[
 				'image'			=>trans('avalon::messages.fields_types_image'),
 				'images'		=>trans('avalon::messages.fields_types_images'),
 				//'file'		=>'File',
 				//'files'		=>'Files',
-			),
-			trans('avalon::messages.fields_types_cat_strings')=> array(
+			],
+			trans('avalon::messages.fields_types_cat_strings')=>[
 				'html'			=>trans('avalon::messages.fields_types_html'),
 				'slug'			=>trans('avalon::messages.fields_types_slug'),
 				'string'		=>trans('avalon::messages.fields_types_string'),
 				'text'			=>trans('avalon::messages.fields_types_text'),
 				'url'			=>trans('avalon::messages.fields_types_url'),
-			),
-			trans('avalon::messages.fields_types_cat_numbers')=> array(
-				'integer'		=>trans('avalon::messages.fields_types_integer'),
-				//'money'		=>'Money',
+			],
+			trans('avalon::messages.fields_types_cat_numbers')=>[
 				//'decimal'		=>'Decimal',
-			),
-			trans('avalon::messages.fields_types_cat_relationships')=>array(
+				'integer'		=>trans('avalon::messages.fields_types_integer'),
+				'money'			=>trans('avalon::messages.fields_types_money'),
+			],
+			trans('avalon::messages.fields_types_cat_relationships')=>[
 				'checkboxes'	=>trans('avalon::messages.fields_types_checkboxes'),
 				'select'		=>trans('avalon::messages.fields_types_select'),
-			),
-			trans('avalon::messages.fields_types_cat_misc')=>array(
+			],
+			trans('avalon::messages.fields_types_cat_misc')=>[
 				'checkbox'		=>trans('avalon::messages.fields_types_checkbox'),
 				'color'			=>trans('avalon::messages.fields_types_color'),
-			),
-		);
+				'user'			=>trans('avalon::messages.fields_types_user'),
+			],
+		];
 	}
 	
 	//also probably could be a variable
 	private static function visibility() {
-		return array(
+		return [
 			'list'	=>trans('avalon::messages.fields_visibility_list'),
 			'normal'=>trans('avalon::messages.fields_visibility_normal'),
 			'hidden'=>trans('avalon::messages.fields_visibility_hidden'),
-		);
+		];
 	}
 
 	//show a list of an object's fields
@@ -57,10 +58,10 @@ class FieldController extends \BaseController {
 			$field->link = URL::action('FieldController@edit', array($object->name, $field->id));
 			$field->type = trans('avalon::messages.fields_types_' . $field->type);
 		}
-		return View::make('avalon::fields.index', array(
+		return View::make('avalon::fields.index', [
 			'object'=>$object,
 			'fields'=>$fields,
-		));
+		]);
 	}
 	
 	//show create form
@@ -68,22 +69,22 @@ class FieldController extends \BaseController {
 		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
 
 		$related_fields = DB::table(DB_FIELDS)
-				->where('object_id', $object->id)
-				->where('type', 'string')
-				->orderBy('precedence')
-				->lists('title', 'id');
+			->where('object_id', $object->id)
+			->where('type', 'string')
+			->orderBy('precedence')
+			->lists('title', 'id');
 
 		$related_objects = DB::table(DB_OBJECTS)
-				->orderBy('title')
-				->lists('title', 'id');
+			->orderBy('title')
+			->lists('title', 'id');
 
-		return View::make('avalon::fields.create', array(
+		return View::make('avalon::fields.create', [
 			'object'			=>$object,
 			'related_fields'	=>array(''=>'') + $related_fields,
 			'related_objects'	=>array(''=>'') + $related_objects,
 			'visibility'		=>self::visibility(),
 			'types'				=>self::types(),
-		));
+		]);
 	}
 	
 	//save form data to fields, add new column to object
@@ -93,10 +94,10 @@ class FieldController extends \BaseController {
 		
 		if ($type == 'checkboxes') {
 			//use field_name to store joining table
-			$columns = array(
+			$columns = [
 				Str::singular(DB::table(DB_OBJECTS)->where('id', Input::get('related_object_id'))->pluck('name')), 
 				Str::singular($object_name)
-			);
+			];
 			sort($columns);
 			$field_name = implode('_', $columns);
 
@@ -110,7 +111,7 @@ class FieldController extends \BaseController {
 			$field_name = Str::slug(Input::get('title'), '_');
 
 			//add _id suffix to foreign key columns (convention, also relationship eg hasOne() conflict)
-			if (in_array($type, array('select', 'image')) && !Str::endsWith($field_name, '_id')) $field_name .= '_id';
+			if (in_array($type, ['select', 'image', 'user']) && !Str::endsWith($field_name, '_id')) $field_name .= '_id';
 
 			//checkboxes can't be 'required' (or it's always required)
 			if ($type == 'checkbox') $required = false;
@@ -147,9 +148,19 @@ class FieldController extends \BaseController {
 						}
 						break;
 
+					case 'html':
+					case 'text':
+						if ($required) {
+							$table->text($field_name);
+						} else {
+							$table->text($field_name)->nullable();
+						}
+						break;
+
 					case 'image':
 					case 'integer':
 					case 'select':
+					case 'user':
 						if ($required) {
 							$table->integer($field_name);
 						} else {
@@ -157,9 +168,13 @@ class FieldController extends \BaseController {
 						}
 						break;
 
-					case 'images':
-					//no column here? was considering an int count?
-					break;
+					case 'money':
+						if ($required) {
+							$table->decimal($field_name, 10, 2);
+						} else {
+							$table->integer($field_name, 10, 2)->nullable();
+						}
+						break;
 
 					case 'slug':
 					case 'string':
@@ -171,15 +186,6 @@ class FieldController extends \BaseController {
 						}
 						break;
 					
-					case 'html':
-					case 'text':
-						if ($required) {
-							$table->text($field_name);
-						} else {
-							$table->text($field_name)->nullable();
-						}
-						break;
-
 					case 'time':
 						if ($required) {
 							$table->time($field_name);
@@ -191,14 +197,14 @@ class FieldController extends \BaseController {
 			});
 
 			//set existing default values for required dates to today, better than 0000-00-00
-			if (in_array($type, array('date', 'datetime')) && $required) {
-				DB::table($object_name)->update(array($field_name=>new DateTime)); 
+			if (in_array($type, ['date', 'datetime']) && $required) {
+				DB::table($object_name)->update([$field_name=>new DateTime]);
 			}
 		}
 
 		//save field info to fields table
 		$object_id = DB::table(DB_OBJECTS)->where('name', $object_name)->pluck('id');
-		$field_id = DB::table(DB_FIELDS)->insertGetId(array(
+		$field_id = DB::table(DB_FIELDS)->insertGetId([
 			'title'				=>Input::get('title'),
 			'name'				=>$field_name,
 			'type'				=>$type,
@@ -212,7 +218,7 @@ class FieldController extends \BaseController {
 			'precedence'		=>DB::table(DB_FIELDS)->where('object_id', $object_id)->max('precedence') + 1,
 			'updated_by'		=>Auth::user()->id,
 			'updated_at'		=>new DateTime,
-		));
+		]);
 
 		self::organizeTable($object_name);
 		
@@ -224,25 +230,25 @@ class FieldController extends \BaseController {
 		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
 		$field = DB::table(DB_FIELDS)->where('id', $field_id)->first();
 
-		$related_fields = array(''=>'') + DB::table(DB_FIELDS)
-				->where('object_id', $field->object_id)
-				->where('id', '<>', $field->id)
-				->where('type', 'string')
-				->orderBy('precedence')
-				->lists('title', 'id');
+		$related_fields = [''=>''] + DB::table(DB_FIELDS)
+			->where('object_id', $field->object_id)
+			->where('id', '<>', $field->id)
+			->where('type', 'string')
+			->orderBy('precedence')
+			->lists('title', 'id');
 
-		$related_objects = array(''=>'') + DB::table(DB_OBJECTS)
-				->orderBy('title')
-				->lists('title', 'id');
+		$related_objects = [''=>''] + DB::table(DB_OBJECTS)
+			->orderBy('title')
+			->lists('title', 'id');
 
-		return View::make('avalon::fields.edit', array(
+		return View::make('avalon::fields.edit', [
 			'object'			=>$object,
 			'field'				=>$field,
 			'related_fields'	=>$related_fields,
 			'related_objects'	=>$related_objects,
 			'visibility'		=>self::visibility(),
 			'types'				=>self::types(),
-		));
+		]);
 	}
 	
 	//save edits to database
@@ -274,7 +280,7 @@ class FieldController extends \BaseController {
 		}
 
 		//related field and object
-		DB::table(DB_FIELDS)->where('id', $field_id)->update(array(
+		DB::table(DB_FIELDS)->where('id', $field_id)->update([
 			'title'				=>Input::get('title'),
 			'name'				=>$field_name,
 			'visibility'		=>Input::get('visibility'),
@@ -285,7 +291,7 @@ class FieldController extends \BaseController {
 			'required'			=>$required,
 			'updated_by'		=>Auth::user()->id,
 			'updated_at'		=>new DateTime,
-		));
+		]);
 		
 		return Redirect::action('FieldController@index', $object_name)->with('field_id', $field_id);
 	}
@@ -305,9 +311,9 @@ class FieldController extends \BaseController {
 
 		//we're deleting the object's order_by field, so reset to default
 		if ($object->order_by == $field->name) {
-			DB::table(DB_OBJECTS)->where('name', $object_name)->update(array(
+			DB::table(DB_OBJECTS)->where('name', $object_name)->update([
 				'order_by' => 'precedence'
-			));
+			]);
 		}
 
 		DB::table(DB_FIELDS)->where('id', $field_id)->delete();
@@ -321,7 +327,7 @@ class FieldController extends \BaseController {
 		foreach ($fields as $field) {
 			list($garbage, $id) = explode('=', $field);
 			if (!empty($id)) {
-				DB::table(DB_FIELDS)->where('id', $id)->update(array('precedence'=>$precedence));
+				DB::table(DB_FIELDS)->where('id', $id)->update(['precedence'=>$precedence]);
 				$precedence++;
 			}
 		}
@@ -332,8 +338,8 @@ class FieldController extends \BaseController {
 	private static function organizeTable($object_name) {
 		//reorder actual table fields
 		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
-		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->whereNotIn('type', array('checkboxes', 'images'))->orderBy('precedence')->get();
-		$system = array('created_at', 'updated_at', 'updated_by', 'deleted_at', 'precedence');
+		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->whereNotIn('type', ['checkboxes', 'images'])->orderBy('precedence')->get();
+		$system = ['created_at', 'updated_at', 'updated_by', 'deleted_at', 'precedence'];
 
 		DB::unprepared('ALTER TABLE ' . $object->name . ' MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT FIRST');
 		$last = 'id';
@@ -343,7 +349,7 @@ class FieldController extends \BaseController {
 		}
 
 		//if there are non-system columns, reorder
-		DB::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN created_at DATETIME NOT NULL AFTER ' . $last);
+		DB::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN created_at DATETIME NOT NULL AFTER `' . $last . '`');
 		DB::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN updated_at DATETIME NOT NULL AFTER created_at');
 		DB::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN updated_by INT 			   AFTER updated_at');
 		DB::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN deleted_at DATETIME 		   AFTER updated_by');
@@ -369,7 +375,11 @@ class FieldController extends \BaseController {
 			case 'image':
 			case 'integer':
 			case 'select':
+			case 'user':
 				return 'INTEGER';
+
+			case 'money':
+				return 'DECIMAL(10,2)';
 
 			case 'slug':
 			case 'string':

@@ -47,7 +47,7 @@
 		@lang('avalon::messages.instances_empty', ['title'=>strtolower($object->title)])
 	</div>
 	@endif
-
+		
 @endsection
 
 @section('side')
