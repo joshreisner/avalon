@@ -1,25 +1,27 @@
 @extends('avalon::template')
 
 @section('title')
-	{{ Lang::get('avalon::messages.users') }}
+	@lang('avalon::messages.users')
 @endsection
 
 @section('main')
 
-	{{ Breadcrumbs::leave(array(
-		URL::action('ObjectController@index')=>Lang::get('avalon::messages.objects'),
-		Lang::get('avalon::messages.users'),
-		)) }}
+	{{ Breadcrumbs::leave([
+		URL::action('ObjectController@index')=>trans('avalon::messages.objects'),
+		trans('avalon::messages.users'),
+		]) }}
 
 	<div class="btn-group">
-		<a class="btn btn-default" id="create" href="{{ URL::action('UserController@create') }}"><i class="glyphicon glyphicon-plus"></i> {{ Lang::get('avalon::messages.users_create') }}</a>
+		<a class="btn btn-default" id="create" href="{{ URL::action('UserController@create') }}">
+			<i class="glyphicon glyphicon-plus"></i> 
+			@lang('avalon::messages.users_create')
+		</a>
 	</div>
 
 	{{ Table::rows($users)
-		->column('name', 'string', Lang::get('avalon::messages.users_name'))
-		->column('role', 'string', Lang::get('avalon::messages.users_role'))
-		->column('last_login', 'date-relative', Lang::get('avalon::messages.users_last_login'))
-		//->column('updated_at', 'updated_at', Lang::get('avalon::messages.site_updated_at'))
+		->column('name', 'string', trans('avalon::messages.users_name'))
+		->column('role', 'string', trans('avalon::messages.users_role'))
+		->column('last_login', 'date-relative', trans('avalon::messages.users_last_login'))
 		->deletable()
 		->draw()
 		}}
@@ -27,7 +29,7 @@
 @endsection
 
 @section('side')
-	<p>{{ Lang::get('avalon::messages.users_help') }}</p>
+	<p>@lang('avalon::messages.users_help')</p>
 @endsection
 
 @section('script')

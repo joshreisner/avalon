@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
 
 	'fields'					=> 'Fields',
 	'fields_create'				=> 'Create New Field',
@@ -64,6 +64,8 @@ return array(
 
 	'object'					=> 'Object',
 	'objects'					=> 'Objects',
+	'objects_can_create'		=> 'Users may create new instances',
+	'objects_can_edit'			=> 'Users may edit instances',
 	'objects_count'				=> 'Count',
 	'objects_create'			=> 'Create Object',
 	'objects_create_help'		=> 'This action will create a new table in the database.',
@@ -121,4 +123,4 @@ return array(
     'users_welcome_subject'		=> 'Avalon CMS Login Information',
     'users_welcome_message'		=> 'Welcome, you\'ve been added to the content management system. Click <a href=":link">this link</a> and log in with the following credentials:',
 
-);
+];

@@ -2,8 +2,8 @@
 
 class Table {
 
-	private static $rows		= array();
-	private static $columns		= array();
+	private static $rows		= [];
+	private static $columns		= [];
 	private static $deletable	= false;
 	private static $draggable	= false;
 	private static $grouped		= false;
@@ -11,7 +11,7 @@ class Table {
 
 	//add a column.  $trans is translation file key
 	public function column($key, $type, $head, $width=false, $height=false) {
-		self::$columns[] = array('key'=>$key, 'type'=>$type, 'head'=>$head, 'width'=>$width, 'height'=>$height);
+		self::$columns[] = ['key'=>$key, 'type'=>$type, 'head'=>$head, 'width'=>$width, 'height'=>$height];
 		return $this;
 	}
 
@@ -36,8 +36,8 @@ class Table {
 		if ($class) $class = ' ' . $class;
 		
 		//start up
-		if (self::$draggable) array_unshift(self::$columns, array('head'=>'', 'type'=>'draggy'));
-		if (self::$deletable) self::$columns[] = array('head'=>'', 'type'=>'delete');
+		if (self::$draggable) array_unshift(self::$columns, ['head'=>'', 'type'=>'draggy']);
+		if (self::$deletable) self::$columns[] = ['head'=>'', 'type'=>'delete'];
 		if (self::$grouped) $last_group = '';
 		$colspan = count(self::$columns);
 		$rowspan = count(self::$rows);
@@ -52,9 +52,9 @@ class Table {
 		$head = '<thead><tr>' . $columns . '</tr></thead>';
 
 		//build rows
-		$bodies = $rows = array();
+		$bodies = $rows = [];
 		foreach (self::$rows as $row) {
-			$columns = array();
+			$columns = [];
 			$link = true;
 			foreach (self::$columns as $column) {
 
@@ -63,7 +63,7 @@ class Table {
 					$last_group = $row->{self::$grouped};
 					if (count($rows)) $bodies[] = '<tbody>' . implode($rows) . '</tbody>';
 					$bodies[] = '<tr class="group"><td colspan=' . $colspan . '">' . $last_group . '</td></tr>';
-					$rows = array();
+					$rows = [];
 				}
 
 				//process value if necessary

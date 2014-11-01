@@ -142,8 +142,8 @@ class AvalonServiceProvider extends ServiceProvider {
 						)
 						->orderBy('object.name')
 						->get();
-		} catch (Exception $e) {
-			//todo return a helpful message here that doesn't interfere with migrations
+		} catch (\Exception $e) {
+			//database not installed, don't interfere with migrations
 			return false;
 		}
 

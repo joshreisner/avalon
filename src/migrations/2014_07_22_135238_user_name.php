@@ -12,7 +12,7 @@ class UserName extends Migration {
 	 */
 	public function up()
 	{
-		Schema::table('users', function($table){
+		Schema::table(DB_USERS, function($table){
 			$table->string('name');
 		});
 
@@ -22,7 +22,7 @@ class UserName extends Migration {
 			$user->save();
 		}
 
-		Schema::table('users', function($table){
+		Schema::table(DB_USERS, function($table){
 			$table->dropColumn('firstname');
 			$table->dropColumn('lastname');
 		});
@@ -37,7 +37,7 @@ class UserName extends Migration {
 	 */
 	public function down()
 	{
-		Schema::table('users', function($table){
+		Schema::table(DB_USERS, function($table){
 			$table->string('firstname');
 			$table->string('lastname');
 			$table->dropColumn('name');

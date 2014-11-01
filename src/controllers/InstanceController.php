@@ -74,11 +74,13 @@ class InstanceController extends \BaseController {
 		$instances = $instances->get();
 		
 		# Set Avalon URLs on each instance
-		foreach ($instances as &$instance) {
-			$instance->link = URL::action('InstanceController@edit', array($object->name, $instance->id, $linked_id));
-			$instance->delete = URL::action('InstanceController@delete', array($object->name, $instance->id));
+		if ($object->can_edit) {
+			foreach ($instances as &$instance) {
+				$instance->link = URL::action('InstanceController@edit', array($object->name, $instance->id, $linked_id));
+				$instance->delete = URL::action('InstanceController@delete', array($object->name, $instance->id));
+			}
 		}
-		
+
 		# If it's a nested object, nest-ify the resultset
 		if ($object->nested) {
 			$list = array();
@@ -577,9 +579,11 @@ class InstanceController extends \BaseController {
 			$table->column($field->name, $field->type, $field->title, $field->width, $field->height);
 		}
 		$table->column('updated_at', 'updated_at', trans('avalon::messages.site_updated_at'));
-		$table->deletable();
+		if ($object->can_edit) {
+			$table->deletable();
+			if ($object->order_by == 'precedence') $table->draggable(URL::action('InstanceController@reorder', $object->name));
+		}
 		if (!empty($object->group_by_field)) $table->groupBy('group');
-		if ($object->order_by == 'precedence') $table->draggable(URL::action('InstanceController@reorder', $object->name));
 		return $table->draw();
 	}
 

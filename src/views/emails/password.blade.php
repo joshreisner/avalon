@@ -1,1 +1,1 @@
-{{ Lang::get('avalon::messages.users_password_reset_email', array('link'=>$link)) }}
+@lang('avalon::messages.users_password_reset_email', ['link'=>$link])

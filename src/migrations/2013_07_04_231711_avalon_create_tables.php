@@ -11,7 +11,7 @@ class AvalonCreateTables extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create(Config::get('avalon::db_fields'), function($table){
+		Schema::create(DB_FIELDS, function($table){
 			$table->increments('id');
 			$table->integer('object_id');
 			$table->string('type');
@@ -29,7 +29,7 @@ class AvalonCreateTables extends Migration {
 			$table->integer('precedence');
 		});
 		
-		Schema::create(Config::get('avalon::db_files'), function($table){
+		Schema::create(DB_FILES, function($table){
 			$table->increments('id');
 			$table->integer('field_id');
 			$table->integer('instance_id')->nullable();
@@ -47,17 +47,17 @@ class AvalonCreateTables extends Migration {
 			$table->integer('precedence');
 		});
 
-		Schema::create(Config::get('avalon::db_object_links'), function($table){
+		Schema::create(DB_OBJECT_LINKS, function($table){
 			$table->integer('object_id');
 			$table->integer('linked_id');
 		});
 		
-		Schema::create(Config::get('avalon::db_object_user'), function($table){
+		Schema::create(DB_OBJECT_USER, function($table){
 			$table->integer('object_id');
 			$table->integer('user_id');
 		});
 
-		Schema::create(Config::get('avalon::db_objects'), function($table){
+		Schema::create(DB_OBJECTS, function($table){
 			$table->increments('id');
 			$table->string('title');
 			$table->string('name');
@@ -75,7 +75,7 @@ class AvalonCreateTables extends Migration {
 			$table->integer('updated_by');
 		});
 		
-		Schema::create(Config::get('avalon::db_users'), function($table){
+		Schema::create(DB_USERS, function($table){
 			$table->increments('id');
 			$table->string('firstname');
 			$table->string('lastname');
@@ -99,12 +99,12 @@ class AvalonCreateTables extends Migration {
 	 */
 	public function down()
 	{
-		Schema::dropIfExists(Config::get('avalon::db_fields'));
-		Schema::dropIfExists(Config::get('avalon::db_files'));
-		Schema::dropIfExists(Config::get('avalon::db_object_links'));
-		Schema::dropIfExists(Config::get('avalon::db_object_user'));
-		Schema::dropIfExists(Config::get('avalon::db_objects'));
-		Schema::dropIfExists(Config::get('avalon::db_users'));
+		Schema::dropIfExists(DB_FIELDS);
+		Schema::dropIfExists(DB_FILES);
+		Schema::dropIfExists(DB_OBJECT_LINKS);
+		Schema::dropIfExists(DB_OBJECT_USER);
+		Schema::dropIfExists(DB_OBJECTS);
+		Schema::dropIfExists(DB_USERS);
 	}
 
 }

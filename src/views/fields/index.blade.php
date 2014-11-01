@@ -1,39 +1,39 @@
 @extends('avalon::template')
 
 @section('title')
-	{{ Lang::get('avalon::messages.fields') }}
+	@lang('avalon::messages.fields')
 @endsection
 
 @section('main')
 
-	{{ Breadcrumbs::leave(array(
-		URL::action('ObjectController@index')=>Lang::get('avalon::messages.objects'),
+	{{ Breadcrumbs::leave([
+		URL::action('ObjectController@index')=>trans('avalon::messages.objects'),
 		URL::action('InstanceController@index', $object->name)=>$object->title,
-		Lang::get('avalon::messages.fields'),
-		)) }}
+		trans('avalon::messages.fields'),
+		]) }}
 
 	<div class="btn-group">
-		<a class="btn btn-default" id="create" href="{{ URL::action('FieldController@create', $object->name) }}"><i class="glyphicon glyphicon-plus"></i> {{ Lang::get('avalon::messages.fields_create') }}</a>
+		<a class="btn btn-default" id="create" href="{{ URL::action('FieldController@create', $object->name) }}"><i class="glyphicon glyphicon-plus"></i> {{ trans('avalon::messages.fields_create') }}</a>
 	</div>
 
 	@if (count($fields))
 		{{ Table::rows($fields)
 			->draggable(URL::action('FieldController@reorder', $object->name))
-			->column('title', 'string', Lang::get('avalon::messages.fields_title'))
-			->column('type', 'string', Lang::get('avalon::messages.fields_type'))
-			->column('updated_at', 'updated_at', Lang::get('avalon::messages.site_updated_at'))
+			->column('title', 'string', trans('avalon::messages.fields_title'))
+			->column('type', 'string', trans('avalon::messages.fields_type'))
+			->column('updated_at', 'updated_at', trans('avalon::messages.site_updated_at'))
 			->draw('fields')
 			}}
 	@else
 	<div class="alert alert-warning">
-		{{ Lang::get('avalon::messages.fields_empty') }}
+		@lang('avalon::messages.fields_empty')
 	</div>
 	@endif
 
 @endsection
 
 @section('side')
-	<p>{{ Lang::get('avalon::messages.fields_list_help', array('title'=>$object->title)) }}</p>
+	<p>@lang('avalon::messages.fields_list_help', ['title'=>$object->title])</p>
 @endsection
 
 @section('script')

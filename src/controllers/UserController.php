@@ -10,7 +10,7 @@ class UserController extends \BaseController {
 	
 	//show a list of users
 	public function index() {
-		$users = DB::table(DB_USERS)->orderBy('name')->get();
+		$users = DB::table(DB_USERS)->whereIn('role', array_keys(self::$roles))->orderBy('name')->get();
 		
 		foreach ($users as &$user) {
 			$user->role = self::$roles[$user->role];
@@ -121,7 +121,7 @@ class UserController extends \BaseController {
 			'link'=>URL::route('home'),
 			), function($message) use ($email) 
 		{
-			$message->to($email)->subject(Lang::get('avalon::messages.users_welcome_subject'));
+			$message->to($email)->subject(trans('avalon::messages.users_welcome_subject'));
 		});		
 	}
 }
