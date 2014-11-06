@@ -25,11 +25,11 @@ class InstanceController extends \BaseController {
 		foreach ($fields as $field) {
 			if ($field->type == 'checkboxes') {
 				$related_object = self::getRelatedObject($field->related_object_id);
-				$selects[] = DB::raw('(SELECT GROUP_CONCAT(' . $related_object->name . '.' . $related_object->field->name . ' SEPARATOR ", ") 
+				$instances->addSelect(DB::raw('(SELECT GROUP_CONCAT(' . $related_object->name . '.' . $related_object->field->name . ' SEPARATOR ", ") 
 					FROM ' . $related_object->name . ' 
 					JOIN ' . $field->name . ' ON ' . $related_object->name . '.id = ' . $field->name . '.' . self::getKey($related_object->name) . '
 					WHERE ' . $field->name . '.' . self::getKey($object->name) . ' = ' . $object->name . '.id 
-					ORDER BY ' . $related_object->name . '.' . $related_object->field->name . ') AS ' . $field->name);
+					ORDER BY ' . $related_object->name . '.' . $related_object->field->name . ') AS ' . $field->name));
 			} elseif ($field->type == 'image') {
 				$instances
 					->leftJoin(DB_FILES, $object->name . '.' . $field->name, '=', DB_FILES . '.id')
