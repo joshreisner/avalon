@@ -172,7 +172,7 @@ class FieldController extends \BaseController {
 						if ($required) {
 							$table->decimal($field_name, 10, 2);
 						} else {
-							$table->integer($field_name, 10, 2)->nullable();
+							$table->decimal($field_name, 10, 2)->nullable();
 						}
 						break;
 
