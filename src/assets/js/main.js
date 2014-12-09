@@ -9,7 +9,7 @@
 //= include ../../../bower_components/bootstrap3-typeahead/bootstrap3-typeahead.js
 //= include ../../../bower_components/JSColor/jscolor.js
 //= include ../../../bower_components/jquery-file-upload/js/jquery.fileupload.js
-//= include ../redactor926/redactor/redactor.js
+//= include ../redactor1005/redactor/redactor.js
 
 $(function() {
 
@@ -154,8 +154,20 @@ $(function() {
 	};*/
 
 	$('textarea.html').redactor({
-		minHeight: 200,
-		maxHeight: 500
+		buttonSource: true,
+		minHeight: 240,
+		maxHeight: 500,
+		removeAttr:  [
+			['a', 'style'],
+			['blockquote', 'style'],
+			['em', 'style'],
+			['p', 'style'],
+			['span', 'style'],
+			['strong', 'style']
+    	],
+    	initCallback: function() {
+    		//console.log(this.code.get());
+    	}
 		//, plugins: ['advanced']
 	});
 
