@@ -161,7 +161,8 @@ $(function() {
 			['a', 'style'],
 			['blockquote', 'style'],
 			['em', 'style'],
-			['p', 'style'],
+			['hr', ['style', 'id']],
+			//['p', 'style'],
 			['span', 'style'],
 			['strong', 'style']
     	],
