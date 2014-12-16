@@ -9,7 +9,7 @@ class InstanceController extends \BaseController {
 	# $group_by_id is for when coming from a linked object
 	public function index($object_name, $linked_id=false) {
 
-		# Get more info about the object
+		# Get info about the object
 		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
 		$fields = DB::table(DB_FIELDS)
 			->where('object_id', $object->id)
@@ -77,7 +77,7 @@ class InstanceController extends \BaseController {
 		# Set the order and direction
 		$instances->orderBy($object->name . '.' . $object->order_by, $object->direction);
 
-		# Run query and save
+		# Run query and save it to a variable
 		$instances = $instances->get();
 		
 		# Set Avalon URLs on each instance
@@ -104,11 +104,7 @@ class InstanceController extends \BaseController {
 			$instances = $list;
 		}
 
-		$return = array(
-			'object'=>$object, 
-			'fields'=>$fields, 
-			'instances'=>$instances,
-		);
+		$return = compact('object', 'fields', 'instances');
 
 		# Return array to edit()
 		if ($linked_id) {
@@ -126,6 +122,15 @@ class InstanceController extends \BaseController {
 		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->orderBy('precedence')->get();
 		$options = array();
 		
+		# Add return var to the queue
+		if ($linked_id) {
+			$return_to = action('InstanceController@edit', [self::getRelatedObjectName($object), $linked_id]);
+		} elseif (URL::previous()) {
+			$return_to = URL::previous();
+		} else {
+			$return_to = action('InstanceController@index', $object->name);
+		}
+
 		foreach ($fields as $field) {
 			if (($field->type == 'checkboxes') || ($field->type == 'select')) {
 
@@ -168,11 +173,7 @@ class InstanceController extends \BaseController {
 			}
 		}
 
-		return View::make('avalon::instances.create', array(
-			'object'=>$object, 
-			'fields'=>$fields,
-			'linked_id'=>$linked_id,
-		));
+		return View::make('avalon::instances.create', compact('object', 'fields', 'linked_id', 'return_to'));
 	}
 
 	//save a new object instance to the database
@@ -234,27 +235,25 @@ class InstanceController extends \BaseController {
 
 		FileController::cleanup();
 		
-		//if there's a manual return string specified, go there
-		if (Input::has('return_to')) return Redirect::to(Input::get('return_to'));
-
-		//otherwise, if we're coming from a related object, go there
-		if ($linked_id) {
-			$related_object_name = DB::table(DB_FIELDS)
-				->join(DB_OBJECTS, DB_FIELDS . '.related_object_id', '=', DB_OBJECTS . '.id')
-				->where(DB_FIELDS . '.id', $object->group_by_field)
-				->pluck(DB_OBJECTS . '.name');
-			return Redirect::action('InstanceController@edit', array($related_object_name, $linked_id))->with('instance_id', $instance_id);
-		}
-
-		//otherwise, return to instance index
-		return Redirect::action('InstanceController@index', $object->name)->with('instance_id', $instance_id);
+		return Redirect::to(Input::get('return_to'));
 	}
 	
 	//show edit form
 	public function edit($object_name, $instance_id, $linked_id=false) {
+
+		# Get object / field / whatever infoz
 		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
 		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->orderBy('precedence')->get();
 		$instance = DB::table($object->name)->where('id', $instance_id)->first();
+
+		# Add return var to the queue
+		if ($linked_id) {
+			$return_to = action('InstanceController@edit', [self::getRelatedObjectName($object), $linked_id]);
+		} elseif (URL::previous()) {
+			$return_to = URL::previous();
+		} else {
+			$return_to = action('InstanceController@index', $object->name);
+		}
 
 		//format instance values for form
 		foreach ($fields as &$field) {
@@ -341,13 +340,7 @@ class InstanceController extends \BaseController {
 			$link = self::index($link, $instance_id, $linked_id);
 		}
 
-		return View::make('avalon::instances.edit', array(
-			'object'=>$object,
-			'fields'=>$fields,
-			'instance'=>$instance,
-			'links'=>$links,
-			'linked_id'=>$linked_id,
-		));
+		return View::make('avalon::instances.edit', compact('object', 'fields', 'instance', 'links', 'linked_id', 'return_to'));
 	}
 	
 	//save edits to database
@@ -427,26 +420,13 @@ class InstanceController extends \BaseController {
 		DB::table($object->name)->where('id', $instance_id)->update($updates);
 		
 		//update object meta
-		DB::table(DB_OBJECTS)->where('id', $object->id)->update(array(
+		DB::table(DB_OBJECTS)->where('id', $object->id)->update([
 			'count'=>DB::table($object->name)->whereNull('deleted_at')->count(),
 			'updated_at'=>new DateTime,
 			'updated_by'=>Auth::user()->id
-		));
+		]);
 		
-		//if there's a manual return string specified, go there
-		if (Input::has('return_to')) return Redirect::to(Input::get('return_to'));
-
-		//otherwise, if we're coming from a related object, go there
-		if ($linked_id) {
-			$related_object_name = DB::table(DB_FIELDS)
-				->join(DB_OBJECTS, DB_FIELDS . '.related_object_id', '=', DB_OBJECTS . '.id')
-				->where(DB_FIELDS . '.id', $object->group_by_field)
-				->pluck(DB_OBJECTS . '.name');
-			return Redirect::action('InstanceController@edit', array($related_object_name, $linked_id))->with('instance_id', $instance_id);
-		}
-
-		//otherwise, return to instance index
-		return Redirect::action('InstanceController@index', $object->name);
+		return Redirect::to(Input::get('return_to'));
 	}
 	
 	# Remove object from db - todo check key/constraints
@@ -455,11 +435,11 @@ class InstanceController extends \BaseController {
 		DB::table($object->name)->where('id', $instance_id)->delete();
 
 		//update object meta
-		DB::table(DB_OBJECTS)->where('id', $object->id)->update(array(
+		DB::table(DB_OBJECTS)->where('id', $object->id)->update([
 			'count'=>DB::table($object->name)->whereNull('deleted_at')->count(),
-		));
+		]);
 
-		return Redirect::action('InstanceController@index', $object->name);
+		return Redirect::to(Input::get('return_to'));
 	}
 	
 	# Reorder fields by drag-and-drop
@@ -480,14 +460,14 @@ class InstanceController extends \BaseController {
 			$precedence = 1;
 			foreach ($instance_ids as $instance_id) {
 				if (!empty($instance_id)) {
-					DB::table($object->name)->where('id', $instance_id)->update(array('precedence'=>$precedence++));
+					DB::table($object->name)->where('id', $instance_id)->update(['precedence'=>$precedence++]);
 				}
 			}
 			if (Input::has('id') && Input::has('parent_id')) {
-				DB::table($object->name)->where('id', Input::get('id'))->update(array(
+				DB::table($object->name)->where('id', Input::get('id'))->update([
 					'parent_id'=>Input::get('parent_id'),
 					//updated_at, updated_by?
-				));
+				]);
 			}
 			return 'done reordering nested';
 		} else {
@@ -496,7 +476,7 @@ class InstanceController extends \BaseController {
 			foreach ($instances as $instance) {
 				list($garbage, $instance_id) = explode('=', $instance);
 				if (!empty($instance_id)) {
-					DB::table($object->name)->where('id', $instance_id)->update(array('precedence'=>$precedence++));
+					DB::table($object->name)->where('id', $instance_id)->update(['precedence'=>$precedence++]);
 				}
 			}
 			return 'done reordering ' . Input::get('order')  . ' instances, linear';
@@ -581,6 +561,14 @@ class InstanceController extends \BaseController {
 		$related = DB::table(DB_OBJECTS)->where('id', $related_object_id)->first();
 		$related->field = DB::table(DB_FIELDS)->where('object_id', $related_object_id)->where('type', 'string')->first();
 		return $related;
+	}
+
+	# Get related object's name with an object
+	private static function getRelatedObjectName($object) {
+		return DB::table(DB_FIELDS)
+			->join(DB_OBJECTS, DB_FIELDS . '.related_object_id', '=', DB_OBJECTS . '.id')
+			->where(DB_FIELDS . '.id', $object->group_by_field)
+			->pluck(DB_OBJECTS . '.name');
 	}
 
 	# Draw an instance table, used both by index and by edit > linked

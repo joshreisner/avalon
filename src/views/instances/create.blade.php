@@ -14,9 +14,7 @@
 
 	{{ Form::open(['class'=>'form-horizontal', 'url'=>URL::action('InstanceController@store', [$object->name, $linked_id])]) }}
 	
-	@if (Input::has('return_to'))
-		{{ Form::hidden('return_to', Input::get('return_to')) }}
-	@endif
+	{{ Form::hidden('return_to', $return_to) }}
 
 	@foreach ($fields as $field)
 		@if ($linked_id && $field->id == $object->group_by_field)
@@ -96,7 +94,7 @@
 	<div class="form-group">
 		<div class="col-sm-10 col-sm-offset-2">
 			{{ Form::submit(trans('avalon::messages.site_save'), ['class'=>'btn btn-primary']) }}
-			{{ HTML::link(URL::action('InstanceController@index', $object->name), trans('avalon::messages.site_cancel'), ['class'=>'btn btn-default']) }}
+			{{ HTML::link($return_to, trans('avalon::messages.site_cancel'), ['class'=>'btn btn-default']) }}
 		</div>
 	</div>
 

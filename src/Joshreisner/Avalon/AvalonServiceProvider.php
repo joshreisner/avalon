@@ -43,7 +43,8 @@ class AvalonServiceProvider extends ServiceProvider {
 	{
 		$this->package('joshreisner/avalon');
 		
-		//capture last activity -- too expensive?
+		//capture last activity via updating on every page request
+		//too expensive, processing-wise?
 		App::before(function() {
 			if ($user = Auth::user()) {
 				$user->last_login = new DateTime;

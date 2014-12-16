@@ -14,9 +14,7 @@
 
 	{{ Form::open(['class'=>'form-horizontal ' . $object->name, 'url'=>URL::action('InstanceController@update', [$object->name, $instance->id, $linked_id]), 'method'=>'put']) }}
 	
-	@if (Input::has('return_to'))
-		{{ Form::hidden('return_to', Input::get('return_to')) }}
-	@endif
+		{{ Form::hidden('return_to', $return_to) }}
 
 	@foreach ($fields as $field)
 		{{--
@@ -103,11 +101,7 @@
 	<div class="form-group">
 		<div class="col-sm-10 col-sm-offset-2">
 			{{ Form::submit(trans('avalon::messages.site_save'), ['class'=>'btn btn-primary']) }}
-			@if (Input::has('return_to'))
-			{{ HTML::link(Input::get('return_to'), trans('avalon::messages.site_cancel'), ['class'=>'btn btn-default']) }}
-			@else
-			{{ HTML::link(URL::action('InstanceController@index', $object->name), trans('avalon::messages.site_cancel'), ['class'=>'btn btn-default']) }}
-			@endif
+			{{ HTML::link($return_to, trans('avalon::messages.site_cancel'), ['class'=>'btn btn-default']) }}
 		</div>
 	</div>
 
@@ -138,7 +132,8 @@
 	@endif
 
 	{{ Form::open(['method'=>'delete', 'action'=>['InstanceController@destroy', $object->name, $instance->id]]) }}
-	<button type="submit" class="btn btn-default btn-xs">@lang('avalon::messages.instances_destroy')</button>
+		{{ Form::hidden('return_to', $return_to) }}
+		{{ Form::submit(trans('avalon::messages.instances_destroy'), ['class'=>'btn btn-default btn-xs']) }}
 	{{ Form::close() }}
 
 @endsection
