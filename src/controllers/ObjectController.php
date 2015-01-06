@@ -86,7 +86,8 @@ class ObjectController extends \BaseController {
 			$table->increments('id');
 			$table->string('title');
 			$table->timestamps();
-			$table->integer('updated_by')->nullable();
+			$table->integer('created_by');
+			$table->integer('updated_by');
 			$table->softDeletes();
 			$table->integer('precedence');
 		});
@@ -170,6 +171,7 @@ class ObjectController extends \BaseController {
 			'order_by'			=> $order_by,
 			'direction'			=> $direction,
 			'singleton'			=> Input::has('singleton') ? 1 : 0,
+			'can_see'			=> Input::has('can_see') ? 1 : 0,
 			'can_create'		=> Input::has('can_create') ? 1 : 0,
 			'can_edit'			=> Input::has('can_edit') ? 1 : 0,
 			'list_grouping'		=> Input::get('list_grouping'),

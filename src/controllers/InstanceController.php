@@ -185,6 +185,7 @@ class InstanceController extends \BaseController {
 		$inserts = array(
 			'created_at'=>new DateTime,
 			'updated_at'=>new DateTime,
+			'created_by'=>Auth::user()->id,
 			'updated_by'=>Auth::user()->id,
 			'precedence'=>DB::table($object->name)->max('precedence') + 1
 		);

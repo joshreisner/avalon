@@ -68,6 +68,7 @@ return [
 	'objects'					=> 'Objects',
 	'objects_can_create'		=> 'Users may create new instances',
 	'objects_can_edit'			=> 'Users may edit instances',
+	'objects_can_see'			=> 'Object is visible to users',
 	'objects_count'				=> 'Count',
 	'objects_create'			=> 'Create Object',
 	'objects_create_help'		=> 'This action will create a new table in the database.',

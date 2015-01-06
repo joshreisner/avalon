@@ -248,11 +248,20 @@ class AvalonServiceProvider extends ServiceProvider {
 					parent::boot();
 			        static::creating(function($object) {
 						$object->precedence = DB::table(\'' . $object['name'] . '\')->max(\'precedence\') + 1;
+						$object->created_by = Auth::id();
 						$object->updated_by = Auth::id();
 			        });
 			        static::updating(function($object) {
 						$object->updated_by = Auth::id();
 			        });
+				}
+
+				public function creator() {
+					return $this->belongsTo(\'User\', \'created_by\');
+				}
+
+				public function updater() {
+					return $this->belongsTo(\'User\', \'updated_by\');
 				}
 
 				' . implode(' ', $object['relationships']) . '
