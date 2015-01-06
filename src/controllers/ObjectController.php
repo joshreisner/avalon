@@ -107,7 +107,8 @@ class ObjectController extends \BaseController {
 			trans('avalon::messages.fields_system')=>[
 				'id'=>trans('avalon::messages.fields_id'),
 				'precedence'=>trans('avalon::messages.fields_precedence'),
-				'created_at'=>trans('avalon::messages.fields_updated_at'),
+				'created_at'=>trans('avalon::messages.fields_created_at'),
+				'updated_at'=>trans('avalon::messages.fields_updated_at'),
 			],
 			trans('avalon::messages.fields_user')=>$order_by,
 		];

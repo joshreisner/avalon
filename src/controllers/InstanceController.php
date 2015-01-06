@@ -560,7 +560,7 @@ class InstanceController extends \BaseController {
 	# Get related object with the first string field name
 	private static function getRelatedObject($related_object_id) {
 		$related = DB::table(DB_OBJECTS)->where('id', $related_object_id)->first();
-		$related->field = DB::table(DB_FIELDS)->where('object_id', $related_object_id)->where('type', 'string')->first();
+		$related->field = DB::table(DB_FIELDS)->where('object_id', $related_object_id)->whereIn('type', ['string', 'text'])->first();
 		return $related;
 	}
 
