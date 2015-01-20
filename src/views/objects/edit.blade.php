@@ -41,6 +41,13 @@
 			{{ Form::text('model', $object->model, ['class'=>'required form-control']) }}
 	    </div>
 	</div>
+		
+	<div class="form-group">
+		{{ Form::label('url', trans('avalon::messages.objects_url'), ['class'=>'control-label col-sm-2']) }}
+	    <div class="col-sm-10">
+			{{ Form::text('url', $object->url, ['class'=>'required form-control']) }}
+	    </div>
+	</div>
 			
 	<div class="form-group">
 		{{ Form::label('order_by', trans('avalon::messages.objects_order_by'), ['class'=>'control-label col-sm-2']) }}

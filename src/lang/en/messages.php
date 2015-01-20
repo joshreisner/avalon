@@ -21,6 +21,7 @@ return [
 	'fields_related_object'		=> 'Related Object',
 	'fields_slug_help'			=> 'eg about-us',
 	'fields_required'			=> 'Required',
+	'fields_slug'				=> 'Slug',
 	'fields_system'				=> 'System Fields',
 	'fields_type'				=> 'Type',
 
@@ -76,7 +77,7 @@ return [
 	'objects_destroy'			=> 'Destroy Object',
 	'objects_direction'			=> 'Direction',
 	'objects_edit'				=> 'Settings',
-	'objects_edit_help'			=> 'Use this page to edit the properties of the :title object.',
+	'objects_edit_help'			=> 'Use this page to edit the properties of the :title object.<br><br>URL is everything that precedes the slug. If present, it should be, or end in, a /.',
 	'objects_empty'				=> 'No objects have been added yet.',
 	'objects_form_help'			=> 'Form Help',
 	'objects_group_by'			=> 'Group By',
@@ -90,6 +91,7 @@ return [
 	'objects_singleton'			=> 'Singleton',
 	'objects_title'				=> 'Title',
 	'objects_title_help'		=> 'Make this plural, please.',
+	'objects_url'				=> 'URL',
 
     'site_cancel'				=> 'Cancel',
 	'site_install'				=> 'Install',

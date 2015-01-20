@@ -179,7 +179,7 @@ class InstanceController extends \BaseController {
 	//save a new object instance to the database
 	public function store($object_name, $linked_id=false) {
 		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
-		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->get();
+		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->orderBy('precedence')->get();
 		
 		//metadata
 		$inserts = array(
@@ -197,15 +197,22 @@ class InstanceController extends \BaseController {
 			}
 		}
 
+		//determine where slug is coming from
+		if ($slug_source = Slug::source($object->id)) {
+			$slug_source = Input::get($slug_from);
+		} else {
+			$slug_source = date('Y-m-d');
+		}
+
+		//get other values to check uniqueness
+		$uniques = DB::table($object->name)->lists('slug');
+
+		//add unique, formatted slug to the insert batch
+		$inserts['slug'] = Slug::make($slug_source, $uniques);
+
+		//run insert
 		$instance_id = DB::table($object->name)->insertGetId($inserts);
 		
-		//update objects table with latest counts
-		DB::table(DB_OBJECTS)->where('id', $object->id)->update(array(
-			'count'=>DB::table($object->name)->whereNull('deleted_at')->count(),
-			'updated_at'=>new DateTime,
-			'updated_by'=>Auth::user()->id
-		));
-
 		//handle any checkboxes, had to wait for instance_id
 		foreach ($fields as $field) {
 			if ($field->type == 'checkboxes') {
@@ -234,8 +241,17 @@ class InstanceController extends \BaseController {
 			}
 		}
 
+		//update objects table with latest counts
+		DB::table(DB_OBJECTS)->where('id', $object->id)->update(array(
+			'count'=>DB::table($object->name)->whereNull('deleted_at')->count(),
+			'updated_at'=>new DateTime,
+			'updated_by'=>Auth::user()->id
+		));
+
+		//clean up any abandoned files
 		FileController::cleanup();
-		
+
+		//return to target		
 		return Redirect::to(Input::get('return_to'));
 	}
 	
@@ -415,11 +431,23 @@ class InstanceController extends \BaseController {
 				$updates[$field->name] = self::sanitize($field);
 			}
 		}
-		
-		FileController::cleanup();
 
+		//slug
+		if (!empty($object->url)) {
+			$uniques = DB::table($object->name)->where('id', '<>', $instance_id)->lists('slug');
+			$updates['slug'] = Slug::make(Input::get('slug'), $uniques);
+		}
+		/* //todo manage a redirect table if client demand warrants it
+		$old_slug = DB::table($object->name)->find($instance_id)->pluck('slug');
+		if ($updates['slug'] != $old_slug) {
+		}*/
+		
+		//run update
 		DB::table($object->name)->where('id', $instance_id)->update($updates);
 		
+		//clean up abandoned files
+		FileController::cleanup();
+
 		//update object meta
 		DB::table(DB_OBJECTS)->where('id', $object->id)->update([
 			'count'=>DB::table($object->name)->whereNull('deleted_at')->count(),

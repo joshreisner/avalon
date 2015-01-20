@@ -98,6 +98,19 @@
 		</div>
 	@endforeach
 	
+	@if (!empty($object->url))
+		<div class="form-group field-slug">
+			<label class="control-label col-sm-2">Location</label>
+			<div class="col-sm-10">
+				<div class="input-group">
+					<span class="input-group-addon">{{ url($object->url) }}/</span>
+					<input type="text" name="slug" class="form-control slug" value="{{ $instance->slug }}">
+					<span class="input-group-addon"><a href="{{ $object->url }}{{ $instance->slug }}" target="_blank"><i class="glyphicon glyphicon-new-window"></i></a></span>
+				</div>
+			</div>
+		</div>
+	@endif
+
 	<div class="form-group">
 		<div class="col-sm-10 col-sm-offset-2">
 			{{ Form::submit(trans('avalon::messages.site_save'), ['class'=>'btn btn-primary']) }}

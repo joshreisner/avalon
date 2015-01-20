@@ -28,7 +28,7 @@ $(function() {
 	});
 
 	//autoselect first text element that's not a color (jscolor gets messed up when autoselected)
-	$('form input[type=text]:not(.color)').first().focus();
+	$('form input[type=text]:not(.color,.slug)').first().focus();
 
 	//datetimepickers
 	$('.input-group.datetime').datetimepicker();
@@ -173,12 +173,12 @@ $(function() {
 	});
 
 
-	//slug fields
+	//slug fields -- todo improve
 	$("input.slug").each(function() {
 		$(this).on('keyup', function() {
 			var val = $(this).val();
 			val = val.toLowerCase().replace(/ /g, '-').replace(/\-\-/g, '-').replace(/[^a-z0-9\-]/g, '');
-			$(this).val(val);
+			if ($(this).val() != val) $(this).val(val);
 		});	
 	});
 

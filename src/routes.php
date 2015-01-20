@@ -58,6 +58,22 @@ Route::group(array('prefix'=>Config::get('avalon::route_prefix')), function(){
 
 			# Todo delete
 			Route::get('/image/test', 'FileController@test');
+			Route::get('/slug/test', function(){
+				$phrases = [
+					'',
+					'and',
+					'this is a normal test',
+					'this is a really really really long test because it\'s amazing and great and am i at 50 YET???',
+				];
+				foreach ($phrases as $phrase) {
+					echo '<p>' . $phrase . ' becomes <em>' . Slug::make($phrase, ['', 'normal-test', 'normal-test-1']) . '</em></p>';
+				}
+			});
+			Route::get('/slug/object/{object_id}', function($object_id){
+				$object = DB::table(DB_OBJECTS)->find($object_id);
+				Slug::setForObject($object);
+				die('object was ' . $object->name);
+			});
 			
 			# Complex instance routing, optionally with linked_id for related objects
 			Route::get('/{object_name}', 'InstanceController@index');

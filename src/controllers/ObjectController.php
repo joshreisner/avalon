@@ -85,6 +85,7 @@ class ObjectController extends \BaseController {
 		Schema::create($name, function($table){
 			$table->increments('id');
 			$table->string('title');
+			$table->string('slug');
 			$table->timestamps();
 			$table->integer('created_by');
 			$table->integer('updated_by');
@@ -106,6 +107,7 @@ class ObjectController extends \BaseController {
 		$order_by = [
 			trans('avalon::messages.fields_system')=>[
 				'id'=>trans('avalon::messages.fields_id'),
+				'slug'=>trans('avalon::messages.fields_slug'),
 				'precedence'=>trans('avalon::messages.fields_precedence'),
 				'created_at'=>trans('avalon::messages.fields_created_at'),
 				'updated_at'=>trans('avalon::messages.fields_updated_at'),
@@ -169,6 +171,7 @@ class ObjectController extends \BaseController {
 			'title'				=> Input::get('title'),
 			'name'				=> $new_name,
 			'model'				=> Input::get('model'),
+			'url'				=> Input::get('url'),
 			'order_by'			=> $order_by,
 			'direction'			=> $direction,
 			'singleton'			=> Input::has('singleton') ? 1 : 0,
