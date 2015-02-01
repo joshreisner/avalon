@@ -17,7 +17,6 @@ body.login
 	div.modal
 		border-radius: $modal-radius
 		border: 0
-		top: 25%
 		div.modal-content
 			border-radius: $modal-radius
 			div.modal-header
@@ -31,15 +30,6 @@ body.login
 				margin-top: 0
 				border-radius: 0 0 $modal-radius $modal-radius
 				background-color: $gray-lightest
-
-	a.github
-		display: block
-		width: 149px
-		height: 149px
-		position: absolute
-		top: 0
-		right: 0
-		background-image: url(https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png)
 
 h1, h2, h3, h4, h5, h6
 	font-family: inherit
@@ -372,3 +362,5 @@ form
 			margin-top: 60px
 			border-left: 2px dashed $gray-medium
 			border-top: none
+	body.login div.modal
+		top: 25%

@@ -23,7 +23,16 @@ class Slug {
 
 	private static $separator = '-';
 
-	public static function make($string, $uniques=[]) {
+	public static function make($string, $table=[], $exclude_id=0, $column='slug') {
+
+		# $table can be array
+		if (is_array($table)) {
+			$uniques = array_values($table);
+		} else {
+			$uniques = DB::table($table)->where('id', '<>', $exclude_id)->lists($column);
+			if (empty($uniques)) $uniques = [];
+		}
+
 
 		# Convert string into array of url-friendly words
 		$words = explode('-', Str::slug($string, '-'));

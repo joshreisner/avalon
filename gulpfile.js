@@ -21,10 +21,7 @@ gulp.task('main-css', function(){
 		.pipe(minifyCSS({keepSpecialComments:0}))
         .pipe(rename({suffix: '.min'}))
 		.pipe(gulp.dest(outputDir + '/css'))
-	    .pipe(shell([
-			'cd /Users/joshreisner/Sites/writers-center; php artisan asset:publish --bench=joshreisner/avalon',
-	    ]))
-	    .pipe(notify('published'));
+	    .pipe(notify('compiled'));
 });
 
 gulp.task('main-js', function(){
@@ -34,10 +31,7 @@ gulp.task('main-js', function(){
 		.on('error', handleJsError)		
         .pipe(rename({suffix: '.min'}))
 		.pipe(gulp.dest(outputDir + '/js'))
-	    .pipe(shell([
-			'cd /Users/joshreisner/Sites/writers-center; php artisan asset:publish --bench=joshreisner/avalon',
-	    ]))
-	    .pipe(notify('published'));
+	    .pipe(notify('compiled'));
 });
 
 gulp.task('watch', function(){
