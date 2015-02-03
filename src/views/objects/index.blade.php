@@ -17,6 +17,10 @@
 			@lang('avalon::messages.users')
 		</a>
 		@if (Auth::user()->role < 2)
+		<a class="btn btn-default" href="{{ URL::action('ImportController@index') }}">
+			<i class="glyphicon glyphicon-list-alt"></i>
+			@lang('avalon::messages.import')
+		</a>
 		<a class="btn btn-default" href="{{ URL::action('ObjectController@create') }}">
 			<i class="glyphicon glyphicon-plus"></i>
 			@lang('avalon::messages.objects_create')

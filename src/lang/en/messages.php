@@ -59,6 +59,11 @@ return [
 	'fields_visibility_hidden'	=> 'Hidden',
 	'fields_width'				=> 'Width',
 
+	'import'					=> 'Import',
+	'import_table'				=> 'Table',
+	'import_rows'				=> 'Rows',
+	'import_size'				=> 'Size',
+
 	'instances_create'			=> 'Create',
 	'instances_destroy'			=> 'Delete Forever',
 	'instances_edit'			=> 'Edit',

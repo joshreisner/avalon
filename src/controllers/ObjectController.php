@@ -197,30 +197,6 @@ class ObjectController extends \BaseController {
 		return Redirect::route('home');
 	}
 
-	//test
-	public function tables() {
-		
-		//get all tables in database
-		$tables = self::getTables();
-
-		//remove the objects
-		$tables = array_diff($tables, DB::table(DB_OBJECTS)->lists('name'));
-
-		//remove the linking tables
-		$tables = array_diff($tables, DB::table(DB_FIELDS)->where('type', 'checkboxes')->lists('name'));
-
-		//remove the avalon system tables
-		$tables = array_diff($tables, [DB_FIELDS, DB_FILES, DB_OBJECT_LINKS, DB_OBJECT_USER, DB_OBJECTS, DB_USERS]);
-
-		//remove avalon paths
-		$tables = array_diff($tables, ['create', 'logout']);
-		
-		//remove the laravel system tables
-		$tables = array_diff($tables, ['migrations']);
-
-		dd($tables);
-	}
-
 	//for list_grouping typeaheads
 	private static function getGroupings() {
 		$groupings = DB::table(DB_OBJECTS)->where('list_grouping', '<>', '')->distinct()->orderBy('list_grouping')->lists('list_grouping');
@@ -228,13 +204,18 @@ class ObjectController extends \BaseController {
 		return '[' . implode(',', $groupings) . ']';
 	}
 
-	//get array of tables in database
-	private static function getTables() {
+	//to create unique table names, also for import controller
+	public static function getTables() {
 		$return = [];
 		$pdo = DB::connection()->getPdo();
 		$tables = $pdo->query('SHOW TABLES');
-		foreach ($tables as $table) $return[] = $table[0];
+		foreach ($tables as $table) $return[] = array_shift($table);
 		return $return;
+	}
+
+	//to create unique table names, also for import controller
+	public static function getPaths() {
+		return ['create', 'import', 'logout'];
 	}
 
 }

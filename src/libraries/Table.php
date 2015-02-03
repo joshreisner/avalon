@@ -103,7 +103,7 @@ class Table {
 			}
 
 			//create row
-			$rows[] = '<tr id="' . $row->id . '"' . (self::$deletable && $row->deleted_at ? ' class="inactive"' : '') . '>' . implode($columns) . '</tr>';
+			$rows[] = '<tr' . (empty($row->id) ?: ' id="' . $row->id . '"') . (self::$deletable && $row->deleted_at ? ' class="inactive"' : '') . '>' . implode($columns) . '</tr>';
 		}
 
 		$bodies[] = '<tbody>' . implode($rows) . '</tbody>';
