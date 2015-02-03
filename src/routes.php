@@ -45,7 +45,9 @@ Route::group(array('prefix'=>Config::get('avalon::route_prefix')), function(){
 		
 			# Import
 			Route::get('/import', 'ImportController@index');
-			Route::get('/import/{table}', 'ImportController@setup');
+			Route::get('/import/{table}', 'ImportController@show');
+			Route::get('/import/import/{table}', 'ImportController@import');
+			Route::get('/import/drop/{table}', 'ImportController@drop');
 			
 		});
 

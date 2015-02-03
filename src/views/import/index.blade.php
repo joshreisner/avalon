@@ -10,10 +10,20 @@
 		trans('avalon::messages.import'),
 		]) }}
 
-	{{ Table::rows($tables)
-	->column('Name', 'string', trans('avalon::messages.import_table'))
-	->column('Rows', 'integer', trans('avalon::messages.import_rows'))
-	->column('Data_length', 'integer', trans('avalon::messages.import_size'))
-	->draw('tables')
-	}}
+	@if (count($tables))
+		{{ Table::rows($tables)
+		->column('Name', 'string', trans('avalon::messages.import_table'))
+		->column('Rows', 'integer', trans('avalon::messages.import_rows'))
+		->column('Data_length', 'integer', trans('avalon::messages.import_size'))
+		->draw('tables')
+		}}
+	@else
+	<div class="alert alert-warning">
+		@lang('avalon::messages.import_empty')
+	</div>
+	@endif
+@endsection
+
+@section('side')
+	<p>@lang('avalon::messages.import_help')</p>
 @endsection

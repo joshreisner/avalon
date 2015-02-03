@@ -9,10 +9,12 @@ class Dates {
 	}
 
 	public static function absolute($string) {
+		if (empty($string)) return '';
 		return date('M d, Y', strtotime($string));
 	}
 
 	public static function time($string) {
+		if (empty($string)) return '';
 		return date('g:i A', strtotime($string));
 	}
 

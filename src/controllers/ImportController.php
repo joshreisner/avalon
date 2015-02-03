@@ -9,15 +9,35 @@ class ImportController extends BaseController {
 		foreach ($tables as &$table) $table = '\'' . $table . '\'';
 		$tables = DB::select('SHOW TABLE STATUS WHERE Name IN (' . implode(',', $tables) . ')');
 		foreach ($tables as &$table) {
-			$table->link = URL::action('ImportController@setup', $table->Name);
+			$table->link = URL::action('ImportController@show', $table->Name);
 			$table->Data_length = self::formatBytes($table->Data_length);
 		}
 		return View::make('avalon::import.index', compact('tables'));
 	}
 
-	# Setup view
-	public function setup($table) {
-		return $table;
+	# Show view
+	public function show($table) {
+
+		$rows = DB::table($table)->get(); 
+		$html = Table::rows($rows);
+		$columns = DB::select('SHOW COLUMNS FROM ' . $table);
+		foreach ($columns as $column) {
+			if ($pos = strpos($column->Type, '(')) $column->Type = substr($column->Type, 0, $pos);
+			if ($column->Type == 'int') $column->Type = 'integer';
+			$html->column($column->Field, $column->Type);
+		}
+		$html = $html->draw($table);
+		return View::make('avalon::import.show', compact('table', 'html'));
+	}
+
+	# Import view
+	public function import($table) {
+		return View::make('avalon::import.import', compact('table'));
+	}
+
+	# Drop
+	public function drop($table) {
+		return 'not yet implemented';
 	}
 
 	private static function formatBytes($size, $precision=2) {

@@ -10,7 +10,8 @@ class Table {
 
 
 	//add a column.  $trans is translation file key
-	public function column($key, $type, $head, $width=false, $height=false) {
+	public function column($key, $type, $head=false, $width=false, $height=false) {
+		if ($head === false) $head = $key;
 		self::$columns[] = ['key'=>$key, 'type'=>$type, 'head'=>$head, 'width'=>$width, 'height'=>$height];
 		return $this;
 	}
@@ -83,7 +84,7 @@ class Table {
 						$value = Dates::absolute($value);
 					} elseif ($column['type'] == 'date-relative') {
 						$value = Dates::relative($value);
-					} elseif ($column['type'] == 'datetime') {
+					} elseif (in_array($column['type'], ['datetime', 'timestamp'])) {
 						$value = Dates::absolute($value);
 					}
 
