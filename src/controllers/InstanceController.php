@@ -199,7 +199,7 @@ class InstanceController extends \BaseController {
 
 		//determine where slug is coming from
 		if ($slug_source = Slug::source($object->id)) {
-			$slug_source = Input::get($slug_from);
+			$slug_source = Input::get($slug_source);
 		} else {
 			$slug_source = date('Y-m-d');
 		}
