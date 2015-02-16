@@ -228,6 +228,7 @@ class ObjectController extends \BaseController {
 	}
 	
 	public static function saveSchema() {
+		if (!App::environment('local')) return;
 		$filename = storage_path() . '/avalon.schema.json';
 		$schema = [
 			'generated'=>new DateTime,
@@ -235,7 +236,7 @@ class ObjectController extends \BaseController {
 			'fields'=>DB::table(DB_FIELDS)->get(),
 		];
 		file_put_contents($filename, json_encode($schema));
-		return 'schema created';
+		return;
 	}
 	
 	//load schema from file
@@ -334,8 +335,6 @@ class ObjectController extends \BaseController {
 			Schema::drop($table, $column);
 		}
 
-		//echo 'all done';
-		
 	}
 	
 }
