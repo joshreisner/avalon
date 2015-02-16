@@ -42,15 +42,21 @@ class AvalonServiceProvider extends ServiceProvider {
 	public function boot()
 	{
 		$this->package('joshreisner/avalon');
-		
+	
+		//register schema command
+        $this->app['schema'] = $this->app->share(function($app){
+            return new LoadSchema();
+        });
+        $this->commands('schema');
+        
 		//capture last activity via updating on every page request
-		//too expensive, processing-wise?
+		/*too expensive, processing-wise?
 		App::before(function() {
 			if ($user = Auth::user()) {
 				$user->last_login = new DateTime;
 				$user->save();
 			}
-		});
+		});*/
 
 		//add some special fields to the default laravel form class
 		Form::macro('date', function($name, $value = null, $options = array()) {

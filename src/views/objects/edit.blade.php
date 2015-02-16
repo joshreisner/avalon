@@ -45,7 +45,7 @@
 	<div class="form-group">
 		{{ Form::label('url', trans('avalon::messages.objects_url'), ['class'=>'control-label col-sm-2']) }}
 	    <div class="col-sm-10">
-			{{ Form::text('url', $object->url, ['class'=>'required form-control']) }}
+			{{ Form::text('url', $object->url, ['class'=>'form-control']) }}
 	    </div>
 	</div>
 			

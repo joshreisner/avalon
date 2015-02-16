@@ -58,6 +58,8 @@ Route::group(array('prefix'=>Config::get('avalon::route_prefix')), function(){
 			Route::post('/upload/image', 'FileController@image');
 
 			# Todo delete
+			Route::get('/schema/save', 'ObjectController@saveSchema');
+			Route::get('/schema/load', 'ObjectController@loadSchema');
 			Route::get('/image/test', 'FileController@test');
 			Route::get('/slug/test', function(){
 				$phrases = [

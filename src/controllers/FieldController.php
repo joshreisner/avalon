@@ -93,20 +93,9 @@ class FieldController extends \BaseController {
 		$required	= Input::has('required') ? 1 : 0;
 		
 		if ($type == 'checkboxes') {
-			//use field_name to store joining table
-			$columns = [
-				Str::singular(DB::table(DB_OBJECTS)->where('id', Input::get('related_object_id'))->pluck('name')), 
-				Str::singular($object_name)
-			];
-			sort($columns);
-			$field_name = implode('_', $columns);
-
-			//create joining table
-			Schema::create($field_name, function ($table) use ($columns) {
-				foreach ($columns as $column) {
-					$table->integer($column . '_id');
-				}
-			});
+			
+			self::addJoiningTable($object_name, Input::get('related_object_id'));
+			
 		} else {
 			$field_name = Str::slug(Input::get('title'), '_');
 
@@ -117,85 +106,8 @@ class FieldController extends \BaseController {
 			if ($type == 'checkbox') $required = false;
 
 			//add new column
-			Schema::table($object_name, function($table) use ($type, $field_name, $required) {
-				switch ($type) {
-
-					case 'checkbox':
-						$table->boolean($field_name)->default(false);
-						break;
-					
-					case 'color':
-						if ($required) {
-							$table->string($field_name, 6);
-						} else {
-							$table->string($field_name, 6)->nullable();
-						}
-						break;
-					
-					case 'date':
-						if ($required) {
-							$table->date($field_name);
-						} else {
-							$table->date($field_name)->nullable();
-						}
-						break;
-					
-					case 'datetime':
-						if ($required) {
-							$table->dateTime($field_name);
-						} else {
-							$table->dateTime($field_name)->nullable();
-						}
-						break;
-
-					case 'html':
-					case 'text':
-						if ($required) {
-							$table->text($field_name);
-						} else {
-							$table->text($field_name)->nullable();
-						}
-						break;
-
-					case 'image':
-					case 'integer':
-					case 'select':
-					case 'user':
-						if ($required) {
-							$table->integer($field_name);
-						} else {
-							$table->integer($field_name)->nullable();
-						}
-						break;
-
-					case 'money':
-						if ($required) {
-							$table->decimal($field_name, 10, 2);
-						} else {
-							$table->decimal($field_name, 10, 2)->nullable();
-						}
-						break;
-
-					case 'slug':
-					case 'string':
-					case 'url':
-						if ($required) {
-							$table->string($field_name);
-						} else {
-							$table->string($field_name)->nullable();
-						}
-						break;
-					
-					case 'time':
-						if ($required) {
-							$table->time($field_name);
-						} else {
-							$table->time($field_name)->nullable();
-						}
-						break;
-				}
-			});
-
+			self::addColumn($table_name, $field_name, $type, $required);
+			
 			//set existing default values for required dates to today, better than 0000-00-00
 			if (in_array($type, ['date', 'datetime']) && $required) {
 				DB::table($object_name)->update([$field_name=>new DateTime]);
@@ -222,6 +134,8 @@ class FieldController extends \BaseController {
 
 		self::organizeTable($object_name);
 		
+		self::saveSchema();
+
 		return Redirect::action('FieldController@index', $object_name)->with('field_id', $field_id);
 	}
 	
@@ -293,6 +207,8 @@ class FieldController extends \BaseController {
 			'updated_at'		=>new DateTime,
 		]);
 		
+		self::saveSchema();
+
 		return Redirect::action('FieldController@index', $object_name)->with('field_id', $field_id);
 	}
 	
@@ -317,6 +233,9 @@ class FieldController extends \BaseController {
 		}
 
 		DB::table(DB_FIELDS)->where('id', $field_id)->delete();
+
+		self::saveSchema();
+
 		return Redirect::action('FieldController@index', $object_name);
 	}
 	
@@ -333,10 +252,112 @@ class FieldController extends \BaseController {
 		}
 
 		self::organizeTable($object_name);
+
+		self::saveSchema();
+	}
+	
+	//add a column to a table, also used by schema loader
+	public static function addColumn($table_name, $field_name, $type, $required) {
+		Schema::table($object_name, function($table) use ($type, $field_name, $required) {
+			switch ($type) {
+
+				case 'checkbox':
+					$table->boolean($field_name)->default(false);
+					break;
+				
+				case 'color':
+					if ($required) {
+						$table->string($field_name, 6);
+					} else {
+						$table->string($field_name, 6)->nullable();
+					}
+					break;
+				
+				case 'date':
+					if ($required) {
+						$table->date($field_name);
+					} else {
+						$table->date($field_name)->nullable();
+					}
+					break;
+				
+				case 'datetime':
+					if ($required) {
+						$table->dateTime($field_name);
+					} else {
+						$table->dateTime($field_name)->nullable();
+					}
+					break;
+
+				case 'html':
+				case 'text':
+					if ($required) {
+						$table->text($field_name);
+					} else {
+						$table->text($field_name)->nullable();
+					}
+					break;
+
+				case 'image':
+				case 'integer':
+				case 'select':
+				case 'user':
+					if ($required) {
+						$table->integer($field_name);
+					} else {
+						$table->integer($field_name)->nullable();
+					}
+					break;
+
+				case 'money':
+					if ($required) {
+						$table->decimal($field_name, 10, 2);
+					} else {
+						$table->decimal($field_name, 10, 2)->nullable();
+					}
+					break;
+
+				case 'slug':
+				case 'string':
+				case 'url':
+					if ($required) {
+						$table->string($field_name);
+					} else {
+						$table->string($field_name)->nullable();
+					}
+					break;
+				
+				case 'time':
+					if ($required) {
+						$table->time($field_name);
+					} else {
+						$table->time($field_name)->nullable();
+					}
+					break;
+			}
+		});
+	}
+	
+	//create checkboxes table, also used by schema loader
+	public static function addJoiningTable($object_name, $related_object_id) {
+		//use field_name to store joining table
+		$columns = [
+			Str::singular(DB::table(DB_OBJECTS)->where('id', $related_object_id)->pluck('name')), 
+			Str::singular($object_name)
+		];
+		sort($columns);
+		$field_name = implode('_', $columns);
+
+		//create joining table
+		Schema::create($field_name, function ($table) use ($columns) {
+			foreach ($columns as $column) {
+				$table->integer($column . '_id');
+			}
+		});
 	}
 
+	//reorder actual table fields
 	private static function organizeTable($object_name) {
-		//reorder actual table fields
 		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
 		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->whereNotIn('type', ['checkboxes', 'images'])->orderBy('precedence')->get();
 		$system = ['created_at', 'updated_at', 'updated_by', 'deleted_at', 'precedence'];

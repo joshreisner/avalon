@@ -80,18 +80,10 @@ class ObjectController extends \BaseController {
 			'updated_by'	=> Auth::user()->id,
 			'precedence'	=> 1
 		]);
-		
-		//create table with boilerplate fields
-		Schema::create($name, function($table){
-			$table->increments('id');
-			$table->string('title');
-			$table->string('slug');
-			$table->timestamps();
-			$table->integer('created_by');
-			$table->integer('updated_by');
-			$table->softDeletes();
-			$table->integer('precedence');
-		});
+
+		self::addTable($name, true);
+
+		self::saveSchema();
 		
 		return Redirect::action('InstanceController@index', $name);
 	}
@@ -183,6 +175,8 @@ class ObjectController extends \BaseController {
 			'list_help'			=> trim(Input::get('list_help')),
 			'form_help'			=> trim(Input::get('form_help')),
 		]);
+
+		self::saveSchema();
 		
 		return Redirect::action('InstanceController@index', $new_name);
 	}
@@ -194,6 +188,7 @@ class ObjectController extends \BaseController {
 		DB::table(DB_OBJECTS)->where('id', $object->id)->delete();
 		DB::table(DB_FIELDS)->where('object_id', $object->id)->delete();
 		DB::table(DB_OBJECT_LINKS)->where('object_id', $object->id)->orWhere('linked_id', $object->id)->delete();
+		self::saveSchema();
 		return Redirect::route('home');
 	}
 
@@ -217,5 +212,130 @@ class ObjectController extends \BaseController {
 	public static function getPaths() {
 		return ['create', 'import', 'logout'];
 	}
+	
+	//create table with boilerplate fields
+	private static function addTable($name, $addTitle=true) {
+		Schema::create($name, function($table) use($addTitle){
+			$table->increments('id');
+			if ($addTitle) $table->string('title');
+			$table->string('slug');
+			$table->timestamps();
+			$table->integer('created_by');
+			$table->integer('updated_by');
+			$table->softDeletes();
+			$table->integer('precedence');
+		});		
+	}
+	
+	public static function saveSchema() {
+		$filename = storage_path() . '/avalon.schema.json';
+		$schema = [
+			'generated'=>new DateTime,
+			'objects'=>DB::table(DB_OBJECTS)->get(),
+			'fields'=>DB::table(DB_FIELDS)->get(),
+		];
+		file_put_contents($filename, json_encode($schema));
+		return 'schema created';
+	}
+	
+	//load schema from file
+	public static function loadSchema() {
+		$schema = json_decode(file_get_contents(storage_path() . '/avalon.schema.json'));
 
+		//load current database into $objects and $fields variables
+		$objects = $fields = [];
+		$db_fields = DB::table(DB_FIELDS)
+			->join(DB_OBJECTS, DB_OBJECTS . '.id', '=', DB_FIELDS . '.object_id')
+			->select(
+				DB_FIELDS . '.object_id',
+				DB_FIELDS . '.id AS field_id', 
+				DB_OBJECTS . '.name AS table', 
+				DB_FIELDS . '.name AS column'
+			)->get();
+		foreach ($db_fields as $field) {
+			if (!array_key_exists($field->object_id, $objects)) $objects[$field->object_id] = $field->table;
+			$fields[$field->field_id] = ['table'=>$field->table, 'column'=>$field->column];
+		}
+
+		//loop through new object schema and update
+		foreach ($schema->objects as $object) {
+
+			$values = [
+				'id'=>$object->id,
+				'title'=>$object->title,
+				'name'=>$object->name,
+				'model'=>$object->model,
+				'order_by'=>$object->order_by,
+				'direction'=>$object->direction,
+				'group_by_field'=>$object->group_by_field,
+				'list_help'=>$object->list_help,
+				'form_help'=>$object->form_help,
+				'list_grouping'=>$object->list_grouping,
+				'can_create'=>$object->can_create,
+				'can_edit'=>$object->can_edit,
+				'can_see'=>$object->can_see,
+				'url'=>$object->url,
+				'singleton'=>$object->singleton,
+			];
+			
+			if (array_key_exists($object->id, $objects)) {
+				DB::table(DB_OBJECTS)->where('id', $object->id)->update($values);
+			} else {
+				DB::table(DB_OBJECTS)->insert($values);
+				self::addTable($object->name);
+			}
+			
+			unset($objects[$object->id]);
+		}
+		
+		foreach ($objects as $id=>$table) {
+			DB::table(DB_OBJECTS)->where('id', $id)->delete();
+			DB::table(DB_FIELDS)->where('object_id', $id)->delete();
+			Schema::drop($table);
+		}
+		
+		foreach ($schema->fields as $field) {
+
+			$values = [
+				'id'=>$field->id,
+				'object_id'=>$field->object_id,
+				'type'=>$field->type,
+				'title'=>$field->title,
+				'name'=>$field->name,
+				'visibility'=>$field->visibility,
+				'required'=>$field->required,
+				'related_field_id'=>$field->related_field_id,
+				'related_object_id'=>$field->related_object_id,
+				'width'=>$field->width,
+				'height'=>$field->height,
+				'help'=>$field->help,
+				'updated_at'=>$field->updated_at,
+				'updated_by'=>$field->updated_by,
+				'precedence'=>$field->precedence,
+			];
+			
+			if (array_key_exists($field->id, $fields)) {
+				DB::table(DB_FIELDS)->where('id', $field->id)->update($values);
+			} else {
+				DB::table(DB_FIELDS)->insert($values);
+				if ($field->type == 'checkboxes') {
+					FieldController::addJoiningTable($fields[$field->id]['table'], $field->related_object_id);
+				} else {
+					FieldController::addColumn($fields[$field->id]['table'], $field->name, $field->type, $field->required);			
+				}
+			}
+			
+			unset($fields[$field->id]);
+		}
+		
+		foreach ($fields as $id=>$props) {
+			extract($props);
+			DB::table(DB_FIELDS)->where('id', $id)->delete();
+			Schema::drop($table, $column);
+		}
+
+		//echo 'all done';
+		
+	}
+	
 }
