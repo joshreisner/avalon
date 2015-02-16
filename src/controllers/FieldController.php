@@ -1,6 +1,6 @@
 <?php
 
-class FieldController extends \BaseController {
+class FieldController extends BaseController {
 
 	//this could probably be a variable no?
 	private static function types() {
@@ -375,6 +375,14 @@ class FieldController extends \BaseController {
 		DB::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN updated_by INT 			   AFTER updated_at');
 		DB::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN deleted_at DATETIME 		   AFTER updated_by');
 		DB::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN precedence INT 	  NOT NULL AFTER deleted_at');
+	}
+
+	//cleanup orphaned rows in fields table
+	public static function cleanup() {
+		DB::table(DB_FIELDS)
+			->leftJoin(DB_OBJECTS, DB_FIELDS . '.object_id', '=', DB_OBJECTS . '.id')
+			->whereNull(DB_OBJECTS . '.id')
+			->delete();
 	}
 
 	//format field type

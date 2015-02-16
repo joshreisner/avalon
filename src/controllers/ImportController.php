@@ -4,13 +4,13 @@ class ImportController extends BaseController {
 
 	# Index view
 	public function index() {
-
-		$tables = array_diff(ObjectController::getTables(), self::getAvalonTables());
-		foreach ($tables as &$table) $table = '\'' . $table . '\'';
-		$tables = DB::select('SHOW TABLE STATUS WHERE Name IN (' . implode(',', $tables) . ')');
-		foreach ($tables as &$table) {
-			$table->link = URL::action('ImportController@show', $table->Name);
-			$table->Data_length = self::formatBytes($table->Data_length);
+		if ($tables = array_diff(ObjectController::getTables(), self::getAvalonTables())) {
+			foreach ($tables as &$table) $table = '\'' . $table . '\'';
+			$tables = DB::select('SHOW TABLE STATUS WHERE Name IN (' . implode(',', $tables) . ')');
+			foreach ($tables as &$table) {
+				$table->link = URL::action('ImportController@show', $table->Name);
+				$table->Data_length = self::formatBytes($table->Data_length);
+			}
 		}
 		return View::make('avalon::import.index', compact('tables'));
 	}

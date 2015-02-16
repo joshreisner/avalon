@@ -57,7 +57,7 @@ Route::group(array('prefix'=>Config::get('avalon::route_prefix')), function(){
 			Route::get('/logout', 'LoginController@getLogout');
 			Route::post('/upload/image', 'FileController@image');
 
-			# Todo delete
+			# Test routes
 			Route::get('/schema/save', 'ObjectController@saveSchema');
 			Route::get('/schema/load', 'ObjectController@loadSchema');
 			Route::get('/image/test', 'FileController@test');
@@ -77,6 +77,11 @@ Route::group(array('prefix'=>Config::get('avalon::route_prefix')), function(){
 				Slug::setForObject($object);
 				die('object was ' . $object->name);
 			});
+			Route::get('cleanup', function(){
+				FieldController::cleanup();
+				FileController::findOrphans();
+				FileController::cleanup();
+			});		
 			
 			# Complex instance routing, optionally with linked_id for related objects
 			Route::get('/{object_name}', 'InstanceController@index');

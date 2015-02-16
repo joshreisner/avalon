@@ -1,6 +1,6 @@
 <?php
 
-class LoginController extends \BaseController {
+class LoginController extends BaseController {
 
 	//show login page if not logged in
 	public function getIndex() {

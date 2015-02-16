@@ -1,6 +1,6 @@
 <?php
 
-class ObjectController extends \BaseController {
+class ObjectController extends BaseController {
 
 	private static $direction = [
 		'asc'=>'Ascending',

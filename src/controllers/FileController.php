@@ -2,7 +2,7 @@
 
 use Intervention\Image\ImageManagerStatic as Image;
 
-class FileController extends \BaseController {
+class FileController extends BaseController {
 
 	/**
 	 * handle image upload route
@@ -150,6 +150,61 @@ class FileController extends \BaseController {
 		}
 
 		return array($width, $height);
+	}
+
+	public static function findOrphans() {
+		
+		//trim down file list
+		
+		//delete files from non-existent fields
+		DB::table(DB_FILES)
+			->leftJoin(DB_FIELDS, DB_FILES . '.field_id', '=', DB_FIELDS . '.id')
+			->whereNull(DB_FIELDS . '.id')
+			->delete(); 
+			
+		//delete files from non-existent instances
+		$file_ids = [];
+		$fields = DB::table(DB_FILES)
+			->join(DB_FIELDS, DB_FILES . '.field_id', '=', DB_FIELDS . '.id')
+			->join(DB_OBJECTS, DB_FIELDS . '.object_id', '=', DB_OBJECTS . '.id')
+			->select(
+				DB_FIELDS . '.id',
+				DB_OBJECTS . '.name as table',
+				DB_FIELDS . '.name as column'
+			)
+			->distinct()
+			->get();
+		foreach ($fields as $field) {
+			$file_ids = array_merge($file_ids, DB::table($field->table)->lists($field->column));
+		}
+		if (count($file_ids)) {
+			DB::table(DB_FILES)->whereNotIn('id', $file_ids)->delete();			
+		}
+		
+		//trim down filesystem to just what's in file list
+		$files = DB::table(DB_FILES)->lists('url');
+		$public_path_length = strlen(public_path());
+		$folder = public_path() . '/packages/joshreisner/avalon/files';
+		$di = new RecursiveDirectoryIterator($folder);
+		foreach (new RecursiveIteratorIterator($di) as $filename => $file) {
+			if (!ends_with($filename, ['/.', '/..'])) {
+				if (!in_array(substr($filename, $public_path_length), $files)) {
+					unlink($filename);
+				}
+			}
+		}
+		
+		//remove empty folders
+		self::removeEmptyFolders($folder);
+
+	}
+	
+	private static function removeEmptyFolders($path) {
+		$empty = true;
+		foreach (glob($path.DIRECTORY_SEPARATOR . '*') as $file) {
+			$empty &= is_dir($file) && self::removeEmptyFolders($file);
+		}
+		return $empty && rmdir($path);
 	}
 
 	//todo amazon?

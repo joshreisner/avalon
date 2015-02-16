@@ -3,7 +3,7 @@ use Aws\Common\Enum\Region;
 use Aws\Laravel\AwsServiceProvider;
 use Illuminate\Foundation\Application;
 
-class InstanceController extends \BaseController {
+class InstanceController extends BaseController {
 
 	# Show list of instances for an object
 	# $group_by_id is for when coming from a linked object
