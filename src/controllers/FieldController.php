@@ -106,7 +106,7 @@ class FieldController extends \BaseController {
 			if ($type == 'checkbox') $required = false;
 
 			//add new column
-			self::addColumn($table_name, $field_name, $type, $required);
+			self::addColumn($object_name, $field_name, $type, $required);
 			
 			//set existing default values for required dates to today, better than 0000-00-00
 			if (in_array($type, ['date', 'datetime']) && $required) {
@@ -134,7 +134,7 @@ class FieldController extends \BaseController {
 
 		self::organizeTable($object_name);
 		
-		self::saveSchema();
+		ObjectController::saveSchema();
 
 		return Redirect::action('FieldController@index', $object_name)->with('field_id', $field_id);
 	}
@@ -207,7 +207,7 @@ class FieldController extends \BaseController {
 			'updated_at'		=>new DateTime,
 		]);
 		
-		self::saveSchema();
+		ObjectController::saveSchema();
 
 		return Redirect::action('FieldController@index', $object_name)->with('field_id', $field_id);
 	}
@@ -234,7 +234,7 @@ class FieldController extends \BaseController {
 
 		DB::table(DB_FIELDS)->where('id', $field_id)->delete();
 
-		self::saveSchema();
+		ObjectController::saveSchema();
 
 		return Redirect::action('FieldController@index', $object_name);
 	}
@@ -253,11 +253,11 @@ class FieldController extends \BaseController {
 
 		self::organizeTable($object_name);
 
-		self::saveSchema();
+		ObjectController::saveSchema();
 	}
 	
 	//add a column to a table, also used by schema loader
-	public static function addColumn($table_name, $field_name, $type, $required) {
+	public static function addColumn($object_name, $field_name, $type, $required) {
 		Schema::table($object_name, function($table) use ($type, $field_name, $required) {
 			switch ($type) {
 
