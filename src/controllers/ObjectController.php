@@ -241,6 +241,11 @@ class ObjectController extends BaseController {
 	
 	//load schema from file
 	public static function loadSchema() {
+		
+		//run this first, because any orphaned fields will cause it to squawk
+		FieldController::cleanup();
+		
+		//load schema from file and prepare
 		$schema = json_decode(file_get_contents(storage_path() . '/avalon.schema.json'));
 
 		//load current database into $objects and $fields variables
@@ -278,7 +283,7 @@ class ObjectController extends BaseController {
 				'url'=>$object->url,
 				'singleton'=>$object->singleton,
 			];
-			
+
 			if (array_key_exists($object->id, $objects)) {
 				DB::table(DB_OBJECTS)->where('id', $object->id)->update($values);
 			} else {
@@ -286,13 +291,13 @@ class ObjectController extends BaseController {
 				self::addTable($object->name);
 			}
 			
-			unset($objects[$object->id]);
+			if (isset($objects[$object->id])) unset($objects[$object->id]);
 		}
 		
 		foreach ($objects as $id=>$table) {
 			DB::table(DB_OBJECTS)->where('id', $id)->delete();
 			DB::table(DB_FIELDS)->where('object_id', $id)->delete();
-			Schema::drop($table);
+			Schema::dropIfExists($table);
 		}
 		
 		foreach ($schema->fields as $field) {
@@ -315,6 +320,10 @@ class ObjectController extends BaseController {
 				'precedence'=>$field->precedence,
 			];
 			
+			if ($field->id == 62) {
+				dd($field);
+			}
+			
 			if (array_key_exists($field->id, $fields)) {
 				DB::table(DB_FIELDS)->where('id', $field->id)->update($values);
 			} else {
@@ -326,13 +335,13 @@ class ObjectController extends BaseController {
 				}
 			}
 			
-			unset($fields[$field->id]);
+			if (isset($fields[$field->id])) unset($fields[$field->id]);
 		}
 		
 		foreach ($fields as $id=>$props) {
 			extract($props);
 			DB::table(DB_FIELDS)->where('id', $id)->delete();
-			Schema::drop($table, $column);
+			Schema::dropIfExists($table, $column);
 		}
 
 	}

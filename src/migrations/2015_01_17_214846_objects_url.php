@@ -13,7 +13,7 @@ class ObjectsUrl extends Migration {
 	public function up()
 	{
 		Schema::table(DB_OBJECTS, function($table){
-			$table->string('url');
+			$table->string('url')->nullable();
 		});
 
 		DB::table(DB_FIELDS)->where('name', 'slug')->delete();
