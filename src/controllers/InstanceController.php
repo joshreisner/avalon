@@ -20,6 +20,8 @@ class InstanceController extends BaseController {
 		# Start query
 		$instances = DB::table($object->name);
 
+		$text_fields = [];
+
 		# Build select statement
 		$instances->select([$object->name . '.id', $object->name . '.updated_at', $object->name . '.deleted_at']);
 		foreach ($fields as $field) {
@@ -39,11 +41,16 @@ class InstanceController extends BaseController {
 				$instances
 					->leftJoin($related_object->name, $object->name . '.' . $field->name, '=', $related_object->name . '.id')
 					->addSelect($related_object->name . '.' . $related_object->field->name . ' AS ' . $field->name);
+				$text_fields[] = $related_object->name . '.' . $related_object->field->name;
 			} elseif ($field->type == 'user') {
 				$instances
 					->leftJoin(DB_USERS, $object->name . '.' . $field->name, '=', DB_USERS . '.id')
 					->addSelect(DB_USERS . '.name AS ' . $field->name);
 			} else {
+				if (in_array($field->type, ['string', 'text', 'html'])) {
+					$text_fields[] = $object->name . '.' . $field->name;
+				}
+
 				$instances->addSelect($object->name . '.' . $field->name);
 			}
 		}
@@ -76,6 +83,13 @@ class InstanceController extends BaseController {
 
 		# Set the order and direction
 		$instances->orderBy($object->name . '.' . $object->order_by, $object->direction);
+
+		# Is there a search?
+		if (Input::has('search')) {
+			foreach ($text_fields as $field) {
+				$instances->orWhere($field, 'LIKE', '%' . Input::get('search') . '%');
+			}
+		}
 
 		# Run query and save it to a variable
 		$instances = $instances->get();

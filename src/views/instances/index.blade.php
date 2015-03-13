@@ -51,16 +51,19 @@
 @endsection
 
 @section('side')
+	{{ Form::open(['method'=>'get']) }}
+	{{ Form::text('search', Input::get('search'), ['class'=>'form-control', 'placeholder'=>'Search']) }}
+	{{ Form::close() }}
 	<p>{{ nl2br($object->list_help) }}</p>
 @endsection
 
 @section('script')
 	<script>
-	$(document).keypress(function(e){
+	/*$(document).keypress(function(e){
 		if (e.which == 99) {
 			location.href = $("a#create").addClass("active").attr("href");
 		}
-	});
+	});*/
 
 	@if (Session::has('instance_id'))
 		var $el = $("table tr#{{ Session::get('instance_id') }}");
