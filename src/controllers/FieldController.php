@@ -18,6 +18,7 @@ class FieldController extends BaseController {
 				//'files'		=>'Files',
 			],
 			trans('avalon::messages.fields_types_cat_strings')=>[
+				'email'			=>trans('avalon::messages.fields_types_email'),
 				'html'			=>trans('avalon::messages.fields_types_html'),
 				'slug'			=>trans('avalon::messages.fields_types_slug'),
 				'string'		=>trans('avalon::messages.fields_types_string'),
@@ -36,7 +37,9 @@ class FieldController extends BaseController {
 			trans('avalon::messages.fields_types_cat_misc')=>[
 				'checkbox'		=>trans('avalon::messages.fields_types_checkbox'),
 				'color'			=>trans('avalon::messages.fields_types_color'),
+				'us_state'		=>trans('avalon::messages.fields_types_us_state'),
 				'user'			=>trans('avalon::messages.fields_types_user'),
+				'zip'			=>trans('avalon::messages.fields_types_zip'),
 			],
 		];
 	}
@@ -317,6 +320,7 @@ class FieldController extends BaseController {
 					}
 					break;
 
+				case 'email':
 				case 'slug':
 				case 'string':
 				case 'url':
@@ -327,11 +331,27 @@ class FieldController extends BaseController {
 					}
 					break;
 				
+				case 'us_state':
+					if ($required) {
+						$table->string($field_name, 2);
+					} else {
+						$table->string($field_name, 2)->nullable();
+					}
+					break;
+				
 				case 'time':
 					if ($required) {
 						$table->time($field_name);
 					} else {
 						$table->time($field_name)->nullable();
+					}
+					break;
+				
+				case 'zip':
+					if ($required) {
+						$table->string($field_name, 5);
+					} else {
+						$table->string($field_name, 5)->nullable();
 					}
 					break;
 			}
@@ -377,6 +397,63 @@ class FieldController extends BaseController {
 		DB::unprepared('ALTER TABLE `' . $object->name . '` MODIFY COLUMN precedence INT 	  NOT NULL AFTER deleted_at');
 	}
 
+	//get array of us states for us state fields (used by InstanceController create and edit)
+	public static function usStates() {
+		return [
+			'AL'=>'Alabama',
+			'AK'=>'Alaska',
+			'AZ'=>'Arizona',
+			'AR'=>'Arkansas',
+			'CA'=>'California',
+			'CO'=>'Colorado',
+			'CT'=>'Connecticut',
+			'DE'=>'Delaware',
+			'DC'=>'District of Columbia',
+			'FL'=>'Florida',
+			'GA'=>'Georgia',
+			'HI'=>'Hawaii',
+			'ID'=>'Idaho',
+			'IL'=>'Illinois',
+			'IN'=>'Indiana',
+			'IA'=>'Iowa',
+			'KS'=>'Kansas',
+			'KY'=>'Kentucky',
+			'LA'=>'Louisiana',
+			'ME'=>'Maine',
+			'MD'=>'Maryland',
+			'MA'=>'Massachusetts',
+			'MI'=>'Michigan',
+			'MN'=>'Minnesota',
+			'MS'=>'Mississippi',
+			'MO'=>'Missouri',
+			'MT'=>'Montana',
+			'NE'=>'Nebraska',
+			'NV'=>'Nevada',
+			'NH'=>'New Hampshire',
+			'NJ'=>'New Jersey',
+			'NM'=>'New Mexico',
+			'NY'=>'New York',
+			'NC'=>'North Carolina',
+			'ND'=>'North Dakota',
+			'OH'=>'Ohio',
+			'OK'=>'Oklahoma',
+			'OR'=>'Oregon',
+			'PA'=>'Pennsylvania',
+			'RI'=>'Rhode Island',
+			'SC'=>'South Carolina',
+			'SD'=>'South Dakota',
+			'TN'=>'Tennessee',
+			'TX'=>'Texas',
+			'UT'=>'Utah',
+			'VT'=>'Vermont',
+			'VA'=>'Virginia',
+			'WA'=>'Washington',
+			'WV'=>'West Virginia',
+			'WI'=>'Wisconsin',
+			'WY'=>'Wyoming',
+		];
+	}
+	
 	//cleanup orphaned rows in fields table
 	public static function cleanup() {
 		DB::table(DB_FIELDS)
@@ -410,10 +487,17 @@ class FieldController extends BaseController {
 			case 'money':
 				return 'DECIMAL(10,2)';
 
+			case 'email':
 			case 'slug':
 			case 'string':
 			case 'url':
 				return 'VARCHAR(255)';
+			
+			case 'us_state':
+				return 'VARCHAR(2)';
+			
+			case 'zip':
+				return 'VARCHAR(5)';
 			
 			case 'html':
 			case 'text':

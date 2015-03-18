@@ -46,6 +46,8 @@
 						<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 						<input type="text" class="form-control  @if ($field->required) required @endif" value="{{ $instance->{$field->name} }}" name="{{ $field->name }}">
 					</div>
+				@elseif ($field->type == 'email')
+					{{ Form::email($field->name, $instance->{$field->name}, ['class'=>'form-control ' . $field->type . ($field->required ? ' required' : '')]) }}
 				@elseif ($field->type == 'html')
 					{{ Form::textarea($field->name, $instance->{$field->name}, ['class'=>'form-control ' . $field->type . ($field->required ? ' required' : '')]) }}
 				@elseif ($field->type == 'image')
@@ -93,6 +95,10 @@
 					{{ Form::url($field->name, $instance->{$field->name}, ['class'=>'form-control ' . $field->type . ($field->required ? ' required' : '')]) }}
 				@elseif ($field->type == 'user')
 					{{ Form::select($field->name, $field->options, $instance->{$field->name}, ['class'=>'form-control ' . $field->type . ($field->required ? ' required' : '')]) }}
+				@elseif ($field->type == 'us_state')
+					{{ Form::select($field->name, $field->options, $instance->{$field->name}, ['class'=>'form-control ' . $field->type . ($field->required ? ' required' : '')]) }}
+				@elseif ($field->type == 'zip')
+					{{ Form::text($field->name, $instance->{$field->name}, ['class'=>'form-control ' . $field->type . ($field->required ? ' required' : ''), 'maxlength'=>5]) }}
 				@endif
 			</div>
 		</div>

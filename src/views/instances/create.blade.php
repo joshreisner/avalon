@@ -52,6 +52,8 @@
 							<input type="text" class="form-control" name="{{ $field->name }}">
 						   	@endif
 						</div>
+					@elseif ($field->type == 'email')
+						{{ Form::email($field->name, null, ['class'=>'form-control ' . $field->type . ($field->required ? ' required' : '')]) }}
 					@elseif ($field->type == 'html')
 						{{ Form::textarea($field->name, null, ['class'=>'form-control html' . ($field->required ? ' required' : '')]) }}
 					@elseif ($field->type == 'image')
@@ -83,8 +85,12 @@
 						</div>
 					@elseif ($field->type == 'url')
 						{{ Form::url($field->name, null, ['class'=>'form-control ' . $field->type . ($field->required ? ' required' : '')]) }}
+					@elseif ($field->type == 'us_state')
+						{{ Form::select($field->name, $field->options, null, ['class'=>'form-control ' . $field->type . ($field->required ? ' required' : '')]) }}
 					@elseif ($field->type == 'user')
 						{{ Form::select($field->name, $field->options, null, ['class'=>'form-control ' . $field->type . ($field->required ? ' required' : '')]) }}
+					@elseif ($field->type == 'zip')
+						{{ Form::text($field->name, null, ['class'=>'form-control ' . $field->type . ($field->required ? ' required' : ''), 'maxlength'=>5]) }}
 					@endif
 				</div>
 			</div>

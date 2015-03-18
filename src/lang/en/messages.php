@@ -37,6 +37,7 @@ return [
 	'fields_types_color'		=> 'Color',
 	'fields_types_date' 		=> 'Date',
 	'fields_types_datetime'		=> 'Date + Time',
+	'fields_types_email'		=> 'Email',
 	'fields_types_html'			=> 'HTML',
 	'fields_types_image'		=> 'Single Image',
 	'fields_types_images'		=> 'Multiple Images',
@@ -48,7 +49,9 @@ return [
 	'fields_types_text'			=> 'Text',
 	'fields_types_time'			=> 'Time',
 	'fields_types_url'			=> 'URL',
+	'fields_types_us_state'		=> 'US State',
 	'fields_types_user'			=> 'User',
+	'fields_types_zip'			=> 'ZIP',
 
 	'fields_updated_at'			=> 'Updated',
 	'fields_url_placeholder'	=> 'https://example.com',

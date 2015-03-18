@@ -18,7 +18,7 @@ Route::group(array('prefix'=>Config::get('avalon::route_prefix')), function(){
 	} else {
 
 		# Admins only
-		Route::group(array('before'=>'admin'), function(){
+		Route::group(array('before'=>'admin', 'prefix'=>'avalon'), function(){
 			Route::resource('users', 'UserController');
 			Route::get('/users/{user_id}/delete', 'UserController@delete');
 			Route::get('/users/{user_id}/resend-welcome', 'UserController@resendWelcome');

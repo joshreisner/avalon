@@ -133,7 +133,7 @@ class InstanceController extends BaseController {
 	//show create form for an object instance
 	public function create($object_name, $linked_id=false) {
 		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
-		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->orderBy('precedence')->get();
+		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->where('visibility', '<>', 'hidden')->orderBy('precedence')->get();
 		$options = array();
 		
 		# Add return var to the queue
@@ -182,6 +182,9 @@ class InstanceController extends BaseController {
 			} elseif ($field->type == 'user') {
 				$field->options = DB::table(DB_USERS)->orderBy('name')->lists('name', 'id');
 				if (!$field->required) $field->options = [''=>''] + $field->options;
+			} elseif ($field->type == 'us_state') {
+				$field->options = FieldController::usStates();
+				if (!$field->required) $field->options = [''=>''] + $field->options;
 			} elseif (in_array($field->type, array('image', 'images'))) {
 				list($field->screen_width, $field->screen_height) = FileController::getImageDimensions($field->width, $field->height);
 			}
@@ -193,7 +196,7 @@ class InstanceController extends BaseController {
 	//save a new object instance to the database
 	public function store($object_name, $linked_id=false) {
 		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
-		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->orderBy('precedence')->get();
+		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->where('visibility', '<>', 'hidden')->orderBy('precedence')->get();
 		
 		//metadata
 		$inserts = array(
@@ -274,7 +277,7 @@ class InstanceController extends BaseController {
 
 		# Get object / field / whatever infoz
 		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
-		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->orderBy('precedence')->get();
+		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->where('visibility', '<>', 'hidden')->orderBy('precedence')->get();
 		$instance = DB::table($object->name)->where('id', $instance_id)->first();
 
 		# Add return var to the queue
@@ -330,10 +333,6 @@ class InstanceController extends BaseController {
 					$foreign_key = Str::singular($related_object->name) . '_id';
 					$instance->{$field->name} = DB::table($field->name)->where($table_key, $instance->id)->lists($foreign_key);
 				}
-
-			} elseif ($field->type == 'user') {
-				$field->options = DB::table(DB_USERS)->orderBy('name')->lists('name', 'id');
-				if (!$field->required) $field->options = [''=>''] + $field->options;
 			} elseif ($field->type == 'image') {
 				$instance->{$field->name} = DB::table(DB_FILES)->where('id', $instance->{$field->name})->first();
 				if (!empty($instance->{$field->name}->width) && !empty($instance->{$field->name}->height)) {
@@ -359,6 +358,12 @@ class InstanceController extends BaseController {
 						}
 					}
 				}
+			} elseif ($field->type == 'user') {
+				$field->options = DB::table(DB_USERS)->orderBy('name')->lists('name', 'id');
+				if (!$field->required) $field->options = [''=>''] + $field->options;
+			} elseif ($field->type == 'us_state') {
+				$field->options = FieldController::usStates();
+				if (!$field->required) $field->options = [''=>''] + $field->options;
 			}
 		}
 
@@ -377,7 +382,7 @@ class InstanceController extends BaseController {
 	//save edits to database
 	public function update($object_name, $instance_id, $linked_id=false) {
 		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
-		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->get();
+		$fields = DB::table(DB_FIELDS)->where('object_id', $object->id)->where('visibility', '<>', 'hidden')->get();
 		
 		//metadata
 		$updates = array(
