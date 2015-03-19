@@ -84,14 +84,15 @@ Route::group(array('prefix'=>Config::get('avalon::route_prefix')), function(){
 			});		
 			
 			# Complex instance routing, optionally with linked_id for related objects
-			Route::get('/{object_name}/delete/{instance_id}', 'InstanceController@delete');
-			Route::get('/{object_name}', 'InstanceController@index');
-			Route::get('/{object_name}/create/{linked_id?}', 'InstanceController@create');
-			Route::post('/{object_name}/reorder', 'InstanceController@reorder');
-			Route::post('/{object_name}/{linked_id?}', 'InstanceController@store');
-			Route::get('/{object_name}/{instance_id}/{linked_id?}', 'InstanceController@edit');
-			Route::put('/{object_name}/{instance_id}/{linked_id?}', 'InstanceController@update');
-			Route::delete('/{object_name}/{instance_id}', 'InstanceController@destroy');
+			Route::get('/{object_name}/delete/{instance_id}',		'InstanceController@delete');
+			Route::get('/{object_name}',							'InstanceController@index');
+			Route::get('/{object_name}/export',						'InstanceController@export');
+			Route::get('/{object_name}/create/{linked_id?}',		'InstanceController@create');
+			Route::post('/{object_name}/reorder',					'InstanceController@reorder');
+			Route::post('/{object_name}/{linked_id?}',				'InstanceController@store');
+			Route::get('/{object_name}/{instance_id}/{linked_id?}',	'InstanceController@edit');
+			Route::put('/{object_name}/{instance_id}/{linked_id?}',	'InstanceController@update');
+			Route::delete('/{object_name}/{instance_id}', 			'InstanceController@destroy');
 		});
 
 	}

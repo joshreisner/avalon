@@ -75,6 +75,7 @@ return [
 	'instances_create'			=> 'Create',
 	'instances_destroy'			=> 'Delete Forever',
 	'instances_edit'			=> 'Edit',
+	'instances_export'			=> 'Export',
 	'instances_lorem_ipsum'		=> 'Hipster Ipsum',
 	'instances_empty'			=> 'No :title have been added yet.',
 

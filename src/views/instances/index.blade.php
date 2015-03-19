@@ -13,14 +13,14 @@
 
 	<div class="btn-group">
 		@if (Auth::user()->role < 2)
-		<a class="btn btn-default" href="{{ URL::action('ObjectController@edit', $object->name) }}">
-			<i class="glyphicon glyphicon-cog"></i> 
-			@lang('avalon::messages.objects_edit', ['title'=>$object->title])
-		</a>
-		<a class="btn btn-default" href="{{ URL::action('FieldController@index', $object->name) }}">
-			<i class="glyphicon glyphicon-list"></i>
-			@lang('avalon::messages.fields')
-		</a>
+			<a class="btn btn-default" href="{{ URL::action('ObjectController@edit', $object->name) }}">
+				<i class="glyphicon glyphicon-cog"></i> 
+				@lang('avalon::messages.objects_edit', ['title'=>$object->title])
+			</a>
+			<a class="btn btn-default" href="{{ URL::action('FieldController@index', $object->name) }}">
+				<i class="glyphicon glyphicon-list"></i>
+				@lang('avalon::messages.fields')
+			</a>
 		@endif
 		@if ($object->can_create)
 			<a class="btn btn-default" id="create" href="{{ URL::action('InstanceController@create', $object->name) }}">
@@ -28,6 +28,10 @@
 				@lang('avalon::messages.instances_create')
 			</a>
 		@endif
+		<a class="btn btn-default" id="create" href="{{ URL::action('InstanceController@export', $object->name) }}">
+			<i class="glyphicon glyphicon-save-file"></i>
+			@lang('avalon::messages.instances_export')
+		</a>
 	</div>
 
 	@if (count($instances))

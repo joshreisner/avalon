@@ -635,7 +635,47 @@ class InstanceController extends BaseController {
 		return $table->draw();
 	}
 
-	/* public function redactor_s3() {
+	//export instances
+	public function export($object_name) {
+		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
+		
+		\Maatwebsite\Excel\ExcelServiceProvider::create($object->title, function($excel) use ($object) {
+
+		    $excel->setTitle($object->title)->sheet($object->title, function($sheet) {
+
+					//format columns
+					$sheet->setColumnFormat([
+						'E' => '0.00',
+					]);
+
+					//load data into the sheet
+					$data = [];
+					$transactions = Transaction::with('user')->orderBy('created_at', 'desc')->get();
+					foreach ($transactions as $transaction) {
+						$data[] = [
+							'DateTime'=>$transaction->created_at->format('m-d-Y g:i a'),
+							'User'=>$transaction->user->name,
+							'Email'=>$transaction->user->email,
+							'Type'=>'Donation',
+							'Amount'=>$transaction->amount / 100,
+							'Confirmation'=>$transaction->confirmation,
+						];
+					}
+					$sheet->with($data);
+
+					//format header
+					$sheet->freezeFirstRow();
+					$sheet->cells('A1:F1', function($cells) {
+						$cells->setFontWeight('bold');
+					});
+
+				});
+
+		})->download('xlsx');
+	}
+	
+	/*
+	public function redactor_s3() {
 
 		$S3_KEY		= Config::get('aws.key');
 		$S3_SECRET	= Config::get('aws.secret');

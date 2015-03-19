@@ -1,5 +1,5 @@
 //= include ../../../bower_components/jquery/dist/jquery.js
-//= include ../../../bower_components/bootstrap-sass/dist/js/bootstrap.js
+//= include ../../../bower_components/bootstrap-sass/assets/javascripts/bootstrap.js
 //= include ../../../bower_components/jquery-validate/dist/jquery.validate.js
 //= include ../../../bower_components/moment/moment.js
 //= include ../../../bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js
