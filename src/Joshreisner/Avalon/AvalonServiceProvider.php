@@ -140,6 +140,8 @@ class AvalonServiceProvider extends ServiceProvider {
 		if (!defined('DB_OBJECT_USER'))		define('DB_OBJECT_USER',	Config::get('packages/joshreisner/avalon/config.db_object_user'));
 		if (!defined('DB_USERS'))			define('DB_USERS',			Config::get('packages/joshreisner/avalon/config.db_users'));
 
+		$this->app->register('Maatwebsite\Excel\ExcelServiceProvider');
+		
 		# Get required Avalon object/field data, error means migration/config needed
 		try {
 			$fields  = DB::table(DB_FIELDS)

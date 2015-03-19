@@ -2,6 +2,7 @@
 use Aws\Common\Enum\Region;
 use Aws\Laravel\AwsServiceProvider;
 use Illuminate\Foundation\Application;
+use Maatwebsite\Excel\ExcelServiceProvider;
 
 class InstanceController extends BaseController {
 
@@ -637,37 +638,36 @@ class InstanceController extends BaseController {
 
 	//export instances
 	public function export($object_name) {
+
 		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
+
+		App::make('excel')->create($object->title, function($excel) use ($object) {
+
+		    $excel->setTitle($object->title)->sheet($object->title, function($sheet) use ($object) {
 		
-		\Maatwebsite\Excel\ExcelServiceProvider::create($object->title, function($excel) use ($object) {
-
-		    $excel->setTitle($object->title)->sheet($object->title, function($sheet) {
-
-					//format columns
+					$fields = DB::table(DB_FIELDS)->whereNotIn('type', ['html', 'checkboxes', 'text'])->where('object_id', $object->id)->get();
+					$results = DB::table($object->name)->get();
+					$rows = [];
+					
+					foreach ($results as $result) {
+						$row = [];
+						foreach ($fields as &$field) {
+							$row[$field->name] = $result->{$field->name};
+						}
+						$rows[] = $row;
+					}
+					
+					/*format columns
 					$sheet->setColumnFormat([
 						'E' => '0.00',
-					]);
+					]);*/
 
-					//load data into the sheet
-					$data = [];
-					$transactions = Transaction::with('user')->orderBy('created_at', 'desc')->get();
-					foreach ($transactions as $transaction) {
-						$data[] = [
-							'DateTime'=>$transaction->created_at->format('m-d-Y g:i a'),
-							'User'=>$transaction->user->name,
-							'Email'=>$transaction->user->email,
-							'Type'=>'Donation',
-							'Amount'=>$transaction->amount / 100,
-							'Confirmation'=>$transaction->confirmation,
-						];
-					}
-					$sheet->with($data);
-
-					//format header
-					$sheet->freezeFirstRow();
+					$sheet->with($rows)->freezeFirstRow();
+					
+					/*
 					$sheet->cells('A1:F1', function($cells) {
 						$cells->setFontWeight('bold');
-					});
+					});*/
 
 				});
 
