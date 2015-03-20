@@ -22,16 +22,16 @@
 				@lang('avalon::messages.fields')
 			</a>
 		@endif
+		<a class="btn btn-default" id="create" href="{{ URL::action('InstanceController@export', $object->name) }}">
+			<i class="glyphicon glyphicon-circle-arrow-down"></i>
+			@lang('avalon::messages.instances_export')
+		</a>
 		@if ($object->can_create)
 			<a class="btn btn-default" id="create" href="{{ URL::action('InstanceController@create', $object->name) }}">
 				<i class="glyphicon glyphicon-plus"></i>
 				@lang('avalon::messages.instances_create')
 			</a>
 		@endif
-		<a class="btn btn-default" id="create" href="{{ URL::action('InstanceController@export', $object->name) }}">
-			<i class="glyphicon glyphicon-save-file"></i>
-			@lang('avalon::messages.instances_export')
-		</a>
 	</div>
 
 	@if (count($instances))
@@ -44,19 +44,31 @@
 				@include('avalon::instances.nested', ['instances'=>$instances])
 			</div>
 		@else
-			{{ InstanceController::table($object, $fields, $instances) }}
+			{{ InstanceController::table($object, $columns, $instances) }}
 		@endif
 	@else
 	<div class="alert alert-warning">
-		@lang('avalon::messages.instances_empty', ['title'=>strtolower($object->title)])
+		@if ($searching)
+			@lang('avalon::messages.instances_search_empty', ['title'=>strtolower($object->title)])
+		@else
+			@lang('avalon::messages.instances_empty', ['title'=>strtolower($object->title)])
+		@endif
 	</div>
 	@endif
 		
 @endsection
 
 @section('side')
-	{{ Form::open(['method'=>'get']) }}
+	{{ Form::open(['method'=>'get', 'id'=>'search']) }}
+	<div class="form-group @if (Input::has('search')) has_input @endif">
 	{{ Form::text('search', Input::get('search'), ['class'=>'form-control', 'placeholder'=>'Search']) }}
+	<i class="glyphicon glyphicon-remove-circle"></i>
+	</div>
+	@foreach ($filters as $name=>$options)
+	<div class="form-group">
+		{{ Form::select($name, $options, Input::get($name), ['class'=>'form-control']) }}
+	</div>
+	@endforeach
 	{{ Form::close() }}
 	<p>{{ nl2br($object->list_help) }}</p>
 @endsection

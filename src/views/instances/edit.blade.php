@@ -138,7 +138,7 @@
 			</a>
 		</div>
 		
-		{{ InstanceController::table($link['object'], $link['fields'], $link['instances']) }}
+		{{ InstanceController::table($link['object'], $link['columns'], $link['instances']) }}
 	</div>
 	
 	@endforeach

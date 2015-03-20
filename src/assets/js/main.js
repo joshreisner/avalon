@@ -131,6 +131,22 @@ $(function() {
 		});
 	});
 	
+	//instance index search
+	$('form#search').on('change', 'select', function(){
+		$('form#search').submit();
+	}).on('submit', function(){
+        var text = $(this).find(":input").filter(function(){
+            return $.trim(this.value).length > 0
+        }).serialize();
+        if (text.length) text = '?' + text;
+        window.location.href = window.location.href.split('?')[0] + text;
+        return false;
+    }).on('click', 'i.glyphicon', function(){
+	    $('form#search input').val('');
+		$('form#search').submit();
+	});
+	
+	
 	/* redactor fields
 	if (typeof RedactorPlugins === 'undefined') var RedactorPlugins = {};
 

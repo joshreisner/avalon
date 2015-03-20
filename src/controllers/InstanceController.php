@@ -14,45 +14,59 @@ class InstanceController extends BaseController {
 		$object = DB::table(DB_OBJECTS)->where('name', $object_name)->first();
 		$fields = DB::table(DB_FIELDS)
 			->where('object_id', $object->id)
-			->where('visibility', 'list')
 			->orWhere('id', $object->group_by_field)
-			->orderBy('precedence')->get();
+			->orderBy('precedence')
+			->get();
 
 		# Start query
 		$instances = DB::table($object->name);
 
-		$text_fields = [];
+		# Empty arrays mainly for search
+		$text_fields = $select_fields = $date_fields = $columns = [];
+		$date_fields = ['created_at'=>'Created', 'updated_at'=>'Updated'];
 
 		# Build select statement
 		$instances->select([$object->name . '.id', $object->name . '.updated_at', $object->name . '.deleted_at']);
 		foreach ($fields as $field) {
-			if ($field->type == 'checkboxes') {
-				$related_object = self::getRelatedObject($field->related_object_id);
-				$instances->addSelect(DB::raw('(SELECT GROUP_CONCAT(' . $related_object->name . '.' . $related_object->field->name . ' SEPARATOR ", ") 
-					FROM ' . $related_object->name . ' 
-					JOIN ' . $field->name . ' ON ' . $related_object->name . '.id = ' . $field->name . '.' . self::getKey($related_object->name) . '
-					WHERE ' . $field->name . '.' . self::getKey($object->name) . ' = ' . $object->name . '.id 
-					ORDER BY ' . $related_object->name . '.' . $related_object->field->name . ') AS ' . $field->name));
-			} elseif ($field->type == 'image') {
-				$instances
-					->leftJoin(DB_FILES, $object->name . '.' . $field->name, '=', DB_FILES . '.id')
-					->addSelect(DB_FILES . '.url AS ' . $field->name . '_url');
-			} elseif ($field->type == 'select') {
-				$related_object = self::getRelatedObject($field->related_object_id);
-				$instances
-					->leftJoin($related_object->name, $object->name . '.' . $field->name, '=', $related_object->name . '.id')
-					->addSelect($related_object->name . '.' . $related_object->field->name . ' AS ' . $field->name);
-				$text_fields[] = $related_object->name . '.' . $related_object->field->name;
-			} elseif ($field->type == 'user') {
-				$instances
-					->leftJoin(DB_USERS, $object->name . '.' . $field->name, '=', DB_USERS . '.id')
-					->addSelect(DB_USERS . '.name AS ' . $field->name);
-			} else {
-				if (in_array($field->type, ['string', 'text', 'html'])) {
-					$text_fields[] = $object->name . '.' . $field->name;
+			if ($field->visibility == 'list' || $field->id == $object->group_by_field) {
+				
+				if ($field->type == 'checkboxes') {
+					$related_object = self::getRelatedObject($field->related_object_id);
+					$instances->addSelect(DB::raw('(SELECT GROUP_CONCAT(' . $related_object->name . '.' . $related_object->field->name . ' SEPARATOR ", ") 
+						FROM ' . $related_object->name . ' 
+						JOIN ' . $field->name . ' ON ' . $related_object->name . '.id = ' . $field->name . '.' . self::getKey($related_object->name) . '
+						WHERE ' . $field->name . '.' . self::getKey($object->name) . ' = ' . $object->name . '.id 
+						ORDER BY ' . $related_object->name . '.' . $related_object->field->name . ') AS ' . $field->name));
+				} elseif ($field->type == 'image') {
+					$instances
+						->leftJoin(DB_FILES, $object->name . '.' . $field->name, '=', DB_FILES . '.id')
+						->addSelect(DB_FILES . '.url AS ' . $field->name . '_url');
+				} elseif ($field->type == 'select') {
+					$related_object = self::getRelatedObject($field->related_object_id);
+					$instances
+						->leftJoin($related_object->name, $object->name . '.' . $field->name, '=', $related_object->name . '.id')
+						->addSelect($related_object->name . '.' . $related_object->field->name . ' AS ' . $field->name);
+					$text_fields[] = $related_object->name . '.' . $related_object->field->name;
+				} elseif ($field->type == 'user') {
+					$instances
+						->leftJoin(DB_USERS, $object->name . '.' . $field->name, '=', DB_USERS . '.id')
+						->addSelect(DB_USERS . '.name AS ' . $field->name);
+				} else {
+					//normal, selectable field
+					$instances->addSelect($object->name . '.' . $field->name);
 				}
+				
+				//add to table columns
+				if ($field->visibility == 'list') $columns[] = $field;
+			}
 
-				$instances->addSelect($object->name . '.' . $field->name);
+			//search
+			if (in_array($field->type, ['string', 'text', 'html'])) {
+				$text_fields[] = $object->name . '.' . $field->name;
+			} elseif (in_array($field->type, ['select'])) {
+				$select_fields[] = $field;
+			} elseif (in_array($field->type, ['date', 'datetime'])) {
+				
 			}
 		}
 
@@ -65,11 +79,6 @@ class InstanceController extends BaseController {
 				//nested object
 				$object->nested = true;
 			} else {
-				# Pull group_by_field out of the list of fields so it's not a column in the table
-				foreach ($fields as $key=>$field) {
-					if ($field->id == $object->group_by_field) unset($fields[$key]);
-				}
-				
 				# Include group_by_field in resultset
 				$instances
 					->orderBy($grouped_object->name . '.' . $grouped_object->order_by, $grouped_object->direction)
@@ -85,10 +94,21 @@ class InstanceController extends BaseController {
 		# Set the order and direction
 		$instances->orderBy($object->name . '.' . $object->order_by, $object->direction);
 
-		# Is there a search?
+		$searching = false;
+
+		# Text search?
 		if (Input::has('search')) {
+			$searching = true;
 			foreach ($text_fields as $field) {
 				$instances->orWhere($field, 'LIKE', '%' . Input::get('search') . '%');
+			}
+		}
+		
+		# Filter search?
+		foreach ($select_fields as $select) {
+			if (Input::has($select->name)) {
+				$searching = true;
+				$instances->where($select->name, Input::get($select->name));
 			}
 		}
 
@@ -119,7 +139,15 @@ class InstanceController extends BaseController {
 			$instances = $list;
 		}
 
-		$return = compact('object', 'fields', 'instances');
+		# Search filters for the sidebar
+		$filters = [];
+		foreach ($select_fields as $select) {
+			$related_object = self::getRelatedObject($select->related_object_id);
+			$options = DB::table($related_object->name)->orderBy($related_object->order_by, $related_object->direction)->lists($related_object->field->name, 'id');
+			$filters[$select->name] = [''=>$select->title] + $options;
+		}
+		
+		$return = compact('object', 'columns', 'instances', 'filters', 'searching');
 
 		# Return array to edit()
 		if ($linked_id) {
@@ -622,18 +650,20 @@ class InstanceController extends BaseController {
 
 	# Draw an instance table, used both by index and by edit > linked
 	public static function table($object, $fields, $instances) {
-		$table = new Table;
-		$table->rows($instances);
-		foreach ($fields as $field) {
-			$table->column($field->name, $field->type, $field->title, $field->width, $field->height);
+		if (count($instances)) {
+			$table = new Table;
+			$table->rows($instances);
+			foreach ($fields as $field) {
+				$table->column($field->name, $field->type, $field->title, $field->width, $field->height);
+			}
+			$table->column('updated_at', 'updated_at', trans('avalon::messages.site_updated_at'));
+			if ($object->can_edit) {
+				$table->deletable();
+				if ($object->order_by == 'precedence') $table->draggable(URL::action('InstanceController@reorder', $object->name));
+			}
+			if (!empty($object->group_by_field)) $table->groupBy('group');
+			return $table->draw();
 		}
-		$table->column('updated_at', 'updated_at', trans('avalon::messages.site_updated_at'));
-		if ($object->can_edit) {
-			$table->deletable();
-			if ($object->order_by == 'precedence') $table->draggable(URL::action('InstanceController@reorder', $object->name));
-		}
-		if (!empty($object->group_by_field)) $table->groupBy('group');
-		return $table->draw();
 	}
 
 	//export instances

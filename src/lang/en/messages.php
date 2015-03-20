@@ -78,6 +78,7 @@ return [
 	'instances_export'			=> 'Export',
 	'instances_lorem_ipsum'		=> 'Hipster Ipsum',
 	'instances_empty'			=> 'No :title have been added yet.',
+	'instances_search_empty'	=> 'No :title matched those search critera.',
 
 	'object'					=> 'Object',
 	'objects'					=> 'Objects',

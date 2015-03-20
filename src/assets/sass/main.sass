@@ -45,8 +45,7 @@ form
 	margin-bottom: $margin
 	
 	.form-group
-
-		//background-color: pink
+	
 
 		input
 			&.color
@@ -159,6 +158,18 @@ form
 			a.remove
 				display: none
 
+	&#search
+		.form-group
+			position: relative
+			i
+				position: absolute
+				right: 10px
+				top: 11px
+				display: none
+			&.has_input
+				i
+					display: block
+					cursor: pointer
 .header
 	margin-bottom: $margin
 	overflow: auto
