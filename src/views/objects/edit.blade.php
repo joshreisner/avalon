@@ -99,29 +99,20 @@
 	@endif
 	
 	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-10">
+		{{ Form::label('permissions', trans('avalon::messages.objects_permissions'), ['class'=>'control-label col-sm-2']) }}
+		<div class="col-sm-10">
 			<div class="checkbox">
 				<label>
 					{{ Form::checkbox('can_see', 'on', $object->can_see) }}
 					@lang('avalon::messages.objects_can_see')
 				</label>
 			</div>
-		</div>
-	</div>
-
-	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-10">
 			<div class="checkbox">
 				<label>
 					{{ Form::checkbox('can_create', 'on', $object->can_create) }}
 					@lang('avalon::messages.objects_can_create')
 				</label>
 			</div>
-		</div>
-	</div>
-
-	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-10">
 			<div class="checkbox">
 				<label>
 					{{ Form::checkbox('can_edit', 'on', $object->can_edit) }}

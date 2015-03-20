@@ -9,7 +9,7 @@
 //= include ../../../bower_components/bootstrap3-typeahead/bootstrap3-typeahead.js
 //= include ../../../bower_components/JSColor/jscolor.js
 //= include ../../../bower_components/jquery-file-upload/js/jquery.fileupload.js
-//= include ../redactor1005/redactor/redactor.js
+//= include ../redactor1009/redactor/redactor.js
 
 $(function() {
 
